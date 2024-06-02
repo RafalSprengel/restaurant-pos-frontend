@@ -1,0 +1,41 @@
+@keyframes slideDown {
+    from {
+        top: -700px;
+        opacity: 0;
+    }
+
+    to {
+        top: 50%;
+        opacity: 1;
+    }
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000d4;
+    z-index: 20;
+
+    &__main {
+        max-width: 80vw;
+        min-width: 650px;
+        min-height: 30vh;
+        background-color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: slideDown 0.5s;
+    }
+}
+
+.display-none {
+    display: none;
+}
+
+.display-block {
+    display: block;
+}

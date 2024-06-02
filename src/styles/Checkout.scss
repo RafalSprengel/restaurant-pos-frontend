@@ -1,0 +1,146 @@
+.checkout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    width: 100%;
+    font-size: 18px;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: 200px;
+    ;
+
+    &__form {
+        flex: 1 1 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 30px;
+        padding: 30px;
+
+        &__header {
+            font-size: 35px;
+        }
+
+        &__orderTime {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            &__timeSlot {
+                animation: slideDown 0.5s;
+
+                & select {
+                    padding: 10px;
+                    width: 100%;
+                    font-size: 18px;
+                    margin-top: 30px;
+                    ;
+                }
+            }
+        }
+
+        &__orderPlace {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        &__orderAddress {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: slideDown 0.5s;
+
+            & div {
+                display: flex;
+                flex-direction: column;
+                ;
+            }
+
+            &__group1 {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between;
+
+                &__street {
+                    width: 65%;
+                }
+
+                &__houseNumber {
+                    //flex: 1 1;
+                    width: 30%;
+                }
+            }
+
+            &__group2 {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between;
+
+                &__apartmentNumber {
+                    width: 65%;
+                }
+
+                &__floor {
+                    width: 30%;
+                }
+            }
+
+        }
+
+        &__note {
+            display: flex;
+            flex-direction: column;
+
+        }
+    }
+
+    &__summary {
+        position: sticky;
+        top: 0;
+        flex: 1 1 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 30px;
+        gap: 25px;
+
+        &__header {
+            font-size: 35px;
+        }
+
+        &__content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            ;
+
+            &__item {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            &::after {
+                content: '';
+                background-color: rgb(172, 172, 172);
+                width: 100%;
+                height: 2px;
+                ;
+            }
+        }
+
+        &__price {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        &__button {
+
+            & button {
+                width: 100%;
+                ;
+            }
+        }
+    }
+}
