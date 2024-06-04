@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/react-restaurant/static/css/main.4e84c1d2.css",
+    "main.js": "/react-restaurant/static/js/main.2aae7a28.js",
+    "static/media/section-1.jpg": "/react-restaurant/static/media/section-1.63ce3ad3436d5cde34c3.jpg",
+    "static/media/Cuprum-Regular.ttf": "/react-restaurant/static/media/Cuprum-Regular.1bd9dcd68ee6d77375db.ttf",
+    "static/media/logo-white-XXL.png": "/react-restaurant/static/media/logo-white-XXL.d5473890a0c3b9f7f108.png",
+    "static/media/logo-white-XL.png": "/react-restaurant/static/media/logo-white-XL.1793c0997d7659e3ed3d.png",
+    "index.html": "/react-restaurant/index.html",
+    "main.4e84c1d2.css.map": "/react-restaurant/static/css/main.4e84c1d2.css.map",
+    "main.2aae7a28.js.map": "/react-restaurant/static/js/main.2aae7a28.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4e84c1d2.css",
+    "static/js/main.2aae7a28.js"
+  ]
+}
