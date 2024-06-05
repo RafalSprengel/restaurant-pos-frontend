@@ -17,7 +17,7 @@ import Checkout from './pages/Checkout.js';
 
 
 function App() {
-
+  console.log('Page starting...');
   return (
     <>
       <ShoppingCartProvider>

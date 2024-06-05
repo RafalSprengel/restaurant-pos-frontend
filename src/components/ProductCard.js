@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import '../styles/ProductCard.scss';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import Modal from '../components/Modal.js';
@@ -23,7 +22,7 @@ export default function ProductCard({ currentProduct: curr, isOpen, close }) {
         <Modal isOpen={isOpen} close={close}>
             <div className="product">
                 <form onSubmit={handleSubmit}>
-                    <img src={curr.img} className='product__img' />
+                    <img src={curr.img} alt="image" className='product__img' />
                     <div className='product__name'>{curr.name}</div>
                     <br></br>
                     <div className='product__desc'>{curr.desc}</div>

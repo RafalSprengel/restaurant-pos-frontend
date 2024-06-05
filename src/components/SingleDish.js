@@ -5,7 +5,6 @@ import { useShoppingCart } from '../context/ShoppingCartContext.js';
 
 export const SingleDish = ({ singleDish }) => {
     const { getItemQuantity } = useShoppingCart();
-    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams({ q: "", category: "" });
 
 
@@ -13,13 +12,14 @@ export const SingleDish = ({ singleDish }) => {
     const handleClick = (e) => {
         setSearchParams({ product: e.currentTarget.dataset.id }, { replace: false });
     }
-
+    console.log("process.env.PUBLIC_URL to: ", process.env.PUBLIC_URL)
+    console.group('test')
     return (
         <div className="single-dish" data-id={singleDish.id}>
             {Boolean(getItemQuantity(singleDish.id) !== 0) &&
                 <div className='single-dish__quantity'>{getItemQuantity(singleDish.id)}</div>
             }
-            <img className='single-dish__img' src={singleDish.img} />
+            <img className='single-dish__img' alt="image" src={`${process.env.PUBLIC_URL}${singleDish.img}`} />
             <div className='single-dish__descWrap'>
                 <div className='single-dish__title'>{singleDish.name}</div>
                 <div className='single-dish__desc'>{singleDish.desc}</div>

@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import '../styles/Modal.scss';
 
-export default function ({ isOpen, close, children }) {
+export default function Modal({ isOpen, close, children }) {
     const layer = useRef();
     const handleClickOnLayer = (e) => {
-        if (e.target == layer.current) close()
+        if (e.target === layer.current) close()
     }
 
     return (

@@ -13,11 +13,11 @@ export default function Cart({ isOpen, close }) {
     }
 
     const SingleItem = ({ item }) => {
-        let product = meals.find((meal) => meal.id == item.id)
+        let product = meals.find((meal) => meal.id === item.id)
         const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } = useShoppingCart()
         return (
             <div className='cartItem__content__item'>
-                <div class='cartItem__content__item__img'>
+                <div className='cartItem__content__item__img'>
                     <img src={product.img} alt="" />
                 </div>
                 <div className='cartItem__content__item__desc'>

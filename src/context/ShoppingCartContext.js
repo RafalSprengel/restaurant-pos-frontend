@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import Cart from '../components/Cart'
 import ProductCard from '../components/ProductCard.js';
@@ -24,9 +24,9 @@ export function ShoppingCartProvider({ children }) {
 
     function increaseCartQuantity(id) {
         setCartItems((curr) => {
-            if ((curr.find((el) => el.id == id))) { //w w przypadku gdy już będzie element o danym id
+            if ((curr.find((el) => el.id === id))) { //w w przypadku gdy już będzie element o danym id
                 return (curr.map((el) => {
-                    if (el.id == id) return { ...el, quantity: el.quantity + 1 }
+                    if (el.id === id) return { ...el, quantity: el.quantity + 1 }
                     else return el
                 }))
             }
