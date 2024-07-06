@@ -19,7 +19,7 @@ export const SingleDish = ({ singleDish }) => {
             {Boolean(getItemQuantity(singleDish.id) !== 0) &&
                 <div className='single-dish__quantity'>{getItemQuantity(singleDish.id)}</div>
             }
-            <img className='single-dish__img' alt="image" src={`${process.env.PUBLIC_URL}${singleDish.img}`} />
+            <img className='single-dish__img' alt="image" src={process.env.PUBLIC_URL + singleDish.img} />
             <div className='single-dish__descWrap'>
                 <div className='single-dish__title'>{singleDish.name}</div>
                 <div className='single-dish__desc'>{singleDish.desc}</div>

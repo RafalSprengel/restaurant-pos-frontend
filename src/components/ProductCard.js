@@ -22,11 +22,9 @@ export default function ProductCard({ currentProduct: curr, isOpen, close }) {
         <Modal isOpen={isOpen} close={close}>
             <div className="product">
                 <form onSubmit={handleSubmit}>
-                    <img src={curr.img} alt="image" className='product__img' />
+                    <img src={process.env.PUBLIC_URL + curr.img} alt="image" className='product__img' />
                     <div className='product__name'>{curr.name}</div>
-                    <br></br>
-                    <div className='product__desc'>{curr.desc}</div>
-                    <br></br>
+                    {curr.desc && <div className='product__desc'>{curr.desc}</div>}
                     <div className='product__quantity'>
                         <span className='product__quantity__minus' onClick={() => decreaseCartQuantity(curr.id)}>-</span>
                         <span className='product__quantity__number'>{getItemQuantity(curr.id)}</span>
