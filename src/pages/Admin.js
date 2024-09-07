@@ -1,18 +1,14 @@
 import React from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import '../styles/Admin.scss';
-import AddItemForm from '../components/admin/AddItemForm';
+import AddProduct from '../components/admin/AddProduct';
 import Products from '../components/admin/Products';
 import SingleProduct from '../components/admin/SingleProduct';
 
 
 const Orders = () => <div>Orders</div>;
-const EditMenu = () => <div>Edit menu</div>;
 
 const Customers = () => <div>Customers</div>;
-const Settings = () => <div>Settings</div>;
-const Logout = () => <div>Logout</div>;
-
 export const Admin = () => {
     return (
         <div className="admin">
@@ -30,23 +26,17 @@ export const Admin = () => {
             <div className="admin__content">
                 <div className="admin__left">
                     <NavLink className='admin__menuItem' to='/admin/orders'>Orders</NavLink>
-                    <NavLink className='admin__menuItem' to='/admin/edit-menu'>Edit Menu</NavLink>
                     <NavLink className='admin__menuItem' to='/admin/products'>Products</NavLink>
-                    <NavLink className='admin__menuItem' to='/admin/add-a-new-product'>Add a new products</NavLink>
+                    <NavLink className='admin__menuItem' to='/admin/add-product'>Add products</NavLink>
                     <NavLink className='admin__menuItem' to='/admin/customers'>Customers</NavLink>
-                    <NavLink className='admin__menuItem' to='/admin/settings'>Settings</NavLink>
-                    <NavLink className='admin__menuItem' to='/admin/logout'>Logout</NavLink>
                 </div>
                 <div className="admin__right">
                     <Routes>
                         <Route path="orders" element={<Orders />} />
-                        <Route path="edit-menu" element={<EditMenu />} />
                         <Route path="products" element={<Products />} />
-                        <Route path="add-a-new-product" element={<AddItemForm />} />
+                        <Route path="add-product" element={<AddProduct />} />
                         <Route path="customers" element={<Customers />} />
-                        <Route path="settings" element={<Settings />} />
                         <Route path="products/:id" element={<SingleProduct />} />
-                        <Route path="logout" element={<Logout />} />
                     </Routes>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/AddItemForm.scss';
 
-const AddItemForm = () => {
+const AddProduct = () => {
   const [categories, setCategories] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ const AddItemForm = () => {
 
     try {
       console.log('Wysyłane dane po stronie przeglądarki:', JSON.stringify(dataToSend));
-      const response = await fetch('http://localhost:3001/api/saveMenuItem', {
+      const response = await fetch('http://localhost:3001/api/addProduct', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -180,4 +180,4 @@ const AddItemForm = () => {
   );
 };
 
-export default AddItemForm;
+export default AddProduct;
