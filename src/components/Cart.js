@@ -1,24 +1,31 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import Modal from '../components/Modal.js';
+import ConfirmationModal from './ConfirmationModal.js';
 import '../styles/Cart.scss'
 import meals from '../data/meals.json';
 
 export default function Cart({ isOpen, close }) {
-    const { cartItems, closeCart, clearBasket, cartSummaryPrice } = useShoppingCart()
+    const { cartItems, closeCart, clearBasket, cartSummaryPrice, openDelConfirmModal, openDelAllConfirmModal } = useShoppingCart()
     const navigate = useNavigate()
     const handleClickGoToCheckout = () => {
         navigate('order/checkout');
         closeCart()
     }
 
+
     const SingleItem = ({ item }) => {
+        //     const [isDelConfirmOpen, setIsDelConfirmOpen] = useState(false);
+        //     const closeDelConfirmModal = () => setIsDelConfirmOpen(false);
+        //     const showDelConfirmModal = () => setIsDelConfirmOpen(true);
+
         let product = meals.find((meal) => meal.id === item.id)
         const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } = useShoppingCart()
         return (
             <div className='cartItem__content__item'>
                 <div className='cartItem__content__item__img'>
-                    <img src={product.img} alt="" />
+                    <img src={process.env.PUBLIC_URL + product.img} alt="" />
                 </div>
                 <div className='cartItem__content__item__desc'>
                     <div className='cartItem__content__item__desc__name'>{product.name}</div>
@@ -32,6 +39,11 @@ export default function Cart({ isOpen, close }) {
                         <span className='cartItem__content__item__subtotal__stepper__plus' onClick={() => increaseCartQuantity(item.id)}>+</span>
                     </div>
                 </div>
+                <div className='cartItem__content__item__remove'>
+                    <span
+                        onClick={() => openDelConfirmModal(item.id)}
+                    >Usuń</span>
+                </div>
             </div>
         )
     }
@@ -40,7 +52,7 @@ export default function Cart({ isOpen, close }) {
             <div className='cartItem'>
                 <div className='cartItem__header'>
                     <div className='cartItem__header__left'>KOSZYK</div>
-                    <div className='cartItem__header__center' onClick={clearBasket}> (Wyczyść)</div>
+                    <div className='cartItem__header__center' onClick={openDelAllConfirmModal}> (Wyczyść)</div>
                     <div className='cartItem__header__right' onClick={closeCart}>X</div>
                 </div>
                 <div className='cartItem__content'>
@@ -52,6 +64,7 @@ export default function Cart({ isOpen, close }) {
                     {cartItems.length !== 0 && <button className='button-contained' onClick={handleClickGoToCheckout}>DO KASY | {cartSummaryPrice() + ' zł'}</button>}
                 </div>
             </div>
+
         </Modal >
     )
 }

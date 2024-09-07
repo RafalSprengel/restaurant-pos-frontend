@@ -8,7 +8,7 @@ import { useShoppingCart } from '../context/ShoppingCartContext';
 export default function Header() {
     const [isSticky, setIsSticky] = useState(false);
     const [isVisibleMobileNavi, setIsVisibleMobileNavi] = useState(false);
-    const { cartQuantity, showCart } = useShoppingCart();
+    const { cartQuantity, openCart } = useShoppingCart();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -38,7 +38,7 @@ export default function Header() {
                     </NavLink>
                 </div>
                 <Navi isVisibleMobileNavi={isVisibleMobileNavi} handleIsVisibleMobile={handleIsVisibleMobile} />
-                <div className='header__cart-wrap' onClick={() => showCart()}>
+                <div className='header__cart-wrap' onClick={() => openCart()}>
                     <div className='header__cart-wrap__inner'>
                         <span className='material-symbols-outlined header__cart-wrap__inner__cart'>shopping_cart</span>
                         <span className='header__cart-wrap__inner__number'>{cartQuantity}</span>

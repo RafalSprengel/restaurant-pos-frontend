@@ -1,4 +1,5 @@
 export const Promocje = () => {
+
     return (
         <>
             Zakładka Promocje

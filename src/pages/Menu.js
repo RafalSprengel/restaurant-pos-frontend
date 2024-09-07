@@ -30,7 +30,7 @@ export const Menu = ({ mealCategories, mealsList }) => {
     const search = searchParams.get("search");
     const category = searchParams.get("category");
     const navigate = useNavigate();
-    const { showProduct } = useShoppingCart()
+    const { openProduct } = useShoppingCart()
 
     const handleOnChange = (e) => {
         const newValue = e.target.value;
@@ -71,7 +71,7 @@ export const Menu = ({ mealCategories, mealsList }) => {
                                 mealsList.map((el, index) => {
                                     if (createSlug(el.category) === category || category === '' || window.location.href.endsWith('/menu')) {
                                         return (
-                                            <div onClick={() => showProduct(el)} key={index}>
+                                            <div onClick={() => openProduct(el)} key={index}>
                                                 <SingleDish singleDish={el} />
                                             </div>
                                         );
@@ -88,7 +88,7 @@ export const Menu = ({ mealCategories, mealsList }) => {
                                     const regex = new RegExp(search, 'i');
                                     if (regex.test(meal.name) || regex.test(meal.category)) {
                                         return (
-                                            < div onClick={() => showProduct(meal)} key={index}>
+                                            < div onClick={() => openProduct(meal)} key={index}>
                                                 <SingleDish singleDish={meal} key={index} />
                                             </div >
                                         )

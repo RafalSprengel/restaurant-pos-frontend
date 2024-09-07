@@ -3,7 +3,7 @@ import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import Modal from '../components/Modal.js';
 
 export default function ProductCard({ currentProduct: curr, isOpen, close }) {
-    const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity, showCart } = useShoppingCart()
+    const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity, openCart } = useShoppingCart()
 
     // const handleSubmit = (e) => {
     //     // e.preventDefault();
@@ -15,7 +15,7 @@ export default function ProductCard({ currentProduct: curr, isOpen, close }) {
     // };
     const handleSubmit = () => {
         close();
-        showCart()
+        openCart()
     }
 
     return (

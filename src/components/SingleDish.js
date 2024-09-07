@@ -12,8 +12,6 @@ export const SingleDish = ({ singleDish }) => {
     const handleClick = (e) => {
         setSearchParams({ product: e.currentTarget.dataset.id }, { replace: false });
     }
-    console.log("process.env.PUBLIC_URL to: ", process.env.PUBLIC_URL)
-    console.group('test')
     return (
         <div className="single-dish" data-id={singleDish.id}>
             {Boolean(getItemQuantity(singleDish.id) !== 0) &&

@@ -1,6 +1,6 @@
 @keyframes slideDown {
     from {
-        top: -700px;
+        top: 40%;
         opacity: 0;
     }
 
@@ -10,16 +10,34 @@
     }
 }
 
+@keyframes fadeInBGcolor {
+    from {
+        background-color: rgba(0, 0, 0, 0);
+        /* Kolor tła w pełni przezroczysty */
+    }
+
+    to {
+        background-color: rgba(0, 0, 0, 0.73);
+        /* Kolor tła z 73% przezroczystości */
+    }
+}
+
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #000000d4;
+    background-color: rgb(0 0 0 / 73%); //background-color: #000000d4;
     z-index: 20;
+    animation: fadeInBGcolor 0.5s;
 
     &__main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 7px;
+        ;
         max-width: 80vw;
         min-width: 650px;
         min-height: 30vh;
