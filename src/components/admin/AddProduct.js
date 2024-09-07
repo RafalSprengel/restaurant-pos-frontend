@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../../styles/AddItemForm.scss';
+import '../../styles/AddProduct.scss';
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);

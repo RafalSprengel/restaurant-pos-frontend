@@ -3,7 +3,8 @@ import { NavLink, Route, Routes } from 'react-router-dom';
 import '../styles/Admin.scss';
 import AddProduct from '../components/admin/AddProduct';
 import Products from '../components/admin/Products';
-import SingleProduct from '../components/admin/SingleProduct';
+//import SingleProduct from '../components/admin/SingleProduct';
+import UpdateProduct from '../components/admin/UpdateProduct';
 
 
 const Orders = () => <div>Orders</div>;
@@ -36,7 +37,7 @@ export const Admin = () => {
                         <Route path="products" element={<Products />} />
                         <Route path="add-product" element={<AddProduct />} />
                         <Route path="customers" element={<Customers />} />
-                        <Route path="products/:id" element={<SingleProduct />} />
+                        <Route path="products/:id" element={<UpdateProduct />} />
                     </Routes>
                 </div>
             </div>

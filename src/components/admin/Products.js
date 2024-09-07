@@ -26,7 +26,7 @@ const Products = () => {
             }
         } catch (error) {
             console.error('Błąd podczas pobierania danych:', error);
-            alert(`Błąd: ${error.message}`);
+            alert(`API down (${error.message})`);
         }
     };
 
@@ -44,7 +44,7 @@ const Products = () => {
 
     return (
         <>
-            <div>Products</div>
+            <div>Products:</div>
             <div>{List}</div>
         </>
 
