@@ -71,7 +71,7 @@ const UpdateProduct = () => {
             ...formData,
             price: parseFloat(formData.price),
             ingridiens: formData.ingridiens.split(',').map(item => item.trim()),
-            category: formData.category // Wysyłamy ID kategorii wybranej przez użytkownika
+            category: formData.category
         };
 
         try {
