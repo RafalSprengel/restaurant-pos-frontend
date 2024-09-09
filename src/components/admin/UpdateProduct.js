@@ -75,7 +75,6 @@ const UpdateProduct = () => {
         };
 
         try {
-            console.log('Wysyłane dane po stronie przeglądarki:', JSON.stringify(dataToSend));
             const response = await fetch('http://localhost:3001/api/addProduct', {
                 method: 'POST',
                 headers: {
