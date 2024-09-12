@@ -7,7 +7,7 @@ const MainLayout = () => {
         <>
             <Header />
             <main>
-                <Outlet /> {/* Tutaj będą renderowane strony */}
+                <Outlet />
             </main>
             <Footer />
         </>

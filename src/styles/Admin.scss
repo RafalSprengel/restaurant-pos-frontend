@@ -70,15 +70,43 @@
 
     &__left {
         display: flex;
+        flex: 0 1 180px;
         flex-direction: column;
         padding: 20px;
-        width: 250px;
         background-color: rgb(57, 59, 92);
-        min-width: 220px;
     }
 
     &__right {
+        flex: 1 1 auto;
         padding: 2%;
+    }
+
+    & table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    & td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    & tbody tr:hover {
+        background-color: #d3d4d4 !important;
+    }
+
+    & tr:nth-child(even) {
+        background-color: #E7E9EB;
+
+
+    }
+
+    &__deleteElement {
+        text-decoration: underline;
     }
 
     &__menuItem {

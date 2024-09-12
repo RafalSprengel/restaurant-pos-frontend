@@ -75,8 +75,9 @@ const UpdateProduct = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3001/api/addProduct', {
-                method: 'POST',
+            //console.log(id)
+            const response = await fetch('http://localhost:3001/api/updateProduct/' + id, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -85,8 +86,7 @@ const UpdateProduct = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                alert('Menu item saved successfully');
-                console.log('Dane otrzymane z serwera: ', result);
+                console.log('Menu item saved successfully');
             } else {
                 const errorData = await response.json();
                 console.log('Błąd zwrócony z serwera:', errorData.error);
