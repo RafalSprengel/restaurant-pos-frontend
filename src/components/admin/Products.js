@@ -84,7 +84,7 @@ const Products = () => {
         <tr key={item._id} onClick={() => handleRowClick(item._id)}>
             <td>{item.name}</td>
             <td>{item.barcode}</td>
-            <td>{item.category}</td>
+            <td>{item.category.name}</td>
             <td>{item.isAvailable ? "Available" : "Not Available"}</td>
             <td className='admin__deleteElement' onClick={(e) => handleDeleteClick(e, item._id)}>Delete</td>
         </tr>
@@ -96,20 +96,23 @@ const Products = () => {
             {error && <div>Something went wrong:(</div>}
             {deleteError && <Alert variant="danger">Failed to delete the product. Please try again.</Alert>}
             {productsList?.length ? (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Barcode</th>
-                            <th>Category</th>
-                            <th>Is Available</th>
-                            <th>Options</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {List}
-                    </tbody>
-                </table>
+                <>
+                    <h2>Products:</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Barcode</th>
+                                <th>Category</th>
+                                <th>Is Available</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {List}
+                        </tbody>
+                    </table>
+                </>
             ) : (!isLoading && !error) && <div>No products found</div>}
 
             {/* Modal for confirmation */}

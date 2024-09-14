@@ -18,11 +18,16 @@
             cursor: pointer;
             transition: color 0.15s;
             min-width: 100px;
+            color: #5c5c5c;
 
             &:hover {
                 color: $primary-color;
             }
         }
+    }
+
+    & a {
+        text-decoration: none;
     }
 
     &__close-button {

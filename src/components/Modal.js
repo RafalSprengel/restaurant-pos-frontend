@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import '../styles/Modal.scss';
 
 export default function Modal({ isOpen, close, children }) {
+
+
     const layer = useRef();
     const handleClickOnLayer = (e) => {
         if (e.target === layer.current) close()
@@ -9,8 +11,8 @@ export default function Modal({ isOpen, close, children }) {
 
     return (
         <>{isOpen &&
-            <div className='modal' ref={layer} onClick={handleClickOnLayer}>
-                <div className='modal__main'>
+            <div className='customModal' ref={layer} onClick={handleClickOnLayer}>
+                <div className='customModal__main'>
                     {children}
                 </div>
             </div>

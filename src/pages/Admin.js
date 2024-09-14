@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import '../styles/Admin.scss';
 import AddProduct from '../components/admin/AddProduct';
+import Categories from '../components/admin/Categories';
 import Products from '../components/admin/Products';
 //import SingleProduct from '../components/admin/SingleProduct';
 import UpdateProduct from '../components/admin/UpdateProduct';
@@ -27,6 +28,7 @@ export const Admin = () => {
             <div className="admin__content">
                 <div className="admin__left">
                     <NavLink className='admin__menuItem' to='/admin/orders'>Orders</NavLink>
+                    <NavLink className='admin__menuItem' to='/admin/categories'>Categories</NavLink>
                     <NavLink className='admin__menuItem' to='/admin/products'>Products</NavLink>
                     <NavLink className='admin__menuItem' to='/admin/add-product'>Add products</NavLink>
                     <NavLink className='admin__menuItem' to='/admin/customers'>Customers</NavLink>
@@ -34,6 +36,7 @@ export const Admin = () => {
                 <div className="admin__right">
                     <Routes>
                         <Route path="orders" element={<Orders />} />
+                        <Route path="categories" element={<Categories />} />
                         <Route path="products" element={<Products />} />
                         <Route path="add-product" element={<AddProduct />} />
                         <Route path="customers" element={<Customers />} />

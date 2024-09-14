@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage.js";
 import Cart from '../components/Cart.js'
 import ProductCard from '../components/ProductCard.js';
@@ -27,7 +27,6 @@ export function ShoppingCartProvider({ children }) {
 
     const openProduct = (id) => { setIsProductOpen(true); setCurrentProduct(id) }
     const closeProduct = () => setIsProductOpen(false)
-
     const openCart = () => setIsCartOpen(true);
     const closeCart = () => setIsCartOpen(false);
 

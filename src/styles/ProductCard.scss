@@ -70,7 +70,6 @@
             padding: 7px;
             font-size: 20px;
             cursor: pointer;
-            user-select: none;
         }
 
         &__minus {}
@@ -83,9 +82,10 @@
     &__buttons {
         display: flex;
         gap: 10px;
+        user-select: none;
 
         &__back {
-            padding: 14px 30px;
+            padding: 14px 25px;
             border: 0;
             //width: 150px;
             background-color: white;
@@ -99,9 +99,9 @@
         }
 
         &__submit {
-            padding: 15px 30px;
+            padding: 14px 25px;
             border: 0;
-            width: 200px;
+            width: 250px;
             background-color: #e9e9e9;
             transition: background-color 0.3s ease;
             align-self: flex-end;

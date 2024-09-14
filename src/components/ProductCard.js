@@ -5,14 +5,6 @@ import Modal from '../components/Modal.js';
 export default function ProductCard({ currentProduct: curr, isOpen, close }) {
     const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity, openCart } = useShoppingCart()
 
-    // const handleSubmit = (e) => {
-    //     // e.preventDefault();
-    //     // let storedCart = localStorage.getItem('cartItems');
-    //     // let updatedCart = storedCart ? JSON.parse(storedCart) : [];
-    //     // updatedCart.push(formData);
-    //     // localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-    //     close()
-    // };
     const handleSubmit = () => {
         close();
         openCart()

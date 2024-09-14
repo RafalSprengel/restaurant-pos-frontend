@@ -70,15 +70,24 @@
 
     &__left {
         display: flex;
-        flex: 0 1 180px;
+        flex: 0 0 180px;
         flex-direction: column;
         padding: 20px;
         background-color: rgb(57, 59, 92);
     }
 
+    & a {
+        color: white !important;
+        text-decoration: none;
+    }
+
     &__right {
         flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: 2%;
+        user-select: none;
     }
 
     & table {

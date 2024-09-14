@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Modal, Button, Alert } from 'react-bootstrap'; // Import React Bootstrap components
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../../styles/AddProduct.scss';
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -19,6 +22,12 @@ const AddProduct = () => {
     isAvailable: true
   });
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -33,11 +42,11 @@ const AddProduct = () => {
       ...formData,
       price: parseFloat(formData.price),
       ingridiens: formData.ingridiens.split(',').map(item => item.trim()),
-      category: formData.category // Wysyłamy ID kategorii wybranej przez użytkownika
+      category: formData.category
     };
 
     try {
-      console.log('Wysyłane dane po stronie przeglądarki:', JSON.stringify(dataToSend));
+      console.log('Sending data from browser:', JSON.stringify(dataToSend));
       const response = await fetch('http://localhost:3001/api/addProduct', {
         method: 'POST',
         headers: {
@@ -48,20 +57,22 @@ const AddProduct = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert('Menu item saved successfully');
-        console.log('Dane otrzymane z serwera: ', result);
+        console.log('Data received from server: ', result);
+        setShowSuccessModal(true);
       } else {
         const errorData = await response.json();
-        console.log('Błąd zwrócony z serwera:', errorData.error);
-        alert(`Error: ${errorData.error}`);
+        console.log('Server error:', errorData.error);
+        setShowErrorAlert(true);
+        setErrorMessage(errorData.error)
       }
     } catch (error) {
       console.error('Error saving menu item:', error);
-      alert(`Failed to save menu item: ${error.message}`);
+      setShowErrorAlert(true);
     }
   };
 
   const getCategories = async () => {
+    setErrorMessage('')
     try {
       const response = await fetch('http://localhost:3001/api/getAllCategories');
       const data = await response.json();
@@ -69,16 +80,14 @@ const AddProduct = () => {
       if (response.ok) {
         setCategories(data);
         setError(false);
-        setIsLoading(false)
+        setIsLoading(false);
       } else {
-        console.log('Błąd zwrócony z serwera:', data.error);
-        //alert(`Error: ${data.error}`);
+        console.log('Server error:', data.error);
         setError(true);
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Error getting categories:', error);
-      //  alert(`Failed to get categories: ${error.message}`);
       setError(true);
       setIsLoading(false);
     }
@@ -88,13 +97,21 @@ const AddProduct = () => {
     getCategories();
   }, []);
 
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
+    navigate(-1); // Navigate to the previous page
+  };
+
   return (
     <>
       {isLoading && <div>Loading...</div>}
-      {error && <div>Error to load categories!</div>}
+      {error && <div>Error loading categories!</div>}
+
       {!isLoading && !error &&
         <form className="menu-item-form" onSubmit={handleSubmit}>
-          <h2>Add Menu Item</h2>
+          <h2>Add a new product</h2>
+
+          {showErrorAlert && <Alert variant="danger">Failed to save product. {errorMessage}</Alert>}
 
           <label>Name:</label>
           <input
@@ -196,6 +213,19 @@ const AddProduct = () => {
           <button type="submit">Save Menu Item</button>
         </form>
       }
+
+      {/* Success Modal */}
+      <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Product added successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseSuccessModal}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

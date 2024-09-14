@@ -82,7 +82,7 @@ export const Menu = ({ mealCategories, mealsList }) => {
                     }
 
                     {search &&
-                        <> <div>Search to : {search}</div>
+                        <>
                             {
                                 mealsList.map((meal, index) => {
                                     const regex = new RegExp(search, 'i');

@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
+import { Modal, Button, Alert } from 'react-bootstrap'; // Import React Bootstrap components
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
 const UpdateProduct = () => {
     const { id } = useParams();
     const [categories, setCategories] = useState([]);
-    const [product, setProduct] = useState([]);
+    const [product, setProduct] = useState({});
+    const [formData, setFormData] = useState({
+        name: '',
+        desc: '',
+        price: '',
+        image: '',
+        category: '',
+        isFeatured: false,
+        ingridiens: '',
+        isVegetarian: false,
+        isGlutenFree: false,
+        isAvailable: true
+    });
+    const [message, setMessage] = useState('');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const navigate = useNavigate();
 
     const getProduct = async () => {
         try {
@@ -17,15 +34,14 @@ const UpdateProduct = () => {
             });
             const data = await response.json();
             setProduct(data);
-        }
-        catch (error) {
+        } catch (error) {
             console.log('Error:' + error);
         }
-    }
+    };
 
     useEffect(() => {
         getProduct();
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         if (product) {
@@ -43,19 +59,6 @@ const UpdateProduct = () => {
             });
         }
     }, [product]);
-
-    const [formData, setFormData] = useState({
-        name: product.name,
-        desc: '',
-        price: '',
-        image: '',
-        category: '',
-        isFeatured: false,
-        ingridiens: '',
-        isVegetarian: false,
-        isGlutenFree: false,
-        isAvailable: true
-    });
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -75,7 +78,6 @@ const UpdateProduct = () => {
         };
 
         try {
-            //console.log(id)
             const response = await fetch('http://localhost:3001/api/updateProduct/' + id, {
                 method: 'PUT',
                 headers: {
@@ -86,15 +88,16 @@ const UpdateProduct = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Menu item saved successfully');
+                setMessage('Product updated successfully!');
+                setShowSuccessModal(true);
             } else {
                 const errorData = await response.json();
-                console.log('Błąd zwrócony z serwera:', errorData.error);
-                alert(`Error: ${errorData.error}`);
+                console.log('Server error:', errorData.error);
+                setShowErrorAlert(true);
             }
         } catch (error) {
-            console.error('Error saving menu item:', error);
-            alert(`Failed to save menu item: ${error.message}`);
+            console.error('Error saving product:', error);
+            setShowErrorAlert(true);
         }
     };
 
@@ -113,109 +116,133 @@ const UpdateProduct = () => {
         getCategories();
     }, []);
 
+    const handleCloseSuccessModal = () => {
+        setShowSuccessModal(false);
+        setTimeout(() => {
+            navigate(-1); // Go back to the previous page
+        }, 500); // Delay before navigating back
+    };
+
     return (
-        <form className="menu-item-form" onSubmit={handleSubmit}>
-            <h2>Add Menu Item</h2>
+        <>
+            <form className="menu-item-form" onSubmit={handleSubmit}>
+                <h2>Update existing product</h2>
 
-            <label>Name:</label>
-            <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-            />
+                {showErrorAlert && <Alert variant="danger">Failed to save product. Please try again.</Alert>}
 
-            <label>Description:</label>
-            <textarea
-                name="desc"
-                value={formData.desc}
-                onChange={handleChange}
-            />
-
-            <label>Price:</label>
-            <input
-                type="number"
-                name="price"
-                step="0.01"
-                value={formData.price}
-                onChange={handleChange}
-                required
-            />
-
-            <label>Image URL:</label>
-            <input
-                type="text"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-            />
-
-            <label>Category:</label>
-            <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-            >
-                <option value="">Select a category</option>
-                {categories.map(category => (
-                    <option key={category._id} value={category._id}>
-                        {category.name}
-                    </option>
-                ))}
-            </select>
-
-            <label>
+                <label>Name:</label>
                 <input
-                    type="checkbox"
-                    name="isFeatured"
-                    checked={formData.isFeatured}
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
+
+                <label>Description:</label>
+                <textarea
+                    name="desc"
+                    value={formData.desc}
                     onChange={handleChange}
                 />
-                Is Featured
-            </label>
 
-            <label>Ingredients (comma-separated):</label>
-            <input
-                type="text"
-                name="ingridiens"
-                value={formData.ingridiens}
-                onChange={handleChange}
-            />
-
-            <label>
+                <label>Price:</label>
                 <input
-                    type="checkbox"
-                    name="isVegetarian"
-                    checked={formData.isVegetarian}
+                    type="number"
+                    name="price"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={handleChange}
+                    required
+                />
+
+                <label>Image URL:</label>
+                <input
+                    type="text"
+                    name="image"
+                    value={formData.image}
                     onChange={handleChange}
                 />
-                Is Vegetarian
-            </label>
 
-            <label>
+                <label>Category:</label>
+                <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select a category</option>
+                    {categories.map(category => (
+                        <option key={category._id} value={category._id}>
+                            {category.name}
+                        </option>
+                    ))}
+                </select>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        name="isFeatured"
+                        checked={formData.isFeatured}
+                        onChange={handleChange}
+                    />
+                    Is Featured
+                </label>
+
+                <label>Ingredients (comma-separated):</label>
                 <input
-                    type="checkbox"
-                    name="isGlutenFree"
-                    checked={formData.isGlutenFree}
+                    type="text"
+                    name="ingridiens"
+                    value={formData.ingridiens}
                     onChange={handleChange}
                 />
-                Is Gluten-Free
-            </label>
 
-            <label>
-                <input
-                    type="checkbox"
-                    name="isAvailable"
-                    checked={formData.isAvailable}
-                    onChange={handleChange}
-                />
-                Is Available
-            </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="isVegetarian"
+                        checked={formData.isVegetarian}
+                        onChange={handleChange}
+                    />
+                    Is Vegetarian
+                </label>
 
-            <button type="submit">Save Menu Item</button>
-        </form>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="isGlutenFree"
+                        checked={formData.isGlutenFree}
+                        onChange={handleChange}
+                    />
+                    Is Gluten-Free
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        name="isAvailable"
+                        checked={formData.isAvailable}
+                        onChange={handleChange}
+                    />
+                    Is Available
+                </label>
+
+                <button type="submit">Save Menu Item</button>
+            </form>
+
+            {/* Success Modal */}
+            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>{message}</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseSuccessModal}>
+                        OK
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 };
 
