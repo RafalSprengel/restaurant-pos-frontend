@@ -29,6 +29,7 @@ const Categories = () => {
             }
         } catch (error) {
             console.error('Error during dodnloading data: ' + error)
+            setError(true)
 
         } finally {
             setIsLoading(false)
@@ -94,12 +95,12 @@ const Categories = () => {
     }, [isDeleting])
 
     return (<>
-        {isLoading && <h3>Loading data...</h3>}
-        {error && <h3>Something went rong :(</h3>}
-        {deleteError && <h3>Error during deleting Category :(</h3>}
+        {isLoading && <h4>Loading data...</h4>}
+        {error && <div>Something went rong :(</div>}
+        {deleteError && <div>Error during deleting Category :(</div>}
         {!isLoading && !error && !deleteError &&
             <>
-                <h2>Categories</h2>
+                <h3>Categories</h3>
                 <table>
                     <thead>
                         <tr>

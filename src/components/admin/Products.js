@@ -92,12 +92,12 @@ const Products = () => {
 
     return (
         <>
-            {isLoading && <div>Loading...</div>}
+            {isLoading && <h4>Loading data...</h4>}
             {error && <div>Something went wrong:(</div>}
             {deleteError && <Alert variant="danger">Failed to delete the product. Please try again.</Alert>}
             {productsList?.length ? (
                 <>
-                    <h2>Products:</h2>
+                    <h3>Products:</h3>
                     <table>
                         <thead>
                             <tr>
