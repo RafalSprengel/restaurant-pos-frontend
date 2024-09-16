@@ -74,6 +74,7 @@
         flex-direction: column;
         padding: 20px;
         background-color: rgb(57, 59, 92);
+        user-select: none;
     }
 
     & a {
@@ -110,8 +111,10 @@
 
     & tr:nth-child(even) {
         background-color: #E7E9EB;
+    }
 
-
+    & tr td:last-child {
+        width: 100px;
     }
 
     &__deleteElement {

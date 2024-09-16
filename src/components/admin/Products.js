@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Modal, Button, Alert } from 'react-bootstrap'; // Import React Bootstrap components
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { Modal, Button, Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Products = () => {
-    const [productsList, setProductsList] = useState(null);
+    const [productsList, setProductsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState(false);
-    const [deleteError, setDeleteError] = useState(false); // State to handle delete errors
-    const [showModal, setShowModal] = useState(false); // State to control modal visibility
-    const [productToDelete, setProductToDelete] = useState(null); // Product ID to delete
+    const [error, setError] = useState('');
+    const [deleteError, setDeleteError] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
     const navigate = useNavigate();
 
     const getMenuItems = async () => {
@@ -25,15 +25,15 @@ const Products = () => {
             if (response.ok) {
                 const data = await response.json();
                 setProductsList(data);
-                setError(false);
+                setError('');
             } else {
                 const errorData = await response.json();
-                console.log('Server error:', errorData.error);
-                setError(true);
+                console.error('Server error:', errorData.error);
+                setError('Failed to load products. Please try again later.');
             }
         } catch (error) {
-            console.error('Error during downloading data:', error);
-            setError(true);
+            console.error('Error fetching products:', error);
+            setError('An error occurred while fetching products. Please try again later.');
         } finally {
             setIsLoading(false);
         }
@@ -44,31 +44,31 @@ const Products = () => {
     }, [isDeleting]);
 
     const handleRowClick = (id) => {
-        navigate("/admin/products/" + id);
+        navigate(`/admin/products/${id}`);
     };
 
     const handleDeleteClick = (event, id) => {
         event.stopPropagation();
-        setProductToDelete(id); // Set the product to delete
-        setShowModal(true); // Show the modal
+        setProductToDelete(id);
+        setShowModal(true);
     };
 
     const handleConfirmDelete = async () => {
-        setShowModal(false); // Hide the modal
+        setShowModal(false);
         setIsDeleting(true);
-        setDeleteError(false);
+        setDeleteError('');
         try {
             await deleteProduct(productToDelete);
         } catch (error) {
-            setDeleteError(true);
-            console.log("Error: " + error);
+            setDeleteError('Failed to delete the product. Please try again.');
+            console.error('Error deleting product:', error);
         } finally {
             setIsDeleting(false);
         }
     };
 
     const deleteProduct = async (id) => {
-        const response = await fetch('http://localhost:3001/api/deleteProduct/' + id, {
+        const response = await fetch(`http://localhost:3001/api/deleteProduct/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -76,15 +76,15 @@ const Products = () => {
         });
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error);
+            throw new Error(errorData.error || 'Failed to delete product');
         }
     };
 
-    const List = productsList?.map(item => (
+    const productRows = productsList.map(item => (
         <tr key={item._id} onClick={() => handleRowClick(item._id)}>
             <td>{item.name}</td>
             <td>{item.barcode}</td>
-            <td>{item.category.name}</td>
+            <td>{item.category?.name || 'N/A'}</td>
             <td>{item.isAvailable ? "Available" : "Not Available"}</td>
             <td className='admin__deleteElement' onClick={(e) => handleDeleteClick(e, item._id)}>Delete</td>
         </tr>
@@ -93,9 +93,9 @@ const Products = () => {
     return (
         <>
             {isLoading && <h4>Loading data...</h4>}
-            {error && <div>Something went wrong:(</div>}
-            {deleteError && <Alert variant="danger">Failed to delete the product. Please try again.</Alert>}
-            {productsList?.length ? (
+            {error && <Alert variant="danger">{error}</Alert>}
+            {deleteError && <Alert variant="danger">{deleteError}</Alert>}
+            {productsList.length ? (
                 <>
                     <h3>Products:</h3>
                     <table>
@@ -109,13 +109,12 @@ const Products = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {List}
+                            {productRows}
                         </tbody>
                     </table>
                 </>
             ) : (!isLoading && !error) && <div>No products found</div>}
 
-            {/* Modal for confirmation */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>

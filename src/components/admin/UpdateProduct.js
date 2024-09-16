@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Modal, Button, Alert } from 'react-bootstrap'; // Import React Bootstrap components
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { Modal, Button, Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UpdateProduct = () => {
     const { id } = useParams();
@@ -22,20 +22,26 @@ const UpdateProduct = () => {
     const [message, setMessage] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const getProduct = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/getSingleProduct/' + id, {
+            const response = await fetch(`http://localhost:3001/api/getSingleProduct/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+            if (!response.ok) {
+                throw new Error('Failed to fetch product data');
+            }
             const data = await response.json();
             setProduct(data);
         } catch (error) {
-            console.log('Error:' + error);
+            console.error('Error fetching product:', error);
+            setErrorMessage('Failed to fetch product data. Please try again later.');
+            setShowErrorAlert(true);
         }
     };
 
@@ -78,7 +84,7 @@ const UpdateProduct = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3001/api/updateProduct/' + id, {
+            const response = await fetch(`http://localhost:3001/api/updateProduct/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -92,11 +98,13 @@ const UpdateProduct = () => {
                 setShowSuccessModal(true);
             } else {
                 const errorData = await response.json();
-                console.log('Server error:', errorData.error);
+                console.error('Server error:', errorData.error);
+                setErrorMessage('Failed to update product. Please check your input and try again.');
                 setShowErrorAlert(true);
             }
         } catch (error) {
             console.error('Error saving product:', error);
+            setErrorMessage('Error saving product. Please try again later.');
             setShowErrorAlert(true);
         }
     };
@@ -104,11 +112,14 @@ const UpdateProduct = () => {
     const getCategories = async () => {
         try {
             const response = await fetch('http://localhost:3001/api/getAllCategories');
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories');
+            }
             const data = await response.json();
             setCategories(data);
         } catch (error) {
-            console.error('Error getting categories:', error);
-            alert(`Failed to get categories: ${error.message}`);
+            console.error('Error fetching categories:', error);
+            alert('Failed to get categories. Please try again later.');
         }
     };
 
@@ -119,8 +130,8 @@ const UpdateProduct = () => {
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
         setTimeout(() => {
-            navigate(-1); // Go back to the previous page
-        }, 500); // Delay before navigating back
+            navigate(-1);
+        }, 500);
     };
 
     return (
@@ -128,7 +139,7 @@ const UpdateProduct = () => {
             <form className="menu-item-form" onSubmit={handleSubmit}>
                 <h2>Update existing product</h2>
 
-                {showErrorAlert && <Alert variant="danger">Failed to save product. Please try again.</Alert>}
+                {showErrorAlert && <Alert variant="danger">{errorMessage}</Alert>}
 
                 <label>Name:</label>
                 <input
@@ -230,7 +241,6 @@ const UpdateProduct = () => {
                 <button type="submit">Save Menu Item</button>
             </form>
 
-            {/* Success Modal */}
             <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Success</Modal.Title>
