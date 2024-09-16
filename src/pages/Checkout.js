@@ -29,15 +29,15 @@ export default function Checkout() {
         setOrder(order => ({ ...order, delivery: option }));
     };
 
-    const handleAdressFieldChange = (e) => {
+    const handleAddressFieldChange = (e) => {
         const { name, value } = e.target;
         setOrder(order => ({ ...order, address: { ...order.address, [name]: value } }));
 
         let error = '';
         if (!value.trim()) {
-            error = 'To pole nie może być puste';
+            error = 'This field cannot be empty';
         } else if (!validateField(value, /^[a-zA-Z0-9-]+$/)) {
-            error = 'To pole może zawierać tylko litery, cyfry i myślnik';
+            error = 'This field may only contain letters, numbers, and hyphens';
         }
         setErrors(errors => ({ ...errors, [name]: error }));
     };
@@ -49,28 +49,23 @@ export default function Checkout() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const newErrors = {
-            city: !order.address.city.trim() ? 'To pole nie może być puste' : errors.city,
-            street: !order.address.street.trim() ? 'To pole nie może być puste' : errors.street,
-            houseNo: !order.address.houseNo.trim() ? 'To pole nie może być puste' : errors.houseNo
+            city: !order.address.city.trim() ? 'This field cannot be empty' : errors.city,
+            street: !order.address.street.trim() ? 'This field cannot be empty' : errors.street,
+            houseNo: !order.address.houseNo.trim() ? 'This field cannot be empty' : errors.houseNo
         };
 
         setErrors(newErrors);
         const hasErrors = Object.values(newErrors).some(el => el !== '');
         if (hasErrors) return;
-
-        console.log('Wysyłam...');
     };
 
-    useEffect(() => {
-        console.log('errors: ', errors);
-    });
 
     return (
         <form className="checkout" onSubmit={handleSubmit}>
             <div className="checkout__form">
-                <div className='checkout__form__header'>Opcje Realizacji: </div>
+                <div className='checkout__form__header'>Order Options:</div>
                 <div className='checkout__form__orderTime'>
-                    <p>Zamówienie na:</p>
+                    <p>Order for:</p>
                     <div className={`formFieldWrap ${order?.time.option === 1 ? 'formFieldWrap--active' : ''}`} onClick={() => handleTimeOption(1)}>
                         <input
                             id="asap"
@@ -91,7 +86,7 @@ export default function Checkout() {
                             onChange={() => null}
                             checked={order?.time.option === 2}
                         />
-                        <label htmlFor="timeSlot">On Time</label>
+                        <label htmlFor="timeSlot">Scheduled Time</label>
                         {order?.time.option === 2 &&
                             <div className='checkout__form__orderTime__timeSlot'>
                                 <select value={order?.time.hour} onChange={handleHourOption}>
@@ -105,7 +100,7 @@ export default function Checkout() {
                     </div>
                 </div>
                 <div className='checkout__form__orderPlace'>
-                    <div>Sposób realizacji:</div>
+                    <div>Delivery Method:</div>
                     <div className={`formFieldWrap ${order?.delivery === 1 ? 'formFieldWrap--active' : ''}`} onClick={() => handlePlaceOption(1)}>
                         <input
                             id="delivery"
@@ -115,7 +110,7 @@ export default function Checkout() {
                             onChange={() => null}
                             checked={order?.delivery === 1}
                         />
-                        <label htmlFor="delivery">Dostawa</label>
+                        <label htmlFor="delivery">Delivery</label>
                     </div>
                     <div className={`formFieldWrap ${order?.delivery === 2 ? 'formFieldWrap--active' : ''}`} onClick={() => handlePlaceOption(2)}>
                         <input
@@ -126,7 +121,7 @@ export default function Checkout() {
                             onChange={() => null}
                             checked={order?.delivery === 2}
                         />
-                        <label htmlFor="pickup">Odbiór własny</label>
+                        <label htmlFor="pickup">Pickup</label>
                     </div>
                     <div className={`formFieldWrap ${order?.delivery === 3 ? 'formFieldWrap--active' : ''}`} onClick={() => handlePlaceOption(3)}>
                         <input
@@ -137,75 +132,99 @@ export default function Checkout() {
                             onChange={() => null}
                             checked={order?.delivery === 3}
                         />
-                        <label htmlFor="forHere">Zjem na miejscu</label>
+                        <label htmlFor="forHere">Dine In</label>
                     </div>
                 </div>
                 {order?.delivery === 1 &&
                     <div className='checkout__form__orderAddress'>
                         <div className='checkout__form__orderAddress__city'>
-                            <label htmlFor='city'>Miasto</label>
+                            <label htmlFor='city'>City</label>
                             <input
                                 type='text'
                                 id='city'
                                 name='city'
-                                onChange={handleAdressFieldChange}
+                                onChange={handleAddressFieldChange}
                                 value={order?.address?.city}
                             />
                             {errors.city && <span className="error">{errors.city}</span>}
                         </div>
                         <div className='checkout__form__orderAddress__group1'>
                             <div className='checkout__form__orderAddress__group1__street'>
-                                <label htmlFor='street'>Ulica</label>
-                                <input type='text' id='street' onChange={handleAdressFieldChange} name='street' value={order?.address?.street} />
+                                <label htmlFor='street'>Street</label>
+                                <input
+                                    type='text'
+                                    id='street'
+                                    onChange={handleAddressFieldChange}
+                                    name='street'
+                                    value={order?.address?.street}
+                                />
                                 {errors.street && <span className="error">{errors.street}</span>}
                             </div>
                             <div className='checkout__form__orderAddress__group1__houseNumber'>
-                                <label htmlFor='houseNumber'>Numer domu</label>
-                                <input type='text' id='houseNumber' onChange={handleAdressFieldChange} name='houseNo' value={order?.address?.houseNo} />
+                                <label htmlFor='houseNumber'>House Number</label>
+                                <input
+                                    type='text'
+                                    id='houseNumber'
+                                    onChange={handleAddressFieldChange}
+                                    name='houseNo'
+                                    value={order?.address?.houseNo}
+                                />
                                 {errors.houseNo && <span className="error">{errors.houseNo}</span>}
                             </div>
                         </div>
                         <div className='checkout__form__orderAddress__group2'>
                             <div className='checkout__form__orderAddress__group2__apartmentNumber'>
-                                <label htmlFor='apartmentNumber'>Numer mieszkania</label>
-                                <input type='text' id='apartmentNumber' onChange={handleAdressFieldChange} name='flatNo' value={order?.address?.flatNo} />
+                                <label htmlFor='apartmentNumber'>Apartment Number</label>
+                                <input
+                                    type='text'
+                                    id='apartmentNumber'
+                                    onChange={handleAddressFieldChange}
+                                    name='flatNo'
+                                    value={order?.address?.flatNo}
+                                />
                             </div>
                             <div className='checkout__form__orderAddress__group2__floor'>
-                                <label htmlFor='floor'>Piętro</label>
-                                <input type='text' id='floor' onChange={handleAdressFieldChange} name='floor' value={order?.address?.floor} />
+                                <label htmlFor='floor'>Floor</label>
+                                <input
+                                    type='text'
+                                    id='floor'
+                                    onChange={handleAddressFieldChange}
+                                    name='floor'
+                                    value={order?.address?.floor}
+                                />
                             </div>
                         </div>
                     </div>
                 }
                 <div className='checkout__form__note'>
-                    <label htmlFor='note'>Uwagi do zamówienia</label>
+                    <label htmlFor='note'>Order Notes</label>
                     <textarea rows="3" id='note' onChange={handleNoteChange} name='note' value={order.note} />
                 </div>
             </div>
             <div className="checkout__summary">
-                <div className="checkout__summary__header">Koszyk:</div>
+                <div className="checkout__summary__header">Cart:</div>
                 <div className="checkout__summary__content">
                     <div className='checkout__summary__content__item'>
-                        <div className="checkout__summary__content__item__name">Polędwiczki</div>
-                        <div className="checkout__summary__content__item__price">32,6</div>
+                        <div className="checkout__summary__content__item__name">Tenderloin</div>
+                        <div className="checkout__summary__content__item__price">32.6</div>
                     </div>
                     <div className='checkout__summary__content__item'>
                         <div className="checkout__summary__content__item__name">Kebab</div>
-                        <div className="checkout__summary__content__item__price">32,6</div>
+                        <div className="checkout__summary__content__item__price">32.6</div>
                     </div>
                     <div className='checkout__summary__content__item'>
-                        <div className="checkout__summary__content__item__name">Zapiekanka</div>
-                        <div className="checkout__summary__content__item__price">32,6</div>
+                        <div className="checkout__summary__content__item__name">Casserole</div>
+                        <div className="checkout__summary__content__item__price">32.6</div>
                     </div>
                 </div>
                 <div className='checkout__summary__price'>
-                    <div className='checkout__summary__price__name'>SUMA:</div>
-                    <div className='checkout__summary__price__amount'>120,80 zł</div>
+                    <div className='checkout__summary__price__name'>TOTAL:</div>
+                    <div className='checkout__summary__price__amount'>120.80 zł</div>
                 </div>
                 <div className="checkout__summary__button">
-                    <button type='submit' className='button-contained'>ZAMÓW</button>
+                    <button type='submit' className='button-contained'>ORDER</button>
                 </div>
             </div>
         </form>
-    )
+    );
 }
