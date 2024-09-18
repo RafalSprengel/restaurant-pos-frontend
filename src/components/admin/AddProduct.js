@@ -10,7 +10,7 @@ const AddProduct = () => {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
+    desc: '',
     price: '',
     image: '',
     category: '',
@@ -117,8 +117,8 @@ const AddProduct = () => {
 
           <label>Description:</label>
           <textarea
-            name="description"
-            value={formData.description}
+            name="desc"
+            value={formData.desc}
             onChange={handleChange}
           />
 

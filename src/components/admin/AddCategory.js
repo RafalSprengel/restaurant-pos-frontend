@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,24 +17,36 @@ const AddCategory = () => {
     // Obsługa zmiany wartości formularza
     const handleChange = (e) => {
         setShowErrorAlert(false);
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+        const { name, value, type, files } = e.target;
+
+        if (type === 'file') {
+            setFormData({
+                ...formData,
+                image: files[0]
+            })
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value
+            })
+        }
+    }
 
     // Obsługa wysłania formularza
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('img', formData.image)
+
         try {
             const response = await fetch('http://localhost:3001/api/addCategory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: formDataToSend
             });
 
             const res = await response.json();
@@ -58,13 +70,14 @@ const AddCategory = () => {
     // Zamknięcie modalu sukcesu
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
-        navigate(-1);
+        navigate('/admin/categories');
     };
+    useEffect(() => console.log(formData))
 
     return (
-        <>
+        <><h3>Add a new category</h3>
             <form className='menu-item-form' onSubmit={handleSubmit}>
-                <h3>Add a new category</h3>
+
                 {showErrorAlert && (
                     <Alert variant='danger'>
                         Failed to save Category. {errorMessage}
@@ -87,6 +100,11 @@ const AddCategory = () => {
                     onChange={handleChange}
                     disabled={isLoading}
                 />
+                <input
+                    type='file'
+                    accept='image/*'
+                    name='img'
+                    onChange={handleChange} />
                 <button type='submit' disabled={isLoading}>
                     {isLoading ? 'Saving...' : 'Save Category'}
                 </button>

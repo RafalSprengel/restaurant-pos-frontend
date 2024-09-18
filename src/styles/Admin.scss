@@ -7,7 +7,12 @@
     padding: 5%;
     flex-direction: column;
     background-color: #f5f5f5;
+
     //max-width: $page-width;
+    & h3 {
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
 
     &__header {
         display: flex;
@@ -72,14 +77,18 @@
         display: flex;
         flex: 0 0 180px;
         flex-direction: column;
-        padding: 20px;
         background-color: rgb(57, 59, 92);
         user-select: none;
+        padding-top: 20px;
+        ;
     }
 
     & a {
-        color: white !important;
+        display: flex;
+        align-items: center;
+        color: white;
         text-decoration: none;
+        margin: 0px 20px;
     }
 
     &__right {
@@ -125,9 +134,33 @@
         padding: 10px;
         cursor: pointer;
         color: $light-font-color;
+        height: 65px;
+        transition: color 0.3s ease;
+
+        &--active {
+            border-radius: 20px -0px 0px 20px;
+            background-color: #F8687E;
+            margin-right: 0 !important;
+        }
 
         &:hover {
-            color: rgb(175, 175, 175);
+            color: rgb(255, 223, 223);
         }
     }
+
+    &__menuSymbol {
+        color: #F8687E;
+        font-size: 25px;
+        margin-left: 10px;
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+        margin-right: 20px;
+
+        &--active {
+            color: white;
+        }
+    }
+
+    &__menuText {}
 }
