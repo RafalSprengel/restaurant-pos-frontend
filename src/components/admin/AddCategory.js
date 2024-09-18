@@ -14,7 +14,6 @@ const AddCategory = () => {
         image: ''
     });
 
-    // Obsługa zmiany wartości formularza
     const handleChange = (e) => {
         setShowErrorAlert(false);
         const { name, value, type, files } = e.target;
@@ -32,20 +31,16 @@ const AddCategory = () => {
         }
     }
 
-    // Obsługa wysłania formularza
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
-        formDataToSend.append('img', formData.image)
+        formDataToSend.append('image', formData.image)
 
         try {
             const response = await fetch('http://localhost:3001/api/addCategory', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: formDataToSend
             });
 
@@ -67,12 +62,10 @@ const AddCategory = () => {
         }
     };
 
-    // Zamknięcie modalu sukcesu
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
         navigate('/admin/categories');
     };
-    useEffect(() => console.log(formData))
 
     return (
         <><h3>Add a new category</h3>
@@ -93,17 +86,11 @@ const AddCategory = () => {
                     disabled={isLoading}
                 />
                 <label>Image:</label>
-                <input
-                    type='text'
-                    name='image'
-                    value={formData.image}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                />
+
                 <input
                     type='file'
                     accept='image/*'
-                    name='img'
+                    name='image'
                     onChange={handleChange} />
                 <button type='submit' disabled={isLoading}>
                     {isLoading ? 'Saving...' : 'Save Category'}
