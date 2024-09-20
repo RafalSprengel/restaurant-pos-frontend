@@ -163,4 +163,15 @@
     }
 
     &__menuText {}
+
+    &__categoryImg {
+        max-width: 100px;
+        max-height: 100px;
+        object-fit: cover;
+    }
+
+    &__imgFluid {
+        width: 100%;
+        height: auto;
+    }
 }

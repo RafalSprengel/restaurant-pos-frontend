@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Alert } from 'react-bootstrap'; // Import React Bootstrap components
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { useNavigate } from "react-router-dom";
 
 const Categories = () => {
     const [categoryList, setCategoryList] = useState(null)
@@ -10,6 +11,17 @@ const Categories = () => {
     const [categoryToDelete, setCategoryToDelete] = useState(null)
     const [isDeleting, setIsDeleting] = useState(false)
     const [showModal, setShowModal] = useState(false)
+    const [selectedImage, setSelectedImage] = useState(null);
+    const navigate = useNavigate()
+
+    const handleImageClick = (imageUrl) => {
+        setSelectedImage(imageUrl);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedImage(null);
+    };
+
 
     const getAllCategories = async () => {
         try {
@@ -37,7 +49,8 @@ const Categories = () => {
     };
 
     const handleRowClick = (id) => {
-        console.log('row klik: ' + id)
+
+        navigate(`${id}`)
     }
 
     const handleDeleteClick = (e, id) => {
@@ -79,10 +92,20 @@ const Categories = () => {
         return (
             <tr onClick={() => handleRowClick(el._id)}>
                 <td>{el.name}</td>
+                <td>
+                    <img
+                        src={el.image}
+                        className="admin__categoryImg"
+                        onClick={() => handleImageClick(el.image)}
+                        style={{ cursor: 'pointer' }}
+                        alt="Category"
+                    />
+                </td>
+                <td>{el.index}</td>
                 <td onClick={(e) => handleDeleteClick(e, el._id)}>delete</td>
             </tr>
-        )
-    }
+        );
+    };
 
 
     const list = categoryList?.map(el => {
@@ -105,6 +128,8 @@ const Categories = () => {
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Image</th>
+                            <th>Index</th>
                             <th>Options</th>
                         </tr>
                     </thead>
@@ -123,6 +148,18 @@ const Categories = () => {
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
                 <Button variant="primary" onClick={handleConfirmDelete} >Delete</Button>
+            </Modal.Footer>
+        </Modal>
+        {/* Modal for image preview */}
+        <Modal show={!!selectedImage} onHide={handleCloseModal} size="lg" centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <img src={selectedImage} className="admin__imgFluid" alt="Preview" />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
             </Modal.Footer>
         </Modal>
     </>

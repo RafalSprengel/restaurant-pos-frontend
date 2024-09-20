@@ -6,6 +6,7 @@ import AddCategory from '../components/admin/AddCategory';
 import Products from '../components/admin/Products';
 import AddProduct from '../components/admin/AddProduct';
 import UpdateProduct from '../components/admin/UpdateProduct';
+import UpdateCategory from '../components/admin/UpdateCategory';
 
 
 const Orders = () => <div><h3>Orders</h3></div>;
@@ -86,6 +87,7 @@ export const Admin = () => {
                         <Route path="add-product" element={<AddProduct />} />
                         <Route path="customers" element={<Customers />} />
                         <Route path="products/:id" element={<UpdateProduct />} />
+                        <Route path="categories/:id" element={<UpdateCategory />} />
                     </Routes>
                 </div>
             </div>

@@ -36,6 +36,7 @@ const AddCategory = () => {
         setIsLoading(true);
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
+        formDataToSend.append('index', formData.index)
         formDataToSend.append('image', formData.image)
 
         try {
@@ -85,8 +86,16 @@ const AddCategory = () => {
                     required
                     disabled={isLoading}
                 />
+                <label>Index:</label>
+                <input
+                    type='number'
+                    name='index'
+                    value={formData.index}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                />
                 <label>Image:</label>
-
                 <input
                     type='file'
                     accept='image/*'

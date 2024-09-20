@@ -44,7 +44,7 @@ const Products = () => {
     }, [isDeleting]);
 
     const handleRowClick = (id) => {
-        navigate(`/admin/products/${id}`);
+        navigate(`${id}`);
     };
 
     const handleDeleteClick = (event, id) => {
