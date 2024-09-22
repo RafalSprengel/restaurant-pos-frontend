@@ -4,10 +4,10 @@ import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import HomePage from './pages/HomePage.js';
 import EventsPage from './pages/EventsPage.js';
-import Kontakt from './pages/Kontakt.js';
+import Contact from './pages/Contact.js';
 import Menu from './pages/Menu.js';
-import ONas from './pages/ONas.js';
-import Promocje from './pages/Promocje.js';
+import AboutUs from './pages/AboutUs.js';
+import Promotions from './pages/Promotions.js';
 import Admin from './pages/Admin.js';
 import NotFound from './pages/NotFound.js';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
@@ -24,10 +24,10 @@ function App() {
             <Route path='/' element={<HomePage />} />
             <Route path='/menu' element={<Menu mealCategories={mealsCategories} mealsList={meals} />} />
             <Route path='/order/checkout' element={<Checkout />} />
-            <Route path='/imprezy-okolicznosciowe' element={<EventsPage />} />
-            <Route path='/kontakt' element={<Kontakt />} />
-            <Route path='/promocje' element={<Promocje />} />
-            <Route path='/o-nas' element={<ONas />} />
+            <Route path='/events' element={<EventsPage />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/promotions' element={<Promotions />} />
+            <Route path='/about-us' element={<AboutUs />} />
             <Route path='*' element={<NotFound />} />
           </Route>
 

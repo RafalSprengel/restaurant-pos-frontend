@@ -1,7 +1,7 @@
 export const Kontakt = () => {
     return (
         <>
-            Zakładka Kontakt
+            Contact
         </>
     )
 }

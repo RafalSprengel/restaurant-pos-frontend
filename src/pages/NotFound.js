@@ -1,7 +1,7 @@
 export const NotFound = () => {
     return (
         <>
-            Zakładka: Nie znaleziono takiej strony :(
+            Page not found :(
         </>
     )
 }

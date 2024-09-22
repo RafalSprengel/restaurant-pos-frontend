@@ -2,7 +2,7 @@ export const Promocje = () => {
 
     return (
         <>
-            Zakładka Promocje
+            Special offers
         </>
     )
 }

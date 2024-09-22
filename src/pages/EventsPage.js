@@ -1,7 +1,7 @@
 const EventsPage = () => {
     return (
         <>
-            Zakładka Imprezy Okolicznościowe
+            Events
         </>
     )
 }
