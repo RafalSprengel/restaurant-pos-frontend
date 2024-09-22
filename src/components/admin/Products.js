@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -11,11 +11,20 @@ const Products = () => {
     const [deleteError, setDeleteError] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1)
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const getMenuItems = async () => {
+    const getPageFromUrl = () => {
+        const searchParams = new URLSearchParams(location.search);
+        const page = parseInt(searchParams.get('page'));
+        return page;
+    }
+
+    const getMenuItems = async (page = 1) => {
         try {
-            const response = await fetch('http://localhost:3001/api/getAllProducts', {
+            const response = await fetch('http://localhost:3001/api/getAllProducts?page=' + page + '&limit=10', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -24,7 +33,7 @@ const Products = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setProductsList(data);
+                setProductsList(data.products);
                 setError('');
             } else {
                 const errorData = await response.json();
@@ -40,8 +49,9 @@ const Products = () => {
     };
 
     useEffect(() => {
-        getMenuItems();
-    }, [isDeleting]);
+        const page = getPageFromUrl()
+        getMenuItems(page);
+    }, [isDeleting, location.search]);
 
     const handleRowClick = (id) => {
         navigate(`${id}`);

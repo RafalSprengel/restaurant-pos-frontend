@@ -5,6 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UpdateCategory = () => {
     const { id } = useParams();
+    const [isLoading, setIsLoading] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         index: '',
@@ -32,6 +37,8 @@ const UpdateCategory = () => {
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target
+        setShowErrorAlert(false);
+        setErrorMessage(false)
 
         if (type === 'file') {
             setFormData({
@@ -45,6 +52,10 @@ const UpdateCategory = () => {
                 [name]: value
             })
         }
+    }
+
+    const handleCloseSuccessModal = () => {
+        navigate('/admin/categories')
     }
 
     const handleSubmit = async (e) => {
@@ -61,25 +72,26 @@ const UpdateCategory = () => {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                console.log("Error : " + errorData.error)
-                //setErrorMessage(errorData.error || 'Failed to save the product.');
+                setShowErrorAlert(true);
+                setErrorMessage(`Failed to save category! (${errorData.error})` || 'Failed to save the categoty.');
             } else {
-                console.log('Updated category was successfully!')
+                setShowSuccessModal(true)
             }
         } catch (error) {
-            console.error('Error: ' + error)
+            setShowErrorAlert(true);
+            setErrorMessage(error || 'Failed to save the categoty.');
         }
     }
 
     useEffect(() => {
         getCategory()
     }, [])
-    console.log(formData)
 
     return (
         <>
             <form className="menu-item-form" onSubmit={handleSubmit}>
                 <h2>Update existing category</h2>
+                {showErrorAlert && <Alert variant="danger">{errorMessage}</Alert>}
                 <label>Name:</label>
                 <input
                     name='name'
@@ -102,6 +114,15 @@ const UpdateCategory = () => {
                 />
                 <button type='submit'> Save category</button>
             </form>
+            <Modal show={showSuccessModal} onHide={() => showSuccessModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Category updated successfully!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant='secondary' onClick={handleCloseSuccessModal}>OK</Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
