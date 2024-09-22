@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import './styles/App.scss';
+import './styles/Bootstrap.scss';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import HomePage from './pages/HomePage.js';

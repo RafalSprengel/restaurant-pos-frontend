@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Modal, Button, Alert } from 'react-bootstrap';
+import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Products = () => {
@@ -22,7 +22,7 @@ const Products = () => {
         return page;
     }
 
-    const getMenuItems = async (page = 1) => {
+    const getProducts = async (page = 1) => {
         try {
             const response = await fetch('http://localhost:3001/api/getAllProducts?page=' + page + '&limit=10', {
                 method: 'GET',
@@ -34,6 +34,8 @@ const Products = () => {
             if (response.ok) {
                 const data = await response.json();
                 setProductsList(data.products);
+                setTotalPages(data.totalPages)
+                setCurrentPage(data.currentPage)
                 setError('');
             } else {
                 const errorData = await response.json();
@@ -50,7 +52,7 @@ const Products = () => {
 
     useEffect(() => {
         const page = getPageFromUrl()
-        getMenuItems(page);
+        getProducts(page);
     }, [isDeleting, location.search]);
 
     const handleRowClick = (id) => {
@@ -90,6 +92,10 @@ const Products = () => {
         }
     };
 
+    const handlePageChange = (page) => {
+        console.log('wykonuje handlePageHange');
+        navigate('?page=' + page)
+    }
     const productRows = productsList.map(item => (
         <tr key={item._id} onClick={() => handleRowClick(item._id)}>
             <td>{item.name}</td>
@@ -99,7 +105,6 @@ const Products = () => {
             <td className='admin__deleteElement' onClick={(e) => handleDeleteClick(e, item._id)}>Delete</td>
         </tr>
     ));
-
     return (
         <>
             {isLoading && <h4>Loading data...</h4>}
@@ -122,6 +127,27 @@ const Products = () => {
                             {productRows}
                         </tbody>
                     </table>
+                    <Pagination className='custom-pagination'>
+                        <Pagination.First onClick={() => handlePageChange(1)} />
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={(currentPage === 1)}
+                        />
+                        {[...(new Array(totalPages))].map((el, index) => (
+                            <Pagination.Item
+                                key={index}
+                                active={(index + 1 === currentPage)}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next
+                            disabled={(currentPage === totalPages)}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        />
+                        <Pagination.Last onClick={() => handlePageChange(totalPages)} />
+                    </Pagination>
                 </>
             ) : (!isLoading && !error) && <div>No products found</div>}
 
