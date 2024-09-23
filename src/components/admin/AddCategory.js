@@ -40,24 +40,22 @@ const AddCategory = () => {
         formDataToSend.append('image', formData.image)
 
         try {
+            setErrorMessage(null)
             const response = await fetch('http://localhost:3001/api/addCategory', {
                 method: 'POST',
                 body: formDataToSend
             });
 
-            const res = await response.json();
-
             if (response.ok) {
                 setShowSuccessModal(true);
             } else {
-                console.error('Error: ', res.error);
-                setErrorMessage(res.error || 'Failed to save category.');
-                setShowErrorAlert(true);
+                const errorData = await response.json()
+                console.error(errorData.error);
+                setErrorMessage(`Failed to save category (${errorData.error})`);
             }
         } catch (error) {
-            console.error('Error: Problem z połączeniem do backendu', error);
-            setErrorMessage('Problem z połączeniem do backendu');
-            setShowErrorAlert(true);
+            console.error(error);
+            setErrorMessage(`Connection error (${error})`);
         } finally {
             setIsLoading(false);
         }
@@ -71,12 +69,7 @@ const AddCategory = () => {
     return (
         <><h3>Add a new category</h3>
             <form className='menu-item-form' onSubmit={handleSubmit}>
-
-                {showErrorAlert && (
-                    <Alert variant='danger'>
-                        Failed to save Category. {errorMessage}
-                    </Alert>
-                )}
+                {errorMessage && <Alert variant='danger'>{errorMessage}</Alert>}
                 <label>Name:</label>
                 <input
                     type='text'

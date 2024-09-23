@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Modal, Button, Alert } from 'react-bootstrap'; // Import React Bootstrap components
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { Modal, Button, Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from "react-router-dom";
 
 const Categories = () => {
     const [categoryList, setCategoryList] = useState(null)
-    const [error, setError] = useState(false);
-    const [deleteError, setDeleteError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true)
     const [categoryToDelete, setCategoryToDelete] = useState(null)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -25,6 +24,7 @@ const Categories = () => {
 
     const getAllCategories = async () => {
         try {
+            setErrorMessage(null)
             const options = {
                 method: 'GET',
                 headers: {
@@ -37,11 +37,12 @@ const Categories = () => {
                 setCategoryList(data)
             } else {
                 const errorData = await response.json()
-                console.log('Server error: ' + errorData.error)
+                console.error('Server error: ' + errorData.error);
+                setErrorMessage(`Connection Error (${errorData.error})`)
             }
         } catch (error) {
             console.error('Error during dodnloading data: ' + error)
-            setError(true)
+            setErrorMessage(`Connection Error (${error})`)
 
         } finally {
             setIsLoading(false)
@@ -74,18 +75,25 @@ const Categories = () => {
     }
 
     const deleteCategory = async (id) => {
-
-        const response = await fetch('http://localhost:3001/api/deleteCategoty/' + id, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
+        try {
+            setErrorMessage(null)
+            const response = await fetch('http://localhost:3001/api/deleteCategoty/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Unable do delete element, datails: " + errorData.error)
+                throw new Error(errorData.error);
             }
-        });
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Unable do delete element, datails: " + errorData.error)
-            throw new Error(errorData.error);
+        } catch (error) {
+            console.error(error)
+            setErrorMessage(`Connection error (${error})`);
         }
+
+
     }
 
     const Row = ({ el }) => {
@@ -119,9 +127,8 @@ const Categories = () => {
 
     return (<>
         {isLoading && <h4>Loading data...</h4>}
-        {error && <div>Something went rong :(</div>}
-        {deleteError && <div>Error during deleting Category :(</div>}
-        {!isLoading && !error && !deleteError &&
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+        {!isLoading && !errorMessage &&
             <>
                 <h3>Categories</h3>
                 <table>

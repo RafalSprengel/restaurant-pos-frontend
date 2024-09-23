@@ -7,7 +7,8 @@ import '../../styles/AddProduct.scss';
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     desc: '',
@@ -20,9 +21,7 @@ const AddProduct = () => {
     isGlutenFree: false,
     isAvailable: true
   });
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorAlert, setShowErrorAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+
 
   const navigate = useNavigate();
 
@@ -56,31 +55,28 @@ const AddProduct = () => {
         setShowSuccessModal(true);
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.error || 'Failed to save the product.');
-        setShowErrorAlert(true);
+        setErrorMessage(`Failed to save the product (${errorData.error})`);
       }
     } catch (error) {
-      console.error('Error saving product:', error);
-      setErrorMessage('An error occurred while saving the product. Please try again.');
-      setShowErrorAlert(true);
+      console.error(error);
+      setErrorMessage(`Error while saving... (${error})`);
     }
   };
 
   const getCategories = async () => {
-    setErrorMessage('');
     try {
+      setErrorMessage(null)
       const response = await fetch('http://localhost:3001/api/getAllCategories');
       const data = await response.json();
 
       if (response.ok) {
         setCategories(data);
-        setError('');
       } else {
-        setError('Failed to load categories. Please try again later.');
+        setErrorMessage(`Failed to load categories. Please try again later (${data.error})`);
       }
     } catch (error) {
-      console.error('Error fetching categories:', error);
-      setError('An error occurred while fetching categories. Please try again later.');
+      console.error(error);
+      setErrorMessage(`Connection error (${error})`);
     } finally {
       setIsLoading(false);
     }
@@ -98,9 +94,9 @@ const AddProduct = () => {
   return (
     <>
       {isLoading && <div>Loading...</div>}
-      {error && <Alert variant="danger">{error}</Alert>}
+      {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
-      {!isLoading && !error && (
+      {!isLoading && !errorMessage && (
         <form className="menu-item-form" onSubmit={handleSubmit}>
           <h2>Add a New Product</h2>
 

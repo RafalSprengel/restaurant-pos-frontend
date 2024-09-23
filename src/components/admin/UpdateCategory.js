@@ -55,6 +55,7 @@ const UpdateCategory = () => {
     }
 
     const handleCloseSuccessModal = () => {
+        setShowSuccessModal(false)
         navigate('/admin/categories')
     }
 
@@ -114,7 +115,7 @@ const UpdateCategory = () => {
                 />
                 <button type='submit'> Save category</button>
             </form>
-            <Modal show={showSuccessModal} onHide={() => showSuccessModal(false)}>
+            <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Success!</Modal.Title>
                 </Modal.Header>

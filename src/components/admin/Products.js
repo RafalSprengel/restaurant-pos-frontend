@@ -2,19 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Stack from 'react-bootstrap/Stack';
 
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState('');
-    const [deleteError, setDeleteError] = useState('');
+    const [errorMessage, setErrorMessage] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1)
     const navigate = useNavigate();
     const location = useLocation();
+    const [search, setSearch] = useState('')
 
     const getPageFromUrl = () => {
         const searchParams = new URLSearchParams(location.search);
@@ -22,8 +23,15 @@ const Products = () => {
         return page;
     }
 
+    const getSearchFromUrl = () => {
+        const searchParams = new URLSearchParams(location.search);
+        const search = searchParams.get('search');
+        return search
+    }
+
     const getProducts = async (page = 1) => {
         try {
+            setErrorMessage(null)
             const response = await fetch('http://localhost:3001/api/getAllProducts?page=' + page + '&limit=10', {
                 method: 'GET',
                 headers: {
@@ -36,19 +44,41 @@ const Products = () => {
                 setProductsList(data.products);
                 setTotalPages(data.totalPages)
                 setCurrentPage(data.currentPage)
-                setError('');
             } else {
                 const errorData = await response.json();
                 console.error('Server error:', errorData.error);
-                setError('Failed to load products. Please try again later.');
+                setErrorMessage('Failed to load products. Please try again later.');
             }
         } catch (error) {
             console.error('Error fetching products:', error);
-            setError('An error occurred while fetching products. Please try again later.');
+            setErrorMessage('An error occurred while fetching products. Please try again later.');
         } finally {
             setIsLoading(false);
         }
     };
+
+    const searchProduct = async () => {
+        try {
+            setIsLoading(true)
+            setError('')
+            const response = await fetch('', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = response.json();
+                setProductsList(data);
+
+            }
+        } catch (error) {
+            console.error('Error while searching product');
+            setErrorMessage('An error occurred while searching products. Please try again later.')
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     useEffect(() => {
         const page = getPageFromUrl()
@@ -68,11 +98,11 @@ const Products = () => {
     const handleConfirmDelete = async () => {
         setShowModal(false);
         setIsDeleting(true);
-        setDeleteError('');
+        setErrorMessage(null);
         try {
             await deleteProduct(productToDelete);
         } catch (error) {
-            setDeleteError('Failed to delete the product. Please try again.');
+            setErrorMessage('Failed to delete the product. Please try again.');
             console.error('Error deleting product:', error);
         } finally {
             setIsDeleting(false);
@@ -80,6 +110,7 @@ const Products = () => {
     };
 
     const deleteProduct = async (id) => {
+        setErrorMessage(null)
         const response = await fetch(`http://localhost:3001/api/deleteProduct/${id}`, {
             method: 'DELETE',
             headers: {
@@ -88,7 +119,7 @@ const Products = () => {
         });
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to delete product');
+            setErrorMessage(`Unable to delete this product (${errorData})`)
         }
     };
 
@@ -105,14 +136,31 @@ const Products = () => {
             <td className='admin__deleteElement' onClick={(e) => handleDeleteClick(e, item._id)}>Delete</td>
         </tr>
     ));
+
+    const handleSearchChange = (e) => {
+        const { value } = e.target
+        setSearch(value)
+    }
+
+
     return (
         <>
             {isLoading && <h4>Loading data...</h4>}
-            {error && <Alert variant="danger">{error}</Alert>}
-            {deleteError && <Alert variant="danger">{deleteError}</Alert>}
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
             {productsList.length ? (
                 <>
                     <h3>Products</h3>
+                    <Stack direction="horizontal" gap={3}>
+                        <div className="p-2"><input class="btn btn-primary" type="button" value="Add new.." /></div>
+                        <div className="p-2 ms-auto">find item:</div>
+                        <div className="p-2">
+                            <input
+                                type='search'
+                                className='admin__searchInput'
+                                placeholder='search...'
+                                onChange={handleSearchChange}
+                            /></div>
+                    </Stack>
                     <table>
                         <thead>
                             <tr>
@@ -149,7 +197,7 @@ const Products = () => {
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
                 </>
-            ) : (!isLoading && !error) && <div>No products found</div>}
+            ) : (!isLoading && !errorMessage) && <div>No products found</div>}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>

@@ -95,6 +95,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 15px;
         padding: 2%;
         user-select: none;
     }
@@ -164,13 +165,17 @@
     &__menuText {}
 
     &__categoryImg {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 50px;
+        max-height: 50px;
         object-fit: cover;
     }
 
     &__imgFluid {
         width: 100%;
         height: auto;
+    }
+
+    &__searchInput {
+        padding: 10px;
     }
 }
