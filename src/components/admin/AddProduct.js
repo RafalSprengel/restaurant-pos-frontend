@@ -95,13 +95,9 @@ const AddProduct = () => {
     <>
       {isLoading && <div>Loading...</div>}
       {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-
       {!isLoading && !errorMessage && (
         <form className="menu-item-form" onSubmit={handleSubmit}>
           <h2>Add a New Product</h2>
-
-          {showErrorAlert && <Alert variant="danger">Failed to save product. {errorMessage}</Alert>}
-
           <label>Name:</label>
           <input
             type="text"

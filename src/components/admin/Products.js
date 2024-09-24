@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Stack from 'react-bootstrap/Stack';
+
 
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
@@ -15,25 +16,16 @@ const Products = () => {
     const [totalPages, setTotalPages] = useState(1)
     const navigate = useNavigate();
     const location = useLocation();
-    const [search, setSearch] = useState('')
+    const [searchString, setSearchString] = useState('')
+    const [searchParams]=useSearchParams();
 
-    const getPageFromUrl = () => {
-        const searchParams = new URLSearchParams(location.search);
-        const page = parseInt(searchParams.get('page'));
-        return page;
-    }
-
-    const getSearchFromUrl = () => {
-        const searchParams = new URLSearchParams(location.search);
-        const search = searchParams.get('search');
-        return search
-    }
-
-    const getProducts = async (page = 1) => {
+    const getProducts = async (page,limit, searchString) => {
+        const queryString = location.search;
+    
         try {
             setErrorMessage(null)
-            const response = await fetch('http://localhost:3001/api/getAllProducts?page=' + page + '&limit=10', {
-                method: 'GET',
+                const response = await fetch(`http://localhost:3001/api/getProducts${queryString}`,{
+                    method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -43,7 +35,7 @@ const Products = () => {
                 const data = await response.json();
                 setProductsList(data.products);
                 setTotalPages(data.totalPages)
-                setCurrentPage(data.currentPage)
+                setCurrentPage(data.currentPage) 
             } else {
                 const errorData = await response.json();
                 console.error('Server error:', errorData.error);
@@ -57,33 +49,12 @@ const Products = () => {
         }
     };
 
-    const searchProduct = async () => {
-        try {
-            setIsLoading(true)
-            setError('')
-            const response = await fetch('', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.ok) {
-                const data = response.json();
-                setProductsList(data);
-
-            }
-        } catch (error) {
-            console.error('Error while searching product');
-            setErrorMessage('An error occurred while searching products. Please try again later.')
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
     useEffect(() => {
-        const page = getPageFromUrl()
-        getProducts(page);
-    }, [isDeleting, location.search]);
+        let page = searchParams.get('page');
+        let limit =searchParams.get('limit')
+        let searchString = searchParams.get('search')
+        getProducts(page,limit,searchString);
+    }, [isDeleting, searchParams]);
 
     const handleRowClick = (id) => {
         navigate(`${id}`);
@@ -151,7 +122,7 @@ const Products = () => {
                 <>
                     <h3>Products</h3>
                     <Stack direction="horizontal" gap={3}>
-                        <div className="p-2"><input class="btn btn-primary" type="button" value="Add new.." /></div>
+                        <div className="p-2"><input className="btn btn-primary" type="button" value="Add new.." /></div>
                         <div className="p-2 ms-auto">find item:</div>
                         <div className="p-2">
                             <input
