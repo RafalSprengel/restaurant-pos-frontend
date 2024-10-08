@@ -9,7 +9,7 @@ export function useFetch(initialUrl) {
         async ({ method = 'GET', url = initialUrl, body = null, headers = { 'Content-Type': 'application/json' } }) => {
             setLoading(true);
             setError(null);
-
+            //console.log('body to : ', body);
             try {
                 const options = {
                     method,

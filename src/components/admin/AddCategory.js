@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useFetch } from '../../hooks/useFetch';
 
 const AddCategory = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+    const { error: errorAddingCategory, fetchData } = useFetch();
+
     const [formData, setFormData] = useState({
         name: '',
         image: '',
+        index: '',
     });
 
     const handleChange = (e) => {
@@ -29,7 +33,7 @@ const AddCategory = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmi = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         const formDataToSend = new FormData();
@@ -59,6 +63,19 @@ const AddCategory = () => {
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('index', formData.index);
+        formDataToSend.append('image', formData.image);
+        await fetchData({
+            method: 'POST',
+            body: formDataToSend,
+        });
+        //if (!errorAddingCategory) setShowSuccessModal(true);
+    };
+
     const handleCloseSuccessModal = () => {
         setShowSuccessModal(false);
         navigate('/admin/categories');
@@ -68,6 +85,7 @@ const AddCategory = () => {
         <>
             <h3>Add a new category</h3>
             <form className="menu-item-form" onSubmit={handleSubmit}>
+                {errorAddingCategory && <Alert variant="danger">{errorAddingCategory.toString()}</Alert>}
                 {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <label>Name:</label>
                 <input type="text" name="name" value={formData.name} onChange={handleChange} required disabled={isLoading} />
