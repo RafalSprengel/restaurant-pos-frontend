@@ -15,6 +15,7 @@ import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 import meals from './data/meals.json';
 import mealsCategories from './data/mealCategories.json';
 import Checkout from './pages/Checkout.js';
+global.c=(...arg)=>console.log(...arg)
 
 function App() {
   return (

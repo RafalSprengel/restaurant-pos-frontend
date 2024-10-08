@@ -5,213 +5,160 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/AddProduct.scss';
 
 const AddProduct = () => {
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    desc: '',
-    price: '',
-    image: '',
-    category: '',
-    isFeatured: false,
-    ingridiens: '',
-    isVegetarian: false,
-    isGlutenFree: false,
-    isAvailable: true
-  });
+    const [categories, setCategories] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [formData, setFormData] = useState({
+        name: '',
+        desc: '',
+        price: '',
+        image: '',
+        category: '',
+        isFeatured: false,
+        ingridiens: '',
+        isVegetarian: false,
+        isGlutenFree: false,
+        isAvailable: true,
+    });
 
+    const navigate = useNavigate();
 
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const dataToSend = {
-      ...formData,
-      price: parseFloat(formData.price),
-      ingridiens: formData.ingridiens.split(',').map(item => item.trim()),
-      category: formData.category
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
     };
 
-    try {
-      const response = await fetch('http://localhost:3001/api/addProduct', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dataToSend)
-      });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const dataToSend = {
+            ...formData,
+            price: parseFloat(formData.price),
+            ingridiens: formData.ingridiens.split(',').map((item) => item.trim()),
+            category: formData.category,
+        };
 
-      if (response.ok) {
-        setShowSuccessModal(true);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(`Failed to save the product (${errorData.error})`);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(`Error while saving... (${error})`);
-    }
-  };
+        try {
+            const response = await fetch('http://localhost:3001/api/addProduct', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSend),
+            });
 
-  const getCategories = async () => {
-    try {
-      setErrorMessage(null)
-      const response = await fetch('http://localhost:3001/api/getAllCategories');
-      const data = await response.json();
+            if (response.ok) {
+                setShowSuccessModal(true);
+            } else {
+                const errorData = await response.json();
+                setErrorMessage(`Failed to save the product (${errorData.error})`);
+            }
+        } catch (error) {
+            console.error(error);
+            setErrorMessage(`Error while saving... (${error})`);
+        }
+    };
 
-      if (response.ok) {
-        setCategories(data);
-      } else {
-        setErrorMessage(`Failed to load categories. Please try again later (${data.error})`);
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(`Connection error (${error})`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const getCategories = async () => {
+        try {
+            setErrorMessage(null);
+            const response = await fetch('http://localhost:3001/api/getAllCategories');
+            const data = await response.json();
 
-  useEffect(() => {
-    getCategories();
-  }, []);
+            if (response.ok) {
+                setCategories(data);
+            } else {
+                setErrorMessage(`Failed to load categories. Please try again later (${data.error})`);
+            }
+        } catch (error) {
+            console.error(error);
+            setErrorMessage(`Connection error (${error})`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-    navigate(-1);
-  };
+    useEffect(() => {
+        getCategories();
+    }, []);
 
-  return (
-    <>
-      {isLoading && <div>Loading...</div>}
-      {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-      {!isLoading && !errorMessage && (
-        <form className="menu-item-form" onSubmit={handleSubmit}>
-          <h2>Add a New Product</h2>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+    const handleCloseSuccessModal = () => {
+        setShowSuccessModal(false);
+        navigate(-1);
+    };
 
-          <label>Description:</label>
-          <textarea
-            name="desc"
-            value={formData.desc}
-            onChange={handleChange}
-          />
+    return (
+        <>
+            {isLoading && <div>Loading...</div>}
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+            {!isLoading && !errorMessage && (
+                <form className="menu-item-form" onSubmit={handleSubmit}>
+                    <h2>Add a New Product</h2>
+                    <label>Name:</label>
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} required />
 
-          <label>Price:</label>
-          <input
-            type="number"
-            name="price"
-            step="0.01"
-            value={formData.price}
-            onChange={handleChange}
-            required
-          />
+                    <label>Description:</label>
+                    <textarea name="desc" value={formData.desc} onChange={handleChange} />
 
-          <label>Image URL:</label>
-          <input
-            type="text"
-            name="image"
-            value={formData.image}
-            onChange={handleChange}
-          />
+                    <label>Price:</label>
+                    <input type="number" name="price" step="0.01" value={formData.price} onChange={handleChange} required />
 
-          <label>Category:</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a category</option>
-            {categories.map(category => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+                    <label>Image URL:</label>
+                    <input type="text" name="image" value={formData.image} onChange={handleChange} />
 
-          <label>
-            <input
-              type="checkbox"
-              name="isFeatured"
-              checked={formData.isFeatured}
-              onChange={handleChange}
-            />
-            Is Featured
-          </label>
+                    <label>Category:</label>
+                    <select name="category" value={formData.category} onChange={handleChange} required>
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                            <option key={category._id} value={category._id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
 
-          <label>Ingredients (comma-separated):</label>
-          <input
-            type="text"
-            name="ingridiens"
-            value={formData.ingridiens}
-            onChange={handleChange}
-          />
+                    <label>
+                        <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
+                        Is Featured
+                    </label>
 
-          <label>
-            <input
-              type="checkbox"
-              name="isVegetarian"
-              checked={formData.isVegetarian}
-              onChange={handleChange}
-            />
-            Is Vegetarian
-          </label>
+                    <label>Ingredients (comma-separated):</label>
+                    <input type="text" name="ingridiens" value={formData.ingridiens} onChange={handleChange} />
 
-          <label>
-            <input
-              type="checkbox"
-              name="isGlutenFree"
-              checked={formData.isGlutenFree}
-              onChange={handleChange}
-            />
-            Is Gluten-Free
-          </label>
+                    <label>
+                        <input type="checkbox" name="isVegetarian" checked={formData.isVegetarian} onChange={handleChange} />
+                        Is Vegetarian
+                    </label>
 
-          <label>
-            <input
-              type="checkbox"
-              name="isAvailable"
-              checked={formData.isAvailable}
-              onChange={handleChange}
-            />
-            Is Available
-          </label>
+                    <label>
+                        <input type="checkbox" name="isGlutenFree" checked={formData.isGlutenFree} onChange={handleChange} />
+                        Is Gluten-Free
+                    </label>
 
-          <button type="submit">Save Product</button>
-        </form>
-      )}
+                    <label>
+                        <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleChange} />
+                        Is Available
+                    </label>
 
-      <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Success</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Product added successfully!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSuccessModal}>
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+                    <button type="submit">Save Product</button>
+                </form>
+            )}
+
+            <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Product added successfully!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseSuccessModal}>
+                        OK
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 };
 
 export default AddProduct;

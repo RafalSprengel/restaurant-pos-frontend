@@ -29,11 +29,11 @@ export const Admin = () => {
             </div>
             <div className="admin__content">
                 <div className="admin__left">
-                    <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/orders'>
+                    <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/products'>
                         {({ isActive }) => (
                             <>
-                                <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#10004;</span>
-                                <span className='admin__menuText'>Orders</span>
+                                <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#8283;</span>
+                                Products
                             </>
                         )}
                     </NavLink>
@@ -45,35 +45,19 @@ export const Admin = () => {
                             </>
                         )}
                     </NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/add-category'>
-                        {({ isActive }) => (
-                            <>
-                                <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#43;</span>
-                                Add category
-                            </>
-                        )}
-                    </NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/products'>
-                        {({ isActive }) => (
-                            <>
-                                <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#8283;</span>
-                                Products
-                            </>
-                        )}
-                    </NavLink>
-                    <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/add-product'>
-                        {({ isActive }) => (
-                            <>
-                                <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#8284;</span>
-                                Add products
-                            </>
-                        )}
-                    </NavLink>
                     <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/customers'>
                         {({ isActive }) => (
                             <>
                                 <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#9823;</span>
                                 Customers
+                            </>
+                        )}
+                    </NavLink>
+                    <NavLink className={({ isActive }) => isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} to='/admin/orders'>
+                        {({ isActive }) => (
+                            <>
+                                <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>&#10004;</span>
+                                <span className='admin__menuText'>Orders</span>
                             </>
                         )}
                     </NavLink>

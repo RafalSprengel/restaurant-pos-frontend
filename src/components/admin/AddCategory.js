@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,50 +6,48 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const AddCategory = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
-        image: ''
+        image: '',
     });
 
     const handleChange = (e) => {
-        setShowErrorAlert(false);
         const { name, value, type, files } = e.target;
 
         if (type === 'file') {
             setFormData({
                 ...formData,
-                image: files[0]
-            })
+                image: files[0],
+            });
         } else {
             setFormData({
                 ...formData,
-                [name]: value
-            })
+                [name]: value,
+            });
         }
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
-        formDataToSend.append('index', formData.index)
-        formDataToSend.append('image', formData.image)
+        formDataToSend.append('index', formData.index);
+        formDataToSend.append('image', formData.image);
 
         try {
-            setErrorMessage(null)
+            setErrorMessage(null);
             const response = await fetch('http://localhost:3001/api/addCategory', {
                 method: 'POST',
-                body: formDataToSend
+                body: formDataToSend,
             });
 
             if (response.ok) {
                 setShowSuccessModal(true);
             } else {
-                const errorData = await response.json()
+                const errorData = await response.json();
                 console.error(errorData.error);
                 setErrorMessage(`Failed to save category (${errorData.error})`);
             }
@@ -67,34 +65,17 @@ const AddCategory = () => {
     };
 
     return (
-        <><h3>Add a new category</h3>
-            <form className='menu-item-form' onSubmit={handleSubmit}>
-                {errorMessage && <Alert variant='danger'>{errorMessage}</Alert>}
+        <>
+            <h3>Add a new category</h3>
+            <form className="menu-item-form" onSubmit={handleSubmit}>
+                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <label>Name:</label>
-                <input
-                    type='text'
-                    name='name'
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                />
+                <input type="text" name="name" value={formData.name} onChange={handleChange} required disabled={isLoading} />
                 <label>Index:</label>
-                <input
-                    type='number'
-                    name='index'
-                    value={formData.index}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                />
+                <input type="number" name="index" value={formData.index} onChange={handleChange} required disabled={isLoading} />
                 <label>Image:</label>
-                <input
-                    type='file'
-                    accept='image/*'
-                    name='image'
-                    onChange={handleChange} />
-                <button type='submit' disabled={isLoading}>
+                <input type="file" accept="image/*" name="image" onChange={handleChange} />
+                <button type="submit" disabled={isLoading}>
                     {isLoading ? 'Saving...' : 'Save Category'}
                 </button>
             </form>

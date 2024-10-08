@@ -1,145 +1,140 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage.js";
-import Cart from '../components/Cart.js'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useLocalStorageWithValidation } from '../hooks/useLocalStorageWithValidation.js';
+import Cart from '../components/Cart.js';
 import ProductCard from '../components/ProductCard.js';
 import ConfirmationModal from '../components/ConfirmationModal.js';
-import storeItems from "../data/meals.json"
-import meals from '../data/meals.json';
 
 export const ShoppingCartContext = createContext();
 
 export function useShoppingCart() {
-    return useContext(ShoppingCartContext)
+    return useContext(ShoppingCartContext);
 }
 
 export function ShoppingCartProvider({ children }) {
-    const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
+    const [cartItems, setCartItems] = useLocalStorageWithValidation('shopping-cart', []);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isProductOpen, setIsProductOpen] = useState(false);
-    const [currProduct, setCurrentProduct] = useState([])
+    const [currProduct, setCurrentProduct] = useState([]);
 
     const [confirmOptions, setConfirOptions] = useState({
-        title: "",
-        message: "",
-        onConfirm: () => { }
-    })
+        title: '',
+        message: '',
+        onConfirm: () => {},
+    });
 
-    const openProduct = (id) => { setIsProductOpen(true); setCurrentProduct(id) }
-    const closeProduct = () => setIsProductOpen(false)
+    const openProduct = (id) => {
+        setIsProductOpen(true);
+        setCurrentProduct(id);
+    };
+    const closeProduct = () => setIsProductOpen(false);
     const openCart = () => setIsCartOpen(true);
     const closeCart = () => setIsCartOpen(false);
 
-    const openDelConfirmModal = (itemId) => {
-        console.log(cartItems)
+    const openDelConfirmModal = (product) => {
         setIsConfirmModalOpen(true);
         setConfirOptions({
-            message: "Czy chcesz usunąć ten produkt z koszyka ?" + meals.find(el => el.id === itemId).name,
+            message: (
+                <div>
+                    <h3>Czy chcesz usunąć ten produkt z koszyka ?</h3>
+                    <h3>{product.name}</h3>
+                </div>
+            ),
             onConfirm: () => {
-                removeProductFromCart(itemId);
+                removeProductFromCart(product._id);
                 closeConfirmModal();
-            }
+                setIsProductOpen(false);
+            },
         });
-    }
+    };
 
     const openDelAllConfirmModal = () => {
         setIsConfirmModalOpen(true);
         setConfirOptions({
-            message: "Czy chcesz wszystkie produkty z koszyka?",
+            message: 'Czy chcesz wszystkie produkty z koszyka?',
             onConfirm: () => {
-                clearBasket()
+                clearBasket();
                 closeConfirmModal();
-            }
+            },
         });
-    }
-
+    };
 
     const closeConfirmModal = () => {
         setConfirOptions({
-            message: "",
-            onConfirm: () => { }
-        })
+            message: '',
+            onConfirm: () => {},
+        });
         setIsConfirmModalOpen(false);
-    }
+    };
 
-    function increaseCartQuantity(id) {
+    function increaseCartQuantity(product) {
         setCartItems((curr) => {
-            if ((curr.find((el) => el.id === id))) { //when element with this id already exists
-                return (curr.map((el) => {
-                    if (el.id === id) return { ...el, quantity: el.quantity + 1 }
-                    else return el
-                }))
-            }
-            else return [...curr, { id, quantity: 1 }]
-        })
+            if (curr.find((el) => el._id === product._id)) {
+                //when element exists
+                return curr.map((el) => {
+                    if (el._id === product._id) return { ...el, quantity: el.quantity + 1 };
+                    else return el;
+                });
+            } else return [...curr, { ...product, quantity: 1 }]; //when not element with this id already exists
+        });
     }
 
-
-    function decreaseCartQuantity(id) {
-        if (cartItems.find((el) => el.id === id)?.quantity === 1 /*when el.quantity is just 1*/) {
-            openDelConfirmModal(id)
-        }
-        else {  // when el.quantity is higher then 1 
+    function decreaseCartQuantity(product) {
+        if (cartItems.find((el) => el._id === product._id)?.quantity === 1 /*when el.quantity is just 1*/) {
+            openDelConfirmModal(product);
+        } else {
+            // when el.quantity is higher then 1
             setCartItems((curr) => {
                 return curr.map((el) => {
-                    if (el.id === id) return ({ id, quantity: el.quantity - 1 })
-                    else return el
-                })
-            })
+                    if (el._id === product._id) return { ...el, quantity: el.quantity - 1 };
+                    else return el;
+                });
+            });
         }
     }
 
-    function removeProductFromCart(removerItemId) {
+    function removeProductFromCart(removedItemId) {
         setCartItems((curr) => {
-            const newTab = curr.filter(el => el.id !== removerItemId)
-            return newTab
-        })
+            const newTab = curr.filter((el) => el._id !== removedItemId);
+            return newTab;
+        });
     }
 
-    const clearBasket = () => setCartItems([])
+    const clearBasket = () => setCartItems([]);
 
     const getItemQuantity = (id) => {
-        const item = cartItems.find((el) => el.id === id);
+        const item = cartItems.find((el) => el._id === id);
         return item ? item.quantity : 0;
-    }
+    };
 
-    const cartQuantity = cartItems.reduce(
-        (quantity, item) => item.quantity + quantity, 0
-    )
+    const cartQuantity = cartItems.reduce((quantity, item) => item.quantity + quantity, 0);
 
     const cartSummaryPrice = () => {
-        return ([...cartItems].reduce((accumulator, currentValue) => {
-            const storeItem = storeItems.find((el) => el.id === currentValue.id)
-            return (accumulator + (parseFloat(storeItem.price) * parseFloat(currentValue.quantity)))
-        }, 0)
-        )
-    }
+        return cartItems.reduce((accumulator, currentValue) => {
+            const storeItem = cartItems.find((el) => el._id === currentValue._id);
+            return accumulator + parseFloat(storeItem.price) * parseFloat(currentValue.quantity);
+        }, 0);
+    };
 
     return (
-        <ShoppingCartContext.Provider value={{
-            increaseCartQuantity,
-            decreaseCartQuantity,
-            clearBasket,
-            cartQuantity,
-            cartSummaryPrice,
-            getItemQuantity,
-            openCart,
-            openDelConfirmModal,
-            openDelAllConfirmModal,
-            closeCart,
-            openProduct,
-            cartItems
-        }}>
+        <ShoppingCartContext.Provider
+            value={{
+                increaseCartQuantity,
+                decreaseCartQuantity,
+                clearBasket,
+                cartQuantity,
+                cartSummaryPrice,
+                getItemQuantity,
+                openCart,
+                openDelConfirmModal,
+                openDelAllConfirmModal,
+                closeCart,
+                openProduct,
+                cartItems,
+            }}>
             {children}
-            <Cart
-                isOpen={isCartOpen}
-                close={closeCart}
-            />
-            <ProductCard
-                isOpen={isProductOpen}
-                close={closeProduct}
-                currentProduct={currProduct}
-            />
+            <Cart isOpen={isCartOpen} close={closeCart} />
+            <ProductCard isOpen={isProductOpen} close={closeProduct} currentProduct={currProduct} />
             <ConfirmationModal
                 closeCart={closeCart}
                 isOpen={isConfirmModalOpen}
