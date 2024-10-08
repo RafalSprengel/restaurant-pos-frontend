@@ -14,7 +14,7 @@ const Categories = () => {
         loading: loadingCategories,
         error: errorCategories,
         refetchData,
-    } = useFetch('http://localhost:3001/api/getAllCategorie');
+    } = useFetch('http://localhost:3001/api/getAllCategories');
     const { loading: loadingDelete, error: errorDeleting, fetchData: fetchDataDelete } = useFetch();
     const navigate = useNavigate();
 
@@ -44,7 +44,6 @@ const Categories = () => {
             url: 'http://localhost:3001/api/deleteCategory/' + categoryIDToDelete,
         });
 
-        //await fetchData({ url: 'http://localhost:3001/api/getAllCategories' });
         refetchData();
     };
 
