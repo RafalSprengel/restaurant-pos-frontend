@@ -38,7 +38,7 @@ export default function Cart({ isOpen, close }) {
                     </div>
                 </div>
                 <div className="cartItem__content__item__remove">
-                    <span onClick={() => openDelConfirmModal(item.id)}>Usuń</span>
+                    <span onClick={() => openDelConfirmModal(item.id)}>Remove</span>
                 </div>
             </div>
         );
@@ -48,11 +48,11 @@ export default function Cart({ isOpen, close }) {
         <Modal isOpen={isOpen} close={close}>
             <div className="cartItem">
                 <div className="cartItem__header">
-                    <div className="cartItem__header__left">KOSZYK</div>
+                    <div className="cartItem__header__left">YOUR CART</div>
                     {cartItems.length !== 0 && (
                         <>
                             <div className="cartItem__header__center" onClick={openDelAllConfirmModal}>
-                                (Wyczyść)
+                                (Clear basket)
                             </div>
                         </>
                     )}
@@ -70,11 +70,11 @@ export default function Cart({ isOpen, close }) {
                 </div>
                 <div className="cartItem__footer">
                     <button className="button-outlined" onClick={closeCart}>
-                        KONTYNUUJ ZAKUPY
+                        Back to shooping
                     </button>
                     {cartItems.length > 0 && (
                         <button className="button-contained" onClick={handleClickGoToCheckout}>
-                            DO KASY | &#163;
+                            Proceed to Checkout | &#163;
                             {cartSummaryPrice()}
                         </button>
                     )}

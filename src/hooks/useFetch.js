@@ -5,30 +5,17 @@ export function useFetch(initialUrl) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Funkcja do pobierania danych (GET)
     const fetchData = useCallback(
-        async ({ method = 'GET', url = initialUrl, body = null, headers = { 'Content-Type': 'application/json' } }) => {
+        async (url = initialUrl) => {
             setLoading(true);
             setError(null);
-            //console.log('body to : ', body);
             try {
-                const options = {
-                    method,
-                    headers,
-                };
-
-                if (body) {
-                    options.body = JSON.stringify(body);
-                }
-
-                const response = await fetch(url, options);
+                const response = await fetch(url);
                 if (!response.ok) throw new Error('Network response was not ok');
 
-                if (method !== 'DELETE') {
-                    const jsonData = await response.json();
-                    setData(jsonData);
-                } else {
-                    setData(null); // For DELETE requests we can set null
-                }
+                const jsonData = await response.json();
+                setData(jsonData);
             } catch (error) {
                 setError(error);
             } finally {
@@ -38,17 +25,73 @@ export function useFetch(initialUrl) {
         [initialUrl]
     );
 
-    const refetchData = useCallback(() => {
+    // Funkcja refetch do ręcznego odświeżania danych
+    const refetch = useCallback(() => {
         if (initialUrl) {
-            fetchData({ url: initialUrl });
+            fetchData(initialUrl); // Ponownie pobierz dane
         }
     }, [initialUrl, fetchData]);
 
+    // Fetch danych przy zamontowaniu komponentu
     useEffect(() => {
         if (initialUrl) {
-            fetchData({}); // Fetch data with initial URL on component mount
+            fetchData(); // Pobierz dane po zamontowaniu
         }
     }, [initialUrl, fetchData]);
 
-    return { data, loading, error, fetchData, refetchData };
+    return { data, loading, error, refetch };
 }
+
+// import { useState, useEffect, useCallback } from 'react';
+
+// export function useFetch(initialUrl) {
+//     const [data, setData] = useState(null);
+//     const [loading, setLoading] = useState(false);
+//     const [error, setError] = useState(null);
+
+//     const fetchData = useCallback(
+//         async ({ method = 'GET', url = initialUrl, body = null, headers = { 'Content-Type': 'application/json' } }) => {
+//             setLoading(true);
+//             setError(null);
+//             try {
+//                 const options = {
+//                     method,
+//                     headers,
+//                 };
+
+//                 if (body) {
+//                     options.body = JSON.stringify(body);
+//                 }
+
+//                 const response = await fetch(url, options);
+//                 if (!response.ok) throw new Error('Network response was not ok');
+
+//                 if (method !== 'DELETE') {
+//                     const jsonData = await response.json();
+//                     setData(jsonData);
+//                 } else {
+//                     setData(null); // For DELETE requests we can set null
+//                 }
+//             } catch (error) {
+//                 setError(error);
+//             } finally {
+//                 setLoading(false);
+//             }
+//         },
+//         [initialUrl]
+//     );
+
+//     const refetchData = useCallback(() => {
+//         if (initialUrl) {
+//             fetchData({ url: initialUrl });
+//         }
+//     }, [initialUrl, fetchData]);
+
+//     useEffect(() => {
+//         if (initialUrl) {
+//             fetchData({}); // Fetch data with initial URL on component mount
+//         }
+//     }, [initialUrl, fetchData]);
+
+//     return { data, loading, error, fetchData, refetchData };
+// }

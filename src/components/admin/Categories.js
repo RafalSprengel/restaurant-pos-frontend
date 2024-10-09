@@ -6,16 +6,11 @@ import { useFetch } from '../../hooks/useFetch';
 import Stack from 'react-bootstrap/Stack';
 
 const Categories = () => {
-    const [categoryIDToDelete, setCategoryIDToDelete] = useState(null);
+    const [deletingError, setDeletingErrors] = useState(null);
+    const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-    const {
-        data: categoriesList,
-        loading: loadingCategories,
-        error: errorCategories,
-        refetchData,
-    } = useFetch('http://localhost:3001/api/getAllCategories');
-    const { loading: loadingDelete, error: errorDeleting, fetchData: fetchDataDelete } = useFetch();
+    const { data: categoryList, loading: loadingCategory, error: fetchError, refetch } = useFetch('http://localhost:3001/api/getAllCategories');
     const navigate = useNavigate();
 
     const handleImageClick = (imageUrl) => {
@@ -32,19 +27,35 @@ const Categories = () => {
 
     const handleDeleteClick = (e, id) => {
         e.stopPropagation();
-        setCategoryIDToDelete(id);
+        setCategoryToDelete(id);
         setShowModal(true);
     };
 
-    const handleConfirmDelete = async () => {
-        setShowModal(false);
+    const handleConfirmDelete = () => {
+        deleteCategory(categoryToDelete);
+    };
 
-        await fetchDataDelete({
-            method: 'DELETE',
-            url: 'http://localhost:3001/api/deleteCategory/' + categoryIDToDelete,
-        });
-
-        refetchData();
+    const deleteCategory = async (id) => {
+        setDeletingErrors(false);
+        try {
+            const response = await fetch('http://localhost:3001/api/deleteCategor/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Unable do delete element, datails: ' + errorData.error);
+                throw new Error(errorData.error);
+            }
+        } catch (error) {
+            console.error(error);
+            setDeletingErrors(error.toString());
+        } finally {
+            setShowModal(false);
+            refetch();
+        }
     };
 
     const Row = ({ el }) => {
@@ -66,16 +77,16 @@ const Categories = () => {
         );
     };
 
-    const categoriesRows = categoriesList?.map((el) => {
+    const categoriesRows = categoryList?.map((el) => {
         return <Row key={el._id} el={el} />;
     });
 
     return (
         <>
-            {loadingCategories && <h4>Loading data...</h4>}
-            {errorCategories && <Alert variant="danger">{'Connection problem. Details: ' + errorCategories}</Alert>}
-            {errorDeleting && <Alert variant="danger">{'Unable to delete this category. Details: ' + errorDeleting}</Alert>}
-            {categoriesList && (
+            {loadingCategory && <h4>Loading data...</h4>}
+            {deletingError && <Alert variant="danger">{deletingError}</Alert>}
+            {fetchError && <Alert variant="danger">{fetchError.toString()}</Alert>}
+            {categoryList && (
                 <>
                     <h3>Categories</h3>
                     <Stack direction="horizontal" gap={3}>

@@ -4,8 +4,7 @@
 
 @font-face {
     font-family: 'Cuprum';
-    src: local("Cuprum"),
-        url("../fonts/Cuprum-Regular.ttf") format("truetype");
+    src: local('Cuprum'), url('../fonts/Cuprum-Regular.ttf') format('truetype');
     font-weight: normal;
 }
 
@@ -32,7 +31,7 @@ textarea {
     font-size: 19px;
 }
 
-input[type=radio] {
+input[type='radio'] {
     border: 1px solid black;
 }
 
@@ -51,7 +50,6 @@ a {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    ;
 }
 
 main {
@@ -63,15 +61,13 @@ main {
     min-height: 100vh;
     width: 100%;
     //overflow: hidden;
-
 }
 
 .button-contained {
     padding: 15px 20px;
     min-width: 150px;
-    ;
     border: none;
-    font-family: "Cuprum", sans-serif;
+    font-family: 'Cuprum', sans-serif;
     font-weight: 100;
     font-style: normal;
     font-weight: 500;
@@ -85,7 +81,7 @@ main {
     padding: 15px 30px;
     min-width: 150px;
     border: 1px solid $primary-color;
-    font-family: "Cuprum", sans-serif;
+    font-family: 'Cuprum', sans-serif;
     font-weight: 100;
     font-style: normal;
     font-weight: 500;
@@ -106,13 +102,5 @@ main {
 
     &--active {
         border: 1px solid black;
-    }
-}
-
-
-
-@media only screen and (max-width: $breakpointMediumScreen) {
-    main {
-        height: 100vh;
     }
 }
