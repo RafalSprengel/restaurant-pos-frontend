@@ -15,31 +15,35 @@ import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 import meals from './data/meals.json';
 import mealsCategories from './data/mealCategories.json';
 import Checkout from './pages/Checkout.js';
-global.c=(...arg)=>console.log(...arg)
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCanceled from './pages/PaymentCanceled.js';
+global.c = (...arg) => console.log(...arg);
 
 function App() {
-  return (
-    <>
-      <ShoppingCartProvider>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path='/' element={<HomePage />} />
-            <Route path='/menu' element={<Menu mealCategories={mealsCategories} mealsList={meals} />} />
-            <Route path='/order/checkout' element={<Checkout />} />
-            <Route path='/events' element={<EventsPage />} />
-            <Route path='/contact' element={<Contact />} />
-            <Route path='/promotions' element={<Promotions />} />
-            <Route path='/about-us' element={<AboutUs />} />
-            <Route path='*' element={<NotFound />} />
-          </Route>
+    return (
+        <>
+            <ShoppingCartProvider>
+                <Routes>
+                    <Route element={<MainLayout />}>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/menu" element={<Menu mealCategories={mealsCategories} mealsList={meals} />} />
+                        <Route path="/order/checkout" element={<Checkout />} />
+                        <Route path="/order/success" element={<PaymentSuccess />} />
+                        <Route path="/order/cancel" element={<PaymentCanceled />} />
+                        <Route path="/events" element={<EventsPage />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/promotions" element={<Promotions />} />
+                        <Route path="/about-us" element={<AboutUs />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Route>
 
-          <Route element={<AdminLayout />}>
-            <Route path='/admin/*' element={<Admin />} />
-          </Route>
-        </Routes>
-      </ShoppingCartProvider>
-    </>
-  );
+                    <Route element={<AdminLayout />}>
+                        <Route path="/admin/*" element={<Admin />} />
+                    </Route>
+                </Routes>
+            </ShoppingCartProvider>
+        </>
+    );
 }
 
 export default App;

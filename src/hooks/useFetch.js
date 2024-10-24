@@ -5,7 +5,6 @@ export function useFetch(initialUrl) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Funkcja do pobierania danych (GET)
     const fetchData = useCallback(
         async (url = initialUrl) => {
             setLoading(true);
@@ -25,21 +24,19 @@ export function useFetch(initialUrl) {
         [initialUrl]
     );
 
-    // Funkcja refetch do ręcznego odświeżania danych
     const refetch = useCallback(() => {
         if (initialUrl) {
-            fetchData(initialUrl); // Ponownie pobierz dane
+            fetchData(initialUrl);
         }
     }, [initialUrl, fetchData]);
 
-    // Fetch danych przy zamontowaniu komponentu
     useEffect(() => {
         if (initialUrl) {
-            fetchData(); // Pobierz dane po zamontowaniu
+            fetchData();
         }
     }, [initialUrl, fetchData]);
 
-    return { data, loading, error, refetch };
+    return { data, loading, error, refetch, fetchData };
 }
 
 // import { useState, useEffect, useCallback } from 'react';

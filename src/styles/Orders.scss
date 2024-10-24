@@ -1,0 +1,9 @@
+.orders-table {
+    width: 50%;
+    &th {
+        width: 30% !important;
+    }
+    & td {
+        width: 70% !important;
+    }
+}

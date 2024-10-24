@@ -43,7 +43,11 @@
                 }
             }
         }
-
+        &__user {
+            & input {
+                width: 100%;
+            }
+        }
         &__orderPlace {
             display: flex;
             flex-direction: column;

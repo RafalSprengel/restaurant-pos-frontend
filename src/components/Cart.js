@@ -4,8 +4,16 @@ import Modal from '../components/Modal.js';
 import '../styles/Cart.scss';
 
 export default function Cart({ isOpen, close }) {
-    const { cartItems, closeCart, cartSummaryPrice, openDelConfirmModal, openDelAllConfirmModal } = useShoppingCart();
-    const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } = useShoppingCart();
+    const {
+        cartItems,
+        closeCart,
+        cartSummaryPrice,
+        openDelConfirmModal,
+        openDelAllConfirmModal,
+        increaseCartQuantity,
+        decreaseCartQuantity,
+        getItemQuantity,
+    } = useShoppingCart();
     const navigate = useNavigate();
     const handleClickGoToCheckout = () => {
         navigate('order/checkout');
@@ -38,7 +46,7 @@ export default function Cart({ isOpen, close }) {
                     </div>
                 </div>
                 <div className="cartItem__content__item__remove">
-                    <span onClick={() => openDelConfirmModal(item.id)}>Remove</span>
+                    <span onClick={() => openDelConfirmModal(item)}>Remove</span>
                 </div>
             </div>
         );

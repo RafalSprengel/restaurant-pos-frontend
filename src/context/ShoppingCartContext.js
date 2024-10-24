@@ -53,7 +53,7 @@ export function ShoppingCartProvider({ children }) {
         setConfirOptions({
             message: 'Czy chcesz wszystkie produkty z koszyka?',
             onConfirm: () => {
-                clearBasket();
+                clearCart();
                 closeConfirmModal();
             },
         });
@@ -100,7 +100,7 @@ export function ShoppingCartProvider({ children }) {
         });
     }
 
-    const clearBasket = () => setCartItems([]);
+    const clearCart = () => setCartItems([]);
 
     const getItemQuantity = (id) => {
         const item = cartItems.find((el) => el._id === id);
@@ -121,7 +121,7 @@ export function ShoppingCartProvider({ children }) {
             value={{
                 increaseCartQuantity,
                 decreaseCartQuantity,
-                clearBasket,
+                clearCart,
                 cartQuantity,
                 cartSummaryPrice,
                 getItemQuantity,

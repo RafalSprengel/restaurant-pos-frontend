@@ -7,7 +7,7 @@ import Stack from 'react-bootstrap/Stack';
 
 const Categories = () => {
     const [deletingError, setDeletingErrors] = useState(null);
-    const [categoryToDelete, setCategoryToDelete] = useState(null);
+    const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const { data: categoryList, loading: loadingCategory, error: fetchError, refetch } = useFetch('http://localhost:3001/api/getAllCategories');
@@ -25,20 +25,16 @@ const Categories = () => {
         navigate(`${id}`);
     };
 
-    const handleDeleteClick = (e, id) => {
+    const handleConfirmDelete = (e, id) => {
         e.stopPropagation();
-        setCategoryToDelete(id);
+        setCategoryIdToDelete(id);
         setShowModal(true);
-    };
-
-    const handleConfirmDelete = () => {
-        deleteCategory(categoryToDelete);
     };
 
     const deleteCategory = async (id) => {
         setDeletingErrors(false);
         try {
-            const response = await fetch('http://localhost:3001/api/deleteCategor/' + id, {
+            const response = await fetch('http://localhost:3001/api/deleteCategory/' + categoryIdToDelete, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +68,11 @@ const Categories = () => {
                     />
                 </td>
                 <td>{el.index}</td>
-                <td onClick={(e) => handleDeleteClick(e, el._id)}>delete</td>
+                <td>
+                    <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, el._id)}>
+                        Delete
+                    </button>
+                </td>
             </tr>
         );
     };
@@ -83,10 +83,7 @@ const Categories = () => {
 
     return (
         <>
-            {loadingCategory && <h4>Loading data...</h4>}
-            {deletingError && <Alert variant="danger">{deletingError}</Alert>}
-            {fetchError && <Alert variant="danger">{fetchError.toString()}</Alert>}
-            {categoryList && (
+            {categoryList?.length > 0 ? (
                 <>
                     <h3>Categories</h3>
                     <Stack direction="horizontal" gap={3}>
@@ -108,6 +105,14 @@ const Categories = () => {
                         <tbody>{categoriesRows}</tbody>
                     </table>
                 </>
+            ) : loadingCategory ? (
+                <h4>Loading...</h4>
+            ) : deletingError ? (
+                <Alert variant="danger">{deletingError}</Alert>
+            ) : fetchError ? (
+                <Alert variant="danger">{fetchError.toString()}</Alert>
+            ) : (
+                <> No categories Found</>
             )}
             {/* Modal for confirmation */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -119,7 +124,7 @@ const Categories = () => {
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleConfirmDelete}>
+                    <Button variant="primary" onClick={deleteCategory}>
                         Delete
                     </Button>
                 </Modal.Footer>
