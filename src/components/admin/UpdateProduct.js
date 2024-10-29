@@ -14,10 +14,10 @@ const UpdateProduct = () => {
         image: '',
         category: '',
         isFeatured: false,
-        ingridiens: '',
+        ingredients: '',
         isVegetarian: false,
         isGlutenFree: false,
-        isAvailable: true
+        isAvailable: true,
     });
     const [message, setMessage] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -30,8 +30,8 @@ const UpdateProduct = () => {
             const response = await fetch(`http://localhost:3001/api/getSingleProduct/${id}`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
-                }
+                    'Content-Type': 'application/json',
+                },
             });
             if (!response.ok) {
                 throw new Error('Failed to fetch product data');
@@ -58,7 +58,7 @@ const UpdateProduct = () => {
                 image: product.image || '',
                 category: product.category || '',
                 isFeatured: product.isFeatured || false,
-                ingridiens: product.ingridiens ? product.ingridiens.join(', ') : '',
+                ingredients: product.ingredients ? product.ingredients.join(', ') : '',
                 isVegetarian: product.isVegetarian || false,
                 isGlutenFree: product.isGlutenFree || false,
                 isAvailable: product.isAvailable || true,
@@ -70,7 +70,7 @@ const UpdateProduct = () => {
         const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
         });
     };
 
@@ -79,17 +79,17 @@ const UpdateProduct = () => {
         const dataToSend = {
             ...formData,
             price: parseFloat(formData.price),
-            ingridiens: formData.ingridiens.split(',').map(item => item.trim()),
-            category: formData.category
+            ingredients: formData.ingredients.split(',').map((item) => item.trim()),
+            category: formData.category,
         };
 
         try {
             const response = await fetch(`http://localhost:3001/api/updateProduct/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(dataToSend)
+                body: JSON.stringify(dataToSend),
             });
 
             if (response.ok) {
@@ -142,48 +142,21 @@ const UpdateProduct = () => {
                 {showErrorAlert && <Alert variant="danger">{errorMessage}</Alert>}
 
                 <label>Name:</label>
-                <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                />
+                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
 
                 <label>Description:</label>
-                <textarea
-                    name="desc"
-                    value={formData.desc}
-                    onChange={handleChange}
-                />
+                <textarea name="desc" value={formData.desc} onChange={handleChange} />
 
                 <label>Price:</label>
-                <input
-                    type="number"
-                    name="price"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={handleChange}
-                    required
-                />
+                <input type="number" name="price" step="0.01" value={formData.price} onChange={handleChange} required />
 
                 <label>Image URL:</label>
-                <input
-                    type="text"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleChange}
-                />
+                <input type="text" name="image" value={formData.image} onChange={handleChange} />
 
                 <label>Category:</label>
-                <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    required
-                >
+                <select name="category" value={formData.category} onChange={handleChange} required>
                     <option value="">Select a category</option>
-                    {categories.map(category => (
+                    {categories.map((category) => (
                         <option key={category._id} value={category._id}>
                             {category.name}
                         </option>
@@ -191,50 +164,25 @@ const UpdateProduct = () => {
                 </select>
 
                 <label>
-                    <input
-                        type="checkbox"
-                        name="isFeatured"
-                        checked={formData.isFeatured}
-                        onChange={handleChange}
-                    />
+                    <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
                     Is Featured
                 </label>
 
                 <label>Ingredients (comma-separated):</label>
-                <input
-                    type="text"
-                    name="ingridiens"
-                    value={formData.ingridiens}
-                    onChange={handleChange}
-                />
+                <input type="text" name="ingredients" value={formData.ingredients} onChange={handleChange} />
 
                 <label>
-                    <input
-                        type="checkbox"
-                        name="isVegetarian"
-                        checked={formData.isVegetarian}
-                        onChange={handleChange}
-                    />
+                    <input type="checkbox" name="isVegetarian" checked={formData.isVegetarian} onChange={handleChange} />
                     Is Vegetarian
                 </label>
 
                 <label>
-                    <input
-                        type="checkbox"
-                        name="isGlutenFree"
-                        checked={formData.isGlutenFree}
-                        onChange={handleChange}
-                    />
+                    <input type="checkbox" name="isGlutenFree" checked={formData.isGlutenFree} onChange={handleChange} />
                     Is Gluten-Free
                 </label>
 
                 <label>
-                    <input
-                        type="checkbox"
-                        name="isAvailable"
-                        checked={formData.isAvailable}
-                        onChange={handleChange}
-                    />
+                    <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleChange} />
                     Is Available
                 </label>
 

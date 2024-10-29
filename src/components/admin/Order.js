@@ -5,11 +5,14 @@ import dayjs from 'dayjs';
 
 const Order = () => {
     const { id } = useParams();
-    const { data: order, loading, error, refetch } = useFetch('http://localhost:3001/api/getOrders/' + id);
+    const { data, loading, error, refetch } = useFetch('http://localhost:3001/api/getOrders/' + id);
+    const order = data?.orders;
 
     if (!order) {
         return <div>Loading...</div>;
     }
+    console.log('Renderuje order...');
+
     return (
         <div table className="orders-table">
             <table>
@@ -48,7 +51,7 @@ const Order = () => {
                                     <li>
                                         <strong>Name:</strong> {product.name}
                                     </li>
-                                    {product.ingridiens > 0 && (
+                                    {product.ingredients > 0 && (
                                         <li>
                                             <strong>Ingridients:</strong>
                                             <ul>

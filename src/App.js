@@ -17,6 +17,10 @@ import mealsCategories from './data/mealCategories.json';
 import Checkout from './pages/Checkout.js';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCanceled from './pages/PaymentCanceled.js';
+import AuthSuccess from './components/AuthSuccess';
+import Login from './pages/Login.js';
+import Dashboard from './pages/Dashboard.js';
+import Register from './pages/Register.js';
 global.c = (...arg) => console.log(...arg);
 
 function App() {
@@ -34,6 +38,10 @@ function App() {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/promotions" element={<Promotions />} />
                         <Route path="/about-us" element={<AboutUs />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/auth/success" element={<AuthSuccess />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="*" element={<NotFound />} />
                     </Route>
 

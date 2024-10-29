@@ -16,7 +16,7 @@ const AddProduct = () => {
         image: '',
         category: '',
         isFeatured: false,
-        ingridiens: '',
+        ingredients: '',
         isVegetarian: false,
         isGlutenFree: false,
         isAvailable: true,
@@ -37,16 +37,16 @@ const AddProduct = () => {
         const dataToSend = {
             ...formData,
             price: parseFloat(formData.price),
-            ingridiens: formData.ingridiens.split(',').map((item) => item.trim()),
+            ingredients: formData.ingredients.split(',').map((item) => item.trim()),
             category: formData.category,
         };
-
         try {
             const response = await fetch('http://localhost:3001/api/addProduct', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+
                 body: JSON.stringify(dataToSend),
             });
 
@@ -125,7 +125,7 @@ const AddProduct = () => {
                     </label>
 
                     <label>Ingredients (comma-separated):</label>
-                    <input type="text" name="ingridiens" value={formData.ingridiens} onChange={handleChange} />
+                    <input type="text" name="ingredients" value={formData.ingredients} onChange={handleChange} />
 
                     <label>
                         <input type="checkbox" name="isVegetarian" checked={formData.isVegetarian} onChange={handleChange} />

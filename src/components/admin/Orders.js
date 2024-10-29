@@ -18,6 +18,7 @@ const Orders = () => {
     const [showModal, setShowModal] = useState(false);
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortOrder, setSortOrder] = useState('');
+    const [searchString, setSearchString] = useState('');
 
     const handleConfirmDelete = (e, id) => {
         e.stopPropagation();
@@ -74,6 +75,15 @@ const Orders = () => {
         return <>{arrow()}</>;
     };
 
+    const handleSearchChange = (e) => {
+        const { value } = e.target;
+        setSearchString(value);
+        const params = new URLSearchParams(location.search);
+        params.delete('page');
+        value == '' ? params.delete('search') : params.set('search', value);
+        navigate('?' + params);
+    };
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const sortByFromUrl = params.get('sortBy');
@@ -87,17 +97,24 @@ const Orders = () => {
 
     return (
         <>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', alignItems: 'center', gap: '20px' }}>
+                <div>find order:</div>
+                <div>
+                    <input type="text" placeholder="Search" onChange={handleSearchChange} value={searchString} />
+                </div>
+            </div>
             {orders?.length > 0 ? (
-                <div style={{ width: '100%' }}>
-                    <div>Orders</div>
+                <>
+                    <div>Search</div>
+
                     <table>
                         <thead>
                             <tr>
                                 <th data-name="orderNumber" onClick={handleSort}>
                                     Order No <SortArrow criteria="orderNumber" />
                                 </th>
-                                <th data-name="customer" onClick={handleSort}>
-                                    Customer <SortArrow criteria="customer" />
+                                <th data-name="customer.name" onClick={handleSort}>
+                                    Customer <SortArrow criteria="customer.name" />
                                 </th>
                                 <th data-name="isPaid" onClick={handleSort}>
                                     Status <SortArrow criteria="isPaid" />
@@ -113,14 +130,20 @@ const Orders = () => {
                         </thead>
                         <tbody>
                             {orders.map((order) => {
-                                const formattedDate = dayjs(order.createdAt).format('HH:mm DD:MM:YY');
+                                //const formattedDate = dayjs(order.createdAt).format('HH:mm DD/MM/YY');
+
+                                const hour = dayjs(order.createdAt).format('HH:mm');
+                                const day = dayjs(order.createdAt).format('DD/MM/YY');
+
                                 return (
                                     <tr key={order._id} onClick={() => navigate(order._id)}>
                                         <td>{order.orderNumber}</td>
                                         <td>{order.customer.name + ' ' + order.customer.surname}</td>
                                         <td>{order.isPaid ? 'Paid' : 'Not paid'}</td>
                                         <td>{order.orderType}</td>
-                                        <td>{formattedDate}</td>
+                                        <td>
+                                            <span>{hour}</span> <span style={{ fontSize: '0.7em' }}>{day}</span>
+                                        </td>
                                         <td>
                                             <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, order._id)}>
                                                 Delete
@@ -142,7 +165,7 @@ const Orders = () => {
                         <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
-                </div>
+                </>
             ) : error ? (
                 <>Error: {error.message}</>
             ) : loading ? (

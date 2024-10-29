@@ -40,11 +40,11 @@ const Products = () => {
             } else {
                 const errorData = await response.json();
                 console.error('Server error:', errorData.error);
-                setErrorMessage('Failed to load products. Please try again later.');
+                setErrorMessage(errorData.error.toString());
             }
         } catch (error) {
             console.error('Error fetching products:', error);
-            setErrorMessage('An error occurred while fetching products. Please try again later.');
+            setErrorMessage(error.message.toString());
         } finally {
             setIsLoading(false);
         }
@@ -103,8 +103,7 @@ const Products = () => {
             <td>{item.isVegetarian ? 'Yes' : 'No'}</td>
             <td>{item.isGlutenFree ? 'Yes' : 'No'}</td>
             <td className="admin__deleteElement">
-                Delete
-                <button type="button" className="btn btn-danger">
+                <button type="button" className="btn btn-danger" onClick={(e) => handleDeleteClick(e, item._id)}>
                     Delete
                 </button>
             </td>
@@ -156,7 +155,6 @@ const Products = () => {
         };
         return <>{arrow()}</>;
     };
-
     return (
         <>
             {!isLoading && !errorMessage && (
