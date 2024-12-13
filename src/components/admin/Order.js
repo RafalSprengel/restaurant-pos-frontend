@@ -2,16 +2,17 @@ import { useParams } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
 import '../../styles/Orders.scss';
 import dayjs from 'dayjs';
+import api from '../../utils/axios';
 
 const Order = () => {
     const { id } = useParams();
-    const { data, loading, error, refetch } = useFetch('http://localhost:3001/api/getOrders/' + id);
-    const order = data?.orders;
+    const { data: order, loading, error, refetch } = useFetch('http://localhost:3001/api/getSingleOrder/' + id);
 
     if (!order) {
         return <div>Loading...</div>;
     }
     console.log('Renderuje order...');
+    console.log(order);
 
     return (
         <div table className="orders-table">

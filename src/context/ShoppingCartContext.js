@@ -72,7 +72,8 @@ export function ShoppingCartProvider({ children }) {
             if (curr.find((el) => el._id === product._id)) {
                 //when element exists
                 return curr.map((el) => {
-                    if (el._id === product._id) return { ...el, quantity: el.quantity + 1 };
+                    if (el._id === product._id)
+                        return { ...el, quantity: el.quantity + 1 };
                     else return el;
                 });
             } else return [...curr, { ...product, quantity: 1 }]; //when not element with this id already exists
@@ -80,13 +81,17 @@ export function ShoppingCartProvider({ children }) {
     }
 
     function decreaseCartQuantity(product) {
-        if (cartItems.find((el) => el._id === product._id)?.quantity === 1 /*when el.quantity is just 1*/) {
+        if (
+            cartItems.find((el) => el._id === product._id)?.quantity ===
+            1 /*when el.quantity is just 1*/
+        ) {
             openDelConfirmModal(product);
         } else {
             // when el.quantity is higher then 1
             setCartItems((curr) => {
                 return curr.map((el) => {
-                    if (el._id === product._id) return { ...el, quantity: el.quantity - 1 };
+                    if (el._id === product._id)
+                        return { ...el, quantity: el.quantity - 1 };
                     else return el;
                 });
             });
@@ -107,12 +112,18 @@ export function ShoppingCartProvider({ children }) {
         return item ? item.quantity : 0;
     };
 
-    const cartQuantity = cartItems.reduce((quantity, item) => item.quantity + quantity, 0);
+    const cartQuantity = cartItems.reduce(
+        (quantity, item) => item.quantity + quantity,
+        0
+    );
 
     const cartSummaryPrice = () => {
         return cartItems.reduce((accumulator, currentValue) => {
             const storeItem = cartItems.find((el) => el._id === currentValue._id);
-            return accumulator + parseFloat(storeItem.price) * parseFloat(currentValue.quantity);
+            return (
+                accumulator +
+                parseFloat(storeItem.price) * parseFloat(currentValue.quantity)
+            );
         }, 0);
     };
 
@@ -134,7 +145,11 @@ export function ShoppingCartProvider({ children }) {
             }}>
             {children}
             <Cart isOpen={isCartOpen} close={closeCart} />
-            <ProductCard isOpen={isProductOpen} close={closeProduct} currentProduct={currProduct} />
+            <ProductCard
+                isOpen={isProductOpen}
+                close={closeProduct}
+                currentProduct={currProduct}
+            />
             <ConfirmationModal
                 closeCart={closeCart}
                 isOpen={isConfirmModalOpen}

@@ -4,14 +4,30 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
 import Stack from 'react-bootstrap/Stack';
+import api from '../../utils/axios.js';
+import { useAuth } from '../../context/StaffAuthContext.js';
 
 const Categories = () => {
     const [deletingError, setDeletingErrors] = useState(null);
     const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-    const { data: categoryList, loading: loadingCategory, error: fetchError, refetch } = useFetch('http://localhost:3001/api/getAllCategories');
+    const {
+        data: categoryList,
+        loading: loadingCategory,
+        error: fetchError,
+        responseStatus,
+        refetch,
+    } = useFetch('/getAllCategories');
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const rolePermissions = {
+        admin: { addNewButt: true, deleteButt: true },
+        moderator: { addNewButt: true, deleteButt: true },
+        member: { addNewButt: false, deleteButt: false },
+    };
+
+    const isVisible = rolePermissions[user.role] || { addNewButt: false, deleteButt: false };
 
     const handleImageClick = (imageUrl) => {
         setSelectedImage(imageUrl);
@@ -34,12 +50,7 @@ const Categories = () => {
     const deleteCategory = async (id) => {
         setDeletingErrors(false);
         try {
-            const response = await fetch('http://localhost:3001/api/deleteCategory/' + categoryIdToDelete, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await api.delete('/deleteCategory/' + categoryIdToDelete);
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Unable do delete element, datails: ' + errorData.error);
@@ -69,9 +80,11 @@ const Categories = () => {
                 </td>
                 <td>{el.index}</td>
                 <td>
-                    <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, el._id)}>
-                        Delete
-                    </button>
+                    {isVisible.deleteButt && (
+                        <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, el._id)}>
+                            Delete
+                        </button>
+                    )}
                 </td>
             </tr>
         );
@@ -83,16 +96,24 @@ const Categories = () => {
 
     return (
         <>
+            <h3>Categories</h3>
+            <Stack direction="horizontal" gap={3}>
+                <div className="p-2">
+                    {isVisible.addNewButt && (
+                        <input
+                            className="btn btn-primary"
+                            type="button"
+                            value="Add new.."
+                            onClick={() => navigate('/admin/add-category')}
+                        />
+                    )}
+                </div>
+                <div className="p-2 ms-auto"></div>
+                <div className="p-2 ms-auto"></div>
+            </Stack>
+
             {categoryList?.length > 0 ? (
                 <>
-                    <h3>Categories</h3>
-                    <Stack direction="horizontal" gap={3}>
-                        <div className="p-2">
-                            <input className="btn btn-primary" type="button" value="Add new.." onClick={() => navigate('/admin/add-category')} />
-                        </div>
-                        <div className="p-2 ms-auto"></div>
-                        <div className="p-2 ms-auto"></div>
-                    </Stack>
                     <table>
                         <thead>
                             <tr>

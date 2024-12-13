@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
+import { useAuth } from '../../context/StaffAuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UpdateProduct = () => {
@@ -24,6 +25,15 @@ const UpdateProduct = () => {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+    const { user } = useAuth();
+
+    const rolePermissions = {
+        admin: { saveButt: true },
+        moderator: { saveButt: true },
+        member: { saveButt: false },
+    };
+
+    const isVisible = rolePermissions[user.role] || { addNewButt: false, deleteButt: false };
 
     const getProduct = async () => {
         try {
@@ -172,12 +182,22 @@ const UpdateProduct = () => {
                 <input type="text" name="ingredients" value={formData.ingredients} onChange={handleChange} />
 
                 <label>
-                    <input type="checkbox" name="isVegetarian" checked={formData.isVegetarian} onChange={handleChange} />
+                    <input
+                        type="checkbox"
+                        name="isVegetarian"
+                        checked={formData.isVegetarian}
+                        onChange={handleChange}
+                    />
                     Is Vegetarian
                 </label>
 
                 <label>
-                    <input type="checkbox" name="isGlutenFree" checked={formData.isGlutenFree} onChange={handleChange} />
+                    <input
+                        type="checkbox"
+                        name="isGlutenFree"
+                        checked={formData.isGlutenFree}
+                        onChange={handleChange}
+                    />
                     Is Gluten-Free
                 </label>
 
@@ -185,8 +205,7 @@ const UpdateProduct = () => {
                     <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleChange} />
                     Is Available
                 </label>
-
-                <button type="submit">Save Menu Item</button>
+                {isVisible.saveButt && <button type="submit">Save Menu Item</button>}
             </form>
 
             <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>

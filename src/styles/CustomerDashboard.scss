@@ -1,0 +1,101 @@
+.customer-panel {
+    display: flex;
+    font-family: Arial, sans-serif;
+
+    .sidebar {
+        width: 250px;
+        background: #f9f9f9;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                padding: 10px 0;
+                cursor: pointer;
+
+                &.active {
+                    font-weight: bold;
+                    color: orange;
+                }
+
+                &:hover {
+                    color: orange;
+                }
+            }
+        }
+    }
+
+    .orders-section {
+        flex-grow: 1;
+        padding: 20px;
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .order-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+
+            &.awaiting-delivery {
+                border-left: 5px solid orange;
+            }
+
+            &.canceled {
+                border-left: 5px solid red;
+            }
+
+            .order-info {
+                p {
+                    margin: 5px 0;
+                }
+            }
+
+            .order-actions {
+                text-align: right;
+
+                p {
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+
+                .btn-confirm,
+                .btn-track {
+                    padding: 8px 12px;
+                    margin: 5px 0;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 3px;
+                }
+
+                .btn-confirm {
+                    background-color: orange;
+                    color: white;
+
+                    &:hover {
+                        background-color: darkorange;
+                    }
+                }
+
+                .btn-track {
+                    background-color: #007bff;
+                    color: white;
+
+                    &:hover {
+                        background-color: #0056b3;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,55 +1,79 @@
-import { Routes, Route } from 'react-router-dom';
 import './styles/App.scss';
 import './styles/Bootstrap.scss';
+import { Routes, Route } from 'react-router-dom';
+
 import MainLayout from './layouts/MainLayout';
-import AdminLayout from './layouts/AdminLayout';
-import HomePage from './pages/HomePage.js';
-import EventsPage from './pages/EventsPage.js';
-import Contact from './pages/Contact.js';
-import Menu from './pages/Menu.js';
-import AboutUs from './pages/AboutUs.js';
-import Promotions from './pages/Promotions.js';
-import Admin from './pages/Admin.js';
-import NotFound from './pages/NotFound.js';
-import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
-import meals from './data/meals.json';
-import mealsCategories from './data/mealCategories.json';
-import Checkout from './pages/Checkout.js';
+import HomePage from './pages/HomePage';
+import Menu from './pages/Menu';
+import Contact from './pages/Contact';
+import EventsPage from './pages/EventsPage';
+import Promotions from './pages/Promotions';
+import AboutUs from './pages/AboutUs';
+import Login from './pages/Login';
+import StaffLogin from './pages/StaffLogin';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Checkout from './pages/Checkout';
+import NotFound from './pages/NotFound';
 import PaymentSuccess from './pages/PaymentSuccess';
-import PaymentCanceled from './pages/PaymentCanceled.js';
+import PaymentCanceled from './pages/PaymentCanceled';
 import AuthSuccess from './components/AuthSuccess';
-import Login from './pages/Login.js';
-import Dashboard from './pages/Dashboard.js';
-import Register from './pages/Register.js';
-global.c = (...arg) => console.log(...arg);
+import AdminDashboard from './pages/AdminDashboard';
+import { StaffAuthProvider } from './context/StaffAuthContext';
+import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
+import AdminLayout from './layouts/AdminLayout';
+import CustomerDashboard from './pages/CustomerDashboard';
+import { Outlet } from 'react-router-dom';
 
 function App() {
     return (
         <>
-            <ShoppingCartProvider>
-                <Routes>
-                    <Route element={<MainLayout />}>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/menu" element={<Menu mealCategories={mealsCategories} mealsList={meals} />} />
-                        <Route path="/order/checkout" element={<Checkout />} />
-                        <Route path="/order/success" element={<PaymentSuccess />} />
-                        <Route path="/order/cancel" element={<PaymentCanceled />} />
-                        <Route path="/events" element={<EventsPage />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/promotions" element={<Promotions />} />
-                        <Route path="/about-us" element={<AboutUs />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/auth/success" element={<AuthSuccess />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Route>
+            <Routes>
+                {/* Public Routes */}
+                <Route
+                    element={
+                        <ShoppingCartProvider>
+                            <MainLayout />
+                        </ShoppingCartProvider>
+                    }>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/order/checkout" element={<Checkout />} />
+                    {/* <Route path="/order/success" element={<PaymentSuccess />} /> */}
+                    <Route path="/order/cancel" element={<PaymentCanceled />} />
+                    <Route path="/events" element={<EventsPage />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/promotions" element={<Promotions />} />
+                    <Route path="/about-us" element={<AboutUs />} />
 
-                    <Route element={<AdminLayout />}>
-                        <Route path="/admin/*" element={<Admin />} />
-                    </Route>
-                </Routes>
-            </ShoppingCartProvider>
+                    <Route path="/auth/success" element={<AuthSuccess />} />
+                    <Route path="/customer" element={<CustomerDashboard />} />
+                </Route>
+                <Route
+                    element={
+                        <ShoppingCartProvider>
+                            <Outlet />
+                        </ShoppingCartProvider>
+                    }>
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/order/success" element={<PaymentSuccess />} />
+                </Route>
+
+                {/* Admin Routes */}
+                <Route
+                    element={
+                        <StaffAuthProvider>
+                            <AdminLayout />
+                        </StaffAuthProvider>
+                    }>
+                    <Route path="/admin/login" element={<StaffLogin />} />
+                    <Route path="/admin/*" element={<AdminDashboard />} />
+                    {/* Catch-all route */}
+                    <Route path="*" element={<NotFound />} />
+                </Route>
+            </Routes>
         </>
     );
 }

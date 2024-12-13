@@ -3,6 +3,8 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Stack from 'react-bootstrap/Stack';
+import { useAuth } from '../../context/StaffAuthContext';
+import api from '../../utils/axios';
 
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
@@ -19,6 +21,15 @@ const Products = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
+    const { user } = useAuth();
+
+    const rolePermissions = {
+        admin: { addProductButt: true, deleteProductButt: true },
+        moderator: { addProductButt: true, deleteProductButt: true },
+        member: { addProductButt: false, deleteProductButt: false },
+    };
+
+    const isVisible = rolePermissions[user.role] || { addProductButt: false, deleteProductButt: false };
 
     const getProducts = async () => {
         const queryString = location.search;
@@ -76,12 +87,7 @@ const Products = () => {
 
     const deleteProduct = async (id) => {
         setErrorMessage(null);
-        const response = await fetch(`http://localhost:3001/api/deleteProduct/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await api.delete(`http://localhost:3001/api/deleteProduct/${id}`);
         if (!response.ok) {
             const errorData = await response.json();
             setErrorMessage(`Unable to delete this product (${errorData})`);
@@ -103,9 +109,11 @@ const Products = () => {
             <td>{item.isVegetarian ? 'Yes' : 'No'}</td>
             <td>{item.isGlutenFree ? 'Yes' : 'No'}</td>
             <td className="admin__deleteElement">
-                <button type="button" className="btn btn-danger" onClick={(e) => handleDeleteClick(e, item._id)}>
-                    Delete
-                </button>
+                {isVisible.deleteProductButt && (
+                    <button type="button" className="btn btn-danger" onClick={(e) => handleDeleteClick(e, item._id)}>
+                        Delete
+                    </button>
+                )}
             </td>
         </tr>
     ));
@@ -162,7 +170,16 @@ const Products = () => {
                     <h3>Products</h3>
                     <Stack direction="horizontal" gap={3}>
                         <div className="p-2">
-                            <input className="btn btn-primary" type="button" value="Add new.." onClick={() => navigate('/admin/add-product')} />
+                            {isVisible.addProductButt && (
+                                <>
+                                    <input
+                                        className="btn btn-primary"
+                                        type="button"
+                                        value="Add new.."
+                                        onClick={() => navigate('/admin/add-product')}
+                                    />
+                                </>
+                            )}
                         </div>
                         <div className="p-2 ms-auto"></div>
                         <div className="p-2 ms-auto">find item:</div>
@@ -208,13 +225,22 @@ const Products = () => {
                     </table>
                     <Pagination className="custom-pagination">
                         <Pagination.First onClick={() => handlePageChange(1)} />
-                        <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        />
                         {[...new Array(totalPages)].map((el, index) => (
-                            <Pagination.Item key={index} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
+                            <Pagination.Item
+                                key={index}
+                                active={index + 1 === currentPage}
+                                onClick={() => handlePageChange(index + 1)}>
                                 {index + 1}
                             </Pagination.Item>
                         ))}
-                        <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
+                        <Pagination.Next
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        />
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
                 </>

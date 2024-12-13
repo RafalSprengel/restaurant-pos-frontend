@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-
+import axios from 'axios';
+import api from '../utils/axios';
 export function useFetch(initialUrl) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [responseStatus, setResponseStatus] = useState(null);
     const firstRender = useRef(true); // Ref to track first render
 
     const fetchData = useCallback(
@@ -11,13 +13,14 @@ export function useFetch(initialUrl) {
             setLoading(true);
             setError(null);
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
+                const response = await api(url);
+                // if (!response.ok) throw new Error('Network response was not ok');
 
-                const jsonData = await response.json();
-                setData(jsonData);
+                if (!response.status === 200) setError(response.data.error);
+                setResponseStatus(response.status);
+                setData(response.data);
             } catch (error) {
-                setError(error);
+                setError(error.response.data.error);
             } finally {
                 setLoading(false);
             }
@@ -49,5 +52,5 @@ export function useFetch(initialUrl) {
         }
     }, [initialUrl, fetchData]);
 
-    return { data, loading, error, refetch, fetchData };
+    return { data, loading, error, refetch, fetchData, responseStatus };
 }

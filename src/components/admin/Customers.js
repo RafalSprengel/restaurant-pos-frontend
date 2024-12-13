@@ -3,27 +3,29 @@ import { useFetch } from '../../hooks/useFetch';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import dayjs from 'dayjs';
+import { useAuth } from '../../context/StaffAuthContext';
+import api from '../../utils/axios';
 
 const Customers = () => {
     const { data: customers, loading, error, refetch } = useFetch('http://localhost:3001/api/getCustomers');
     const [customerIdToDelete, setCustomerIdToDelete] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const { user } = useAuth();
+    const rolePremissions = {
+        admin: { deleteBut: true },
+        moderator: { deleteBut: true },
+        member: { deleteBut: false },
+    };
 
+    const isVisible = rolePremissions[user.role] || { deleteBut: false };
     const deleteCustomer = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/deleteCustomer/' + customerIdToDelete, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Unable do delete element, datails: ' + errorData.error);
-                throw new Error(errorData.error);
+            const res = await api.delete('http://localhost:3001/api/deleteCustomer/' + customerIdToDelete);
+            if (res.status !== 200) {
+                console.error('Unable do delete element, datails: ' + res.data.error);
             }
-        } catch (error) {
-            console.error('Error deleting customer:', error);
+        } catch (e) {
+            console.error('Error deleting customer:', e.response.data.error);
         } finally {
             setShowModal(false);
             refetch();
@@ -69,9 +71,13 @@ const Customers = () => {
                                         </td>
                                         <td>{customer.isRegistered ? 'Yes' : 'No'}</td>
                                         <td>
-                                            <button className="btn btn-danger" onClick={() => handleConfirmDelete(customer._id)}>
-                                                Delete
-                                            </button>
+                                            {isVisible.deleteBut && (
+                                                <button
+                                                    className="btn btn-danger"
+                                                    onClick={() => handleConfirmDelete(customer._id)}>
+                                                    Delete
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 );

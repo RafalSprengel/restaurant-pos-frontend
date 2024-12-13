@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import api from '../../utils/axios.js';
 import '../../styles/AddProduct.scss';
 
 const AddProduct = () => {
@@ -41,24 +42,15 @@ const AddProduct = () => {
             category: formData.category,
         };
         try {
-            const response = await fetch('http://localhost:3001/api/addProduct', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-
-                body: JSON.stringify(dataToSend),
-            });
-
-            if (response.ok) {
+            const response = await api.post('http://localhost:3001/api/addProduct', JSON.stringify(dataToSend));
+            if (response.status == 200) {
                 setShowSuccessModal(true);
             } else {
-                const errorData = await response.json();
-                setErrorMessage(`Failed to save the product (${errorData.error})`);
+                setErrorMessage(`Failed to save the product (${response.data.error})`);
             }
-        } catch (error) {
-            console.error(error);
-            setErrorMessage(`Error while saving... (${error})`);
+        } catch (e) {
+            console.error(e.response.data.error);
+            setErrorMessage(`Error while saving... (${e.response.data.error})`);
         }
     };
 
@@ -93,10 +85,10 @@ const AddProduct = () => {
     return (
         <>
             {isLoading && <div>Loading...</div>}
-            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-            {!isLoading && !errorMessage && (
+            {!isLoading && (
                 <form className="menu-item-form" onSubmit={handleSubmit}>
                     <h2>Add a New Product</h2>
+                    {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                     <label>Name:</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} required />
 
@@ -104,7 +96,14 @@ const AddProduct = () => {
                     <textarea name="desc" value={formData.desc} onChange={handleChange} />
 
                     <label>Price:</label>
-                    <input type="number" name="price" step="0.01" value={formData.price} onChange={handleChange} required />
+                    <input
+                        type="number"
+                        name="price"
+                        step="0.01"
+                        value={formData.price}
+                        onChange={handleChange}
+                        required
+                    />
 
                     <label>Image URL:</label>
                     <input type="text" name="image" value={formData.image} onChange={handleChange} />
@@ -120,7 +119,12 @@ const AddProduct = () => {
                     </select>
 
                     <label>
-                        <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
+                        <input
+                            type="checkbox"
+                            name="isFeatured"
+                            checked={formData.isFeatured}
+                            onChange={handleChange}
+                        />
                         Is Featured
                     </label>
 
@@ -128,17 +132,32 @@ const AddProduct = () => {
                     <input type="text" name="ingredients" value={formData.ingredients} onChange={handleChange} />
 
                     <label>
-                        <input type="checkbox" name="isVegetarian" checked={formData.isVegetarian} onChange={handleChange} />
+                        <input
+                            type="checkbox"
+                            name="isVegetarian"
+                            checked={formData.isVegetarian}
+                            onChange={handleChange}
+                        />
                         Is Vegetarian
                     </label>
 
                     <label>
-                        <input type="checkbox" name="isGlutenFree" checked={formData.isGlutenFree} onChange={handleChange} />
+                        <input
+                            type="checkbox"
+                            name="isGlutenFree"
+                            checked={formData.isGlutenFree}
+                            onChange={handleChange}
+                        />
                         Is Gluten-Free
                     </label>
 
                     <label>
-                        <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleChange} />
+                        <input
+                            type="checkbox"
+                            name="isAvailable"
+                            checked={formData.isAvailable}
+                            onChange={handleChange}
+                        />
                         Is Available
                     </label>
 

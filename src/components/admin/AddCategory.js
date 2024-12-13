@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
+import api from '../../utils/axios.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AddCategory = () => {
@@ -33,28 +34,23 @@ const AddCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setErrorMessage(null);
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
         formDataToSend.append('index', formData.index);
         formDataToSend.append('image', formData.image);
 
         try {
-            setErrorMessage(null);
-            const response = await fetch('http://localhost:3001/api/addCategory', {
-                method: 'POST',
-                body: formDataToSend,
-            });
-
-            if (response.ok) {
+            const res = await api.post('/addCategory', formDataToSend);
+            if (res.status == 200) {
                 setShowSuccessModal(true);
             } else {
-                const errorData = await response.json();
-                console.error(errorData.error);
-                setErrorMessage(`Failed to save category (${errorData.error})`);
+                setErrorMessage(`Failed to save category (${res.data.error})`);
             }
-        } catch (error) {
-            console.error(error);
-            setErrorMessage(`Connection error (${error})`);
+        } catch (e) {
+            console.log('e to : ');
+            console.log(e);
+            setErrorMessage(e.response.data.error);
         } finally {
             setIsLoading(false);
         }
@@ -71,9 +67,23 @@ const AddCategory = () => {
             <form className="menu-item-form" onSubmit={handleSubmit}>
                 {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <label>Name:</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} required disabled={isLoading} />
+                <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                />
                 <label>Index:</label>
-                <input type="number" name="index" value={formData.index} onChange={handleChange} required disabled={isLoading} />
+                <input
+                    type="number"
+                    name="index"
+                    value={formData.index}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                />
                 <label>Image:</label>
                 <input type="file" accept="image/*" name="image" onChange={handleChange} />
                 <button type="submit" disabled={isLoading}>

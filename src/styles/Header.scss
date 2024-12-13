@@ -20,11 +20,7 @@
 }
 
 .material-symbols-outlined {
-    font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .header {
@@ -36,7 +32,6 @@
     position: absolute;
     width: 100%;
 
-
     &__inner-wrap {
         width: $page-width;
         z-index: 3;
@@ -44,14 +39,12 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        font-family: "cuprum";
+        font-family: 'cuprum';
         font-size: 20px;
-
     }
 
     &__logo {
         margin-left: 25px;
-        ;
         display: flex;
         justify-content: center;
 
@@ -95,6 +88,13 @@
             }
         }
     }
+    &__login-icon-wrap div {
+    }
+    &__login-icon {
+        font-size: 3rem !important;
+        color: rgb(206, 141, 2);
+        cursor: pointer;
+    }
 
     &__mobile-nav-icon {
         margin-right: 30px;
@@ -123,14 +123,11 @@
 
     & li {
         font-size: 17px;
-        ;
     }
 
     & button {
         font-size: 17px;
-        ;
     }
-
 }
 
 @media only screen and (max-width: $breakpointMediumScreen) {
@@ -148,16 +145,13 @@
         }
 
         &__logo {
-
             & img {
                 height: 80px;
                 width: 70px;
                 margin: 0;
             }
         }
-
     }
-
 }
 
 @media only screen and (max-width: $breakpointSmallScreen) {
@@ -178,7 +172,6 @@
 
         &__mobile-nav-icon {
             font-size: 20px;
-            ;
         }
     }
 

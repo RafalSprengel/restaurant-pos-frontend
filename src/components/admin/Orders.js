@@ -5,6 +5,15 @@ import { Modal, Button, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { useAuth } from '../../context/StaffAuthContext';
+import api from '../../utils/axios';
+
+const rolePremissions = {
+    admin: { deleteBut: true },
+    moderator: { deleteBut: true },
+    member: { deleteBut: false },
+};
+
 dayjs.extend(customParseFormat);
 
 const Orders = () => {
@@ -19,7 +28,8 @@ const Orders = () => {
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortOrder, setSortOrder] = useState('');
     const [searchString, setSearchString] = useState('');
-
+    const { user } = useAuth();
+    const isVisible = rolePremissions[user.role] || { deleteBut: false };
     const handleConfirmDelete = (e, id) => {
         e.stopPropagation();
         setOrderIdToDelete(id);
@@ -28,19 +38,12 @@ const Orders = () => {
 
     const deleteOrder = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/deleteOrder/' + orderIdToDelete, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Unable do delete element, datails: ' + errorData.error);
-                throw new Error(errorData.error);
+            const res = await api.delete('http://localhost:3001/api/deleteOrder/' + orderIdToDelete);
+            if (res !== 200) {
+                console.error('Unable do delete element, datails: ' + res.data.error);
             }
-        } catch (error) {
-            console.error('Error deleting order:', error);
+        } catch (e) {
+            console.error('Error deleting order:', e.response.data.error);
         } finally {
             setShowModal(false);
             refetch();
@@ -97,7 +100,14 @@ const Orders = () => {
 
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', alignItems: 'center', gap: '20px' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    width: '100%',
+                    alignItems: 'center',
+                    gap: '20px',
+                }}>
                 <div>find order:</div>
                 <div>
                     <input type="text" placeholder="Search" onChange={handleSearchChange} value={searchString} />
@@ -145,9 +155,13 @@ const Orders = () => {
                                             <span>{hour}</span> <span style={{ fontSize: '0.7em' }}>{day}</span>
                                         </td>
                                         <td>
-                                            <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, order._id)}>
-                                                Delete
-                                            </button>
+                                            {isVisible.deleteBut && (
+                                                <button
+                                                    className="btn btn-danger"
+                                                    onClick={(e) => handleConfirmDelete(e, order._id)}>
+                                                    Delete
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 );
@@ -156,13 +170,22 @@ const Orders = () => {
                     </table>
                     <Pagination className="custom-pagination">
                         <Pagination.First onClick={() => handlePageChange(1)} />
-                        <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        />
                         {[...new Array(totalPages)].map((el, index) => (
-                            <Pagination.Item key={index} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
+                            <Pagination.Item
+                                key={index}
+                                active={index + 1 === currentPage}
+                                onClick={() => handlePageChange(index + 1)}>
                                 {index + 1}
                             </Pagination.Item>
                         ))}
-                        <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
+                        <Pagination.Next
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        />
                         <Pagination.Last onClick={() => handlePageChange(totalPages)} />
                     </Pagination>
                 </>

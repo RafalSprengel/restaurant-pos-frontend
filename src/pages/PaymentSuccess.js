@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
+import '../styles/PaymentSuccess.scss';
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
@@ -17,12 +18,15 @@ const PaymentSuccess = () => {
 
     const fetchSession = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/session_status?session_id=${session_id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await fetch(
+                `http://localhost:3001/session_status?session_id=${session_id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             const stripeSession = await response.json(); // Upewnij się, że zamieniasz odpowiedź na JSON
             if (response.ok) {
                 setSessionData(stripeSession);
@@ -66,14 +70,20 @@ const PaymentSuccess = () => {
     }, [sessionData?.status, errorMessage]);
 
     return (
-        <>
+        <div className="payment-success">
             {isLoading && sessionData === null && <h4>Loading...</h4>}
             {sessionData?.status === 'open' && <h4>Payment is in progress</h4>}
             {sessionData?.status === 'complete' && <h4>Payment was successful!</h4>}
-            {showRefreshButton && !errorMessage && <button onClick={fetchSession}>Refresh payment status</button>}
+            {showRefreshButton && !errorMessage && (
+                <button className="button-contained" onClick={fetchSession}>
+                    Refresh payment status
+                </button>
+            )}
             {errorMessage && <p>{errorMessage}</p>}
-            <button onClick={() => navigate('/')}>Go back to homepage</button>
-        </>
+            <button className="button-contained" onClick={() => navigate('/')}>
+                Go back to homepage
+            </button>
+        </div>
     );
 };
 
