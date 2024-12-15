@@ -9,8 +9,8 @@ import Contact from './pages/Contact';
 import EventsPage from './pages/EventsPage';
 import Promotions from './pages/Promotions';
 import AboutUs from './pages/AboutUs';
-import Login from './pages/Login';
-import StaffLogin from './pages/StaffLogin';
+import LoginUser from './pages/LoginCustomer.js';
+import LoginStaff from './pages/LoginStaff.js';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Checkout from './pages/Checkout';
@@ -56,7 +56,7 @@ function App() {
                         </ShoppingCartProvider>
                     }>
                     <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/login-user" element={<LoginUser />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/order/success" element={<PaymentSuccess />} />
                 </Route>
@@ -68,7 +68,7 @@ function App() {
                             <AdminLayout />
                         </StaffAuthProvider>
                     }>
-                    <Route path="/admin/login" element={<StaffLogin />} />
+                    <Route path="/admin/login-staff" element={<LoginStaff />} />
                     <Route path="/admin/*" element={<AdminDashboard />} />
                     {/* Catch-all route */}
                     <Route path="*" element={<NotFound />} />

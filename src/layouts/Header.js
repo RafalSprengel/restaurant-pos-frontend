@@ -43,7 +43,11 @@ export default function Header() {
                         <span className="header__cart-wrap__inner__number">{cartQuantity}</span>
                     </div>
                 </div>
-                <div className="header__login-icon-wrap" alt="Login" title="Login" onClick={() => navigate('/login')}>
+                <div
+                    className="header__login-icon-wrap"
+                    alt="Login"
+                    title="Login"
+                    onClick={() => navigate('/login-user')}>
                     <div className="material-symbols-outlined header__login-icon">person</div>
                 </div>
                 <div className="header__mobile-nav-icon" onClick={handleIsVisibleMobile}>

@@ -13,8 +13,16 @@ export const Menu = () => {
     const location = useLocation();
     const queryString = location.search;
     const [currentCategory, setCurrentCategory] = useState('');
-    const { data: categoriesList, loading: categoriesLoading, error: categoriesError } = useFetch('http://localhost:3001/api/getAllCategories');
-    const { data, loading: productsLoading, error: productsError } = useFetch('http://localhost:3001/api/getProducts' + queryString);
+    const {
+        data: categoriesList,
+        loading: categoriesLoading,
+        error: categoriesError,
+    } = useFetch('http://localhost:3001/api/productCategories/getAllCategories');
+    const {
+        data,
+        loading: productsLoading,
+        error: productsError,
+    } = useFetch('http://localhost:3001/api/products/getProducts' + queryString);
     const products = data?.products || [];
 
     const getCurrentCategoryFromURL = () => {
@@ -45,7 +53,9 @@ export const Menu = () => {
                 <div
                     className={
                         'menu__item-categories__list__item__icon-container ' +
-                        (category.name == currentCategory ? 'menu__item-categories__list__item__icon-container--active' : '')
+                        (category.name == currentCategory
+                            ? 'menu__item-categories__list__item__icon-container--active'
+                            : '')
                     }>
                     <span className="material-symbols-outlined">
                         {/* {el.googleIconName} */}
@@ -55,7 +65,9 @@ export const Menu = () => {
                 <div
                     className={
                         'menu__item-categories__list__item__name-container ' +
-                        (category.name == currentCategory ? 'menu__item-categories__list__item__name-container--active' : '')
+                        (category.name == currentCategory
+                            ? 'menu__item-categories__list__item__name-container--active'
+                            : '')
                     }>
                     {category.name}
                 </div>

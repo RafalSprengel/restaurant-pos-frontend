@@ -17,7 +17,7 @@ const Login = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:3001/api/auth/login', {
+            const response = await fetch('http://localhost:3001/api/auth/login-customer', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ const Login = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Błąd logowania. Sprawdź swoje dane.');
+                throw new Error('Login or password error. Please check your credentials.');
             }
 
             const data = await response.json();

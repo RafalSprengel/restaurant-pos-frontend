@@ -8,7 +8,7 @@ export function useAuth() {
 }
 
 export const StaffAuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [staff, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ export const StaffAuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/user', {
+            const response = await api.get('/staff', {
                 withCredentials: true,
             });
             setResponseStatus(response.status);
@@ -53,7 +53,7 @@ export const StaffAuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <StaffAuthContext.Provider value={{ isAuthenticated, user, login, logout, error, loading, responseStatus }}>
+        <StaffAuthContext.Provider value={{ isAuthenticated, staff, login, logout, error, loading, responseStatus }}>
             {children}
         </StaffAuthContext.Provider>
     );

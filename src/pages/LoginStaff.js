@@ -17,7 +17,7 @@ export default function StaffLogin() {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:3001/api/auth/login', {
+            const response = await fetch('http://localhost:3001/api/auth/login-staff', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,9 +43,7 @@ export default function StaffLogin() {
     return (
         <div className="login-container">
             <h1>Staff Login</h1>
-            <div>
-                {isAuthenticated ? 'You are already logged in as ' + user.name : 'not logged in'}
-            </div>
+            <div>{isAuthenticated ? 'You are already logged in as ' + user.name : 'not logged in'}</div>
             <form onSubmit={handleLogin} className="login-form">
                 <label className="login-label">
                     Email:
