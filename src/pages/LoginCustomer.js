@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import '../styles/LoginCustomer.scss';
+import api from '../utils/axios';
 
 const LoginCustomer = () => {
     const navigate = useNavigate();
@@ -17,27 +18,16 @@ const LoginCustomer = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:3001/api/auth/login-customer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
+            const response = await api.post('/auth/login-customer', { email, password });
 
-            if (!response.ok) {
-                throw new Error('Login or password error. Please check your credentials.');
-            }
-
-            const data = await response.json();
-            const { token, refreshToken } = data;
+            const { token, refreshToken } = response.data;
 
             localStorage.setItem('jwtToken', token);
             localStorage.setItem('jwtRefreshToken', refreshToken);
 
             navigate('/customer');
         } catch (err) {
-            setError(err.message);
+            setError(err.response?.data?.message || 'Error during login');
         } finally {
             setLoading(false);
         }

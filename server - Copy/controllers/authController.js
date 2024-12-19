@@ -6,7 +6,6 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../db/models/User');
 const UserRefreshToken = require('../db/models/UserRefreshToken');
 const UserInvalidToken = require('../db/models/UserInvalidToken');
-const CustomerRefreshToken = require('../db/models/CustomerRefreshToken');
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -48,7 +47,6 @@ exports.registerNewCustomer = async (req, res) => {
 
 exports.loginCustomer = async (req, res) => {
     const { email, password } = req.body;
-    console.log(req.body);
 
     // Sprawdzamy, czy wszystkie wymagane dane są w żądaniu
     if (!email || !password) {

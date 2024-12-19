@@ -22,10 +22,6 @@ const customerSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    password: {
-        type: String,
-        required: true,
-    },
 });
 
 customerSchema.plugin(timestamps); //add timestamps to mongoose

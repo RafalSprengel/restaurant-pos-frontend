@@ -47,7 +47,7 @@ export default function Header() {
                     className="header__login-icon-wrap"
                     alt="Login"
                     title="Login"
-                    onClick={() => navigate('/login-user')}>
+                    onClick={() => navigate('/customer/login')}>
                     <div className="material-symbols-outlined header__login-icon">person</div>
                 </div>
                 <div className="header__mobile-nav-icon" onClick={handleIsVisibleMobile}>

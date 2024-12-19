@@ -9,4 +9,8 @@ router.use('/stripe', require('./stripe'));
 router.use('/customers', require('./customers'));
 router.use('/staff', require('./staff'));
 
+router.all('*', (_, res) => {
+    res.status(404).json({ error: 'Not a valid API address' });
+});
+
 module.exports = router;
