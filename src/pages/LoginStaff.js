@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/StaffLogin.scss';
 
-import { useAuth } from '../context/StaffAuthContext';
+import { useAuth } from '../context/authContext';
 
 export default function StaffLogin() {
     const navigate = useNavigate();

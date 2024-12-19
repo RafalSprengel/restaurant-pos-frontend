@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import '../styles/Login.scss';
+import '../styles/LoginCustomer.scss';
 
-const Login = () => {
+const LoginCustomer = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -35,7 +35,7 @@ const Login = () => {
             localStorage.setItem('jwtToken', token);
             localStorage.setItem('jwtRefreshToken', refreshToken);
 
-            navigate('/admin');
+            navigate('/customer');
         } catch (err) {
             setError(err.message);
         } finally {
@@ -92,7 +92,7 @@ const Login = () => {
                     <span className="login-icon facebook-icon" />
                     Login with Facebook
                 </button>
-                <NavLink to="/register" className="login-registerLink">
+                <NavLink to="/customer/register" className="login-registerLink">
                     Not registered yet? Register now.
                 </NavLink>
             </div>
@@ -100,4 +100,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginCustomer;

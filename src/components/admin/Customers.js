@@ -3,7 +3,7 @@ import { useFetch } from '../../hooks/useFetch';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import dayjs from 'dayjs';
-import { useAuth } from '../../context/StaffAuthContext';
+import { useAuth } from '../../context/authContext';
 import api from '../../utils/axios';
 
 const Customers = () => {

@@ -13,7 +13,7 @@ import Customers from '../components/admin/Customers.js';
 import AdminLayout from '../layouts/AdminLayout.js';
 import Users from '../components/admin/Users.js';
 import AddUser from '../components/admin/AddUser.js';
-import { useAuth } from '../context/StaffAuthContext.js';
+import { useAuth } from '../context/authContext.js';
 import api from '../utils/axios.js';
 
 export const Admin = () => {

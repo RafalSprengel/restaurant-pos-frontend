@@ -5,7 +5,7 @@ import { Modal, Button, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useAuth } from '../../context/StaffAuthContext';
+import { useAuth } from '../../context/authContext';
 import api from '../../utils/axios';
 
 const rolePremissions = {

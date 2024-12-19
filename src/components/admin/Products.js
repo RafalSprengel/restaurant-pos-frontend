@@ -3,7 +3,7 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Stack from 'react-bootstrap/Stack';
-import { useAuth } from '../../context/StaffAuthContext';
+import { useAuth } from '../../context/authContext';
 import api from '../../utils/axios';
 
 const Products = () => {

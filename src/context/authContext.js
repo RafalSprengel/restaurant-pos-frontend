@@ -1,14 +1,14 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import api from '../utils/axios.js';
 
-const StaffAuthContext = createContext();
+const AuthContext = createContext();
 
 export function useAuth() {
-    return useContext(StaffAuthContext);
+    return useContext(AuthContext);
 }
 
-export const StaffAuthProvider = ({ children }) => {
-    const [staff, setUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ export const StaffAuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/staff', {
+            const response = await api.get('/users/user', {
                 withCredentials: true,
             });
             setResponseStatus(response.status);
@@ -53,8 +53,8 @@ export const StaffAuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <StaffAuthContext.Provider value={{ isAuthenticated, staff, login, logout, error, loading, responseStatus }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, login, logout, error, loading, responseStatus }}>
             {children}
-        </StaffAuthContext.Provider>
+        </AuthContext.Provider>
     );
 };

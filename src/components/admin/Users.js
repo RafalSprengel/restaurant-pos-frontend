@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
-import { isAuthenticated } from '../../context/StaffAuthContext';
+import { isAuthenticated } from '../../context/authContext';
 
 const Users = () => {
     const navigate = useNavigate();

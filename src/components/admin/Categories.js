@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../hooks/useFetch';
 import Stack from 'react-bootstrap/Stack';
 import api from '../../utils/axios.js';
-import { useAuth } from '../../context/StaffAuthContext.js';
+import { useAuth } from '../../context/authContext.js';
 
 const Categories = () => {
     const [deletingError, setDeletingErrors] = useState(null);
