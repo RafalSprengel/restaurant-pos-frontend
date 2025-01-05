@@ -1,8 +1,7 @@
-const Staff = require('../db/models/Staff');
+const {Staff} = require('../db/models/Staff');
+const mongoose = require('mongoose');
 
-/**
- * Fetch all users and sort them by name.
- */
+
 exports.staff = async (req, res) => {
     const staff = await Staff.findOne({ _id: req.staff._id });
     if (!staff) {

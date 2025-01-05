@@ -22,47 +22,43 @@ import { AuthProvider } from './context/authContext.js';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 import AdminLayout from './layouts/AdminLayout';
 import CustomerDashboard from './pages/CustomerDashboard';
+import { CustomerAuthProvider } from './context/authCustomerContext.js';
 import { Outlet } from 'react-router-dom';
 
 function App() {
     return (
         <>
             <Routes>
-                {/* Customers Routes */}
-                <Route
-                    element={
-                        <ShoppingCartProvider>
-                            <MainLayout />
-                        </ShoppingCartProvider>
-                    }>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/menu" element={<Menu />} />
-                    <Route path="/order/checkout" element={<Checkout />} />
-                    <Route path="/order/success" element={<PaymentSuccess />} />
-                    <Route path="/order/cancel" element={<PaymentCanceled />} />
-                    <Route path="/events" element={<EventsPage />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/promotions" element={<Promotions />} />
-                    <Route path="/about-us" element={<AboutUs />} />
-                </Route>
-                <Route>
+                {/* Ścieżki dla klientów */}
+                <Route element={<CustomerAuthProvider><Outlet /></CustomerAuthProvider>}>
+                    {/* Pierwsza grupa zagnieżdżonych ścieżek */}
+                    <Route element={<ShoppingCartProvider><MainLayout /></ShoppingCartProvider>}>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/menu" element={<Menu />} />
+                        <Route path="/order/checkout" element={<Checkout />} />
+                        <Route path="/order/success" element={<PaymentSuccess />} />
+                        <Route path="/order/cancel" element={<PaymentCanceled />} />
+                        <Route path="/events" element={<EventsPage />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/promotions" element={<Promotions />} />
+                        <Route path="/about-us" element={<AboutUs />} />
+                    </Route>
+                    
+                    {/* Ścieżki panelu klienta - przeniesione do rodzica */}
                     <Route path="/customer" element={<CustomerDashboard />} />
                     <Route path="/customer/login" element={<LoginCustomer />} />
                     <Route path="/customer/register" element={<RegisterCustomer />} />
                 </Route>
-                {/* Staff Routes */}
-                <Route
-                    element={
-                        <AuthProvider>
-                            <AdminLayout />
-                        </AuthProvider>
-                    }>
+
+                {/* Ścieżki dla pracowników - poprawione położenie catch-all */}
+                <Route element={<AuthProvider><AdminLayout /></AuthProvider>}>
                     <Route path="/staff" element={<StaffDashboard />} />
                     <Route path="/staff/login" element={<LoginStaff />} />
                     <Route path="/staff/*" element={<StaffDashboard />} />
-                    {/* Catch-all route */}
-                    <Route path="*" element={<NotFound />} />
                 </Route>
+
+                {/* Przeniesienie catch-all poza ścieżki pracowników */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     );

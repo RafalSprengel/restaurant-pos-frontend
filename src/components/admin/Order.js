@@ -11,8 +11,6 @@ const Order = () => {
     if (!order) {
         return <div>Loading...</div>;
     }
-    console.log('Renderuje order...');
-    console.log(order);
 
     return (
         <div table className="orders-table">

@@ -20,7 +20,7 @@ const Register = () => {
 
         try {
             const response = await axios.post(
-                'http://localhost:3001/api/register',
+                'http://localhost:3001/api/auth/register-new-customer',
                 JSON.stringify({ name, surname, email, password }),
                 {
                     method: 'POST',
@@ -66,7 +66,7 @@ const Register = () => {
                     />
                 </div>
                 <div className="register-inputGroup">
-                    <label htmlFor="surname">Last name:</label>
+                    <label htmlFor="surname">Surname:</label>
                     <input
                         type="text"
                         id="surname"

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import '../styles/Admin.scss';
 import Categories from '../components/admin/Categories.js';
@@ -39,7 +39,7 @@ export const Admin = () => {
 
     useEffect(() => {
         if (!isAuthenticated && !loading) {
-            navigate('/admin/login');
+            navigate('/staff/login');
         }
     }, [isAuthenticated, loading, navigate]);
 

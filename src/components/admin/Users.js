@@ -7,7 +7,6 @@ const Users = () => {
     const navigate = useNavigate();
     const { data: users, loading, error, fetchData } = useFetch('http://localhost:3001/api/getUsers');
 
-    console.log('users: ', users);
     return (
         <div>
             <h3>Users</h3>

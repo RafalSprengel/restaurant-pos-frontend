@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import '../styles/LoginCustomer.scss';
 import api from '../utils/axios';
+import { useCustomerAuth } from '../context/authCustomerContext';
 
 const LoginCustomer = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('kowalski@wp.pl');
+    const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { login } = useCustomerAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,10 +22,12 @@ const LoginCustomer = () => {
         try {
             const response = await api.post('/auth/login-customer', { email, password });
 
-            const { token, refreshToken } = response.data;
+            const { token, refreshToken, customer } = response.data;
 
             localStorage.setItem('jwtToken', token);
             localStorage.setItem('jwtRefreshToken', refreshToken);
+
+            login(customer);
 
             navigate('/customer');
         } catch (err) {

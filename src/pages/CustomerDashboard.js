@@ -1,4 +1,6 @@
 import React from 'react';
+import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { useCustomerAuth } from '../context/authCustomerContext.js';
 import '../styles/CustomerDashboard.scss';
 
 const CustomerPanel = () => {
@@ -37,16 +39,27 @@ const CustomerPanel = () => {
         },
     ];
 
+    const navigate = useNavigate();
+    const { isAuthenticated, logout, customer, loading, error } = useCustomerAuth();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/customer/login');
+    };
+
     return (
         <div className="customer-panel">
-            <div className="sidebar">
-                <ul>
-                    <li>Overview</li>
-                    <li className="active">Orders</li>
-                    <li>Payment</li>
-                    <li>Refund and return</li>
+            {isAuthenticated ? (
+                <>
+                <div className="sidebar">
+                    <ul>
+                        <li>Overview</li>
+                        <li className="active">Orders</li>
+                        <li>Payment</li>
+                        <li>Refund and return</li>
                     <li>Settings</li>
                     <li>Shipping address</li>
+                    <li onClick={handleLogout}>Logout</li>
                 </ul>
             </div>
             <div className="orders-section">
@@ -81,6 +94,16 @@ const CustomerPanel = () => {
                     </div>
                 ))}
             </div>
+            </>
+            ) : (
+                <div className="login-section">
+                    <h1>You are not logged in</h1>
+                    <h2>Please log in to view your orders
+                        
+                    </h2>
+                    <button onClick={() => navigate('/customer/login')}>Login</button>
+                </div>
+            )}  
         </div>
     );
 };

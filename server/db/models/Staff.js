@@ -38,15 +38,18 @@ const staffSchema = new mongoose.Schema({
 
     role: {
         type: String,
-        enum: ['member', 'moderator', 'admin'],
+        enum: [ 'member', 'moderator', 'admin'],
         default: 'member',
+    },
+    isRegistered: {
+        type: Boolean,
+        default: false,
     },
 });
 
-userSchema.plugin(timestamps);
+staffSchema.plugin(timestamps);
 
-userSchema.plugin(AutoIncrement, { inc_field: 'staffNumber' }); //add autoincrement to mongoose
+staffSchema.plugin(AutoIncrement, { inc_field: 'staffNumber' }); //add autoincrement to mongoose
 
 const Staff = mongoose.model('Staff', staffSchema);
-
-module.exports = Staff;
+module.exports = { Staff, staffSchema };
