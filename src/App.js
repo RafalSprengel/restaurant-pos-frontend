@@ -18,7 +18,7 @@ import NotFound from './pages/NotFound';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCanceled from './pages/PaymentCanceled';
 import AuthSuccess from './components/AuthSuccess';
-import { AuthProvider } from './context/authContext.js';
+import { AuthProvider } from './context/authStaffContext.js';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 import AdminLayout from './layouts/AdminLayout';
 import CustomerDashboard from './pages/CustomerDashboard';

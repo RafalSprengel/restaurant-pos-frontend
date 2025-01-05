@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/StaffLogin.scss';
 
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../context/authStaffContext';
 
 export default function StaffLogin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('member@wp.pl');
-    const [password, setPassword] = useState('12345');
+    const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
 
     const { isAuthenticated, login, user } = useAuth();
@@ -32,7 +32,7 @@ export default function StaffLogin() {
                 throw new Error('Invalid email or password');
             } else {
                 login(data);
-                navigate('/admin');
+                navigate('/staff');
             }
         } catch (err) {
             setError(err.message);

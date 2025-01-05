@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/authStaffContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UpdateCategory = () => {

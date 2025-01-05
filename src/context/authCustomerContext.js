@@ -47,8 +47,6 @@ export const CustomerAuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await api.post('/auth/logout-customer');
-            
             setIsAuthenticated(false);
             setCustomer(null);
             setError(null);

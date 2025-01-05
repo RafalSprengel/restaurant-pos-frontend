@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { useCustomerAuth } from '../context/authCustomerContext.js';
 import '../styles/CustomerDashboard.scss';
+import api from '../utils/axios.js';
 
 const CustomerPanel = () => {
     const orders = [
@@ -43,6 +44,7 @@ const CustomerPanel = () => {
     const { isAuthenticated, logout, customer, loading, error } = useCustomerAuth();
 
     const handleLogout = async () => {
+        await api.post('/auth/logout-customer');
         await logout();
         navigate('/customer/login');
     };

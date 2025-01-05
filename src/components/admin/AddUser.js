@@ -5,7 +5,7 @@ import { Modal, Button, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useFetch } from '../../hooks/useFetch';
 
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/authStaffContext';
 
 export default function AddUser() {
     const { isAuthenticated } = useAuth();
