@@ -15,7 +15,6 @@ A modern, React-based Point of Sale (POS) system designed for restaurants, with 
 
 Frontend:
 - React.js
-- JavaScript
 - CSS
   
 Backend:
