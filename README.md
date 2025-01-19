@@ -14,17 +14,17 @@ A modern, React-based Point of Sale (POS) system designed for restaurants, with 
 ## Tech Stack
 
 Frontend:
--React.js
--JavaScript
--CSS
+- React.js
+- JavaScript
+- CSS
 Backend:
--Node.js
--Express.js
--MongoDB
--Stripe
--User Registration (for creating customer and system user accounts)
--JWT authorization
--Error logs to file
+- Node.js
+- Express.js
+- MongoDB
+- Stripe
+- User Registration (for creating customer and system user accounts)
+- JWT authorization
+- Error logs to file
 
 ## Getting Started
 
