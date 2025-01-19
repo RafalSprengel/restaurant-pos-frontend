@@ -1,0 +1,61 @@
+.menu-item-form {
+    width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.menu-item-form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.menu-item-form input[type='text'],
+.menu-item-form input[type='number'],
+.menu-item-form textarea,
+.menu-item-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.menu-item-form select {
+    height: 40px;
+    appearance: none;
+    /* Usunięcie domyślnego stylu dla select */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23000" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+}
+
+.menu-item-form input[type='checkbox'] {
+    margin-right: 10px;
+}
+
+.menu-item-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.menu-item-form button:hover {
+    background-color: #218838;
+}

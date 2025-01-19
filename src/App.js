@@ -18,20 +18,17 @@ import NotFound from './pages/NotFound';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCanceled from './pages/PaymentCanceled';
 import AuthSuccess from './components/AuthSuccess';
-import { AuthProvider } from './context/authStaffContext.js';
+import { AuthProvider } from './context/authContext.js';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
-import AdminLayout from './layouts/AdminLayout';
+import ManagementLayout from './layouts/ManagementLayout';
 import CustomerDashboard from './pages/CustomerDashboard';
-import { CustomerAuthProvider } from './context/authCustomerContext.js';
 import { Outlet } from 'react-router-dom';
 
 function App() {
     return (
-        <>
+        <AuthProvider>
             <Routes>
-                {/* Ścieżki dla klientów */}
-                <Route element={<CustomerAuthProvider><Outlet /></CustomerAuthProvider>}>
-                    {/* Pierwsza grupa zagnieżdżonych ścieżek */}
+                <Route element={<Outlet />}>
                     <Route element={<ShoppingCartProvider><MainLayout /></ShoppingCartProvider>}>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/menu" element={<Menu />} />
@@ -43,24 +40,22 @@ function App() {
                         <Route path="/promotions" element={<Promotions />} />
                         <Route path="/about-us" element={<AboutUs />} />
                     </Route>
-                    
-                    {/* Ścieżki panelu klienta - przeniesione do rodzica */}
+
                     <Route path="/customer" element={<CustomerDashboard />} />
                     <Route path="/customer/login" element={<LoginCustomer />} />
                     <Route path="/customer/register" element={<RegisterCustomer />} />
                 </Route>
 
-                {/* Ścieżki dla pracowników - poprawione położenie catch-all */}
-                <Route element={<AuthProvider><AdminLayout /></AuthProvider>}>
+                <Route element={<ManagementLayout />}>
                     <Route path="/staff" element={<StaffDashboard />} />
                     <Route path="/staff/login" element={<LoginStaff />} />
                     <Route path="/staff/*" element={<StaffDashboard />} />
                 </Route>
 
-                {/* Przeniesienie catch-all poza ścieżki pracowników */}
+                {/* Przeniesienie catch-all poza ścieżki */}
                 <Route path="*" element={<NotFound />} />
             </Routes>
-        </>
+        </AuthProvider>
     );
 }
 

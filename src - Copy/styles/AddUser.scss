@@ -1,0 +1,61 @@
+.add-user {
+    width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-user h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-user label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.add-user input[type='text'],
+.add-user input[type='number'],
+.add-user textarea,
+.add-user select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.add-user select {
+    height: 40px;
+    appearance: none;
+    /* Usunięcie domyślnego stylu dla select */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23000" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+}
+
+.add-user input[type='checkbox'] {
+    margin-right: 10px;
+}
+
+.add-user button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.add-user button:hover {
+    background-color: #218838;
+}
