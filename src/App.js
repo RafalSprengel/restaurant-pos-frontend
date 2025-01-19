@@ -1,28 +1,27 @@
 import './styles/App.scss';
 import './styles/Bootstrap.scss';
 import { Routes, Route } from 'react-router-dom';
-
-import MainLayout from './layouts/MainLayout';
-import HomePage from './pages/HomePage';
-import Menu from './pages/Menu';
-import Contact from './pages/Contact';
-import EventsPage from './pages/EventsPage';
-import Promotions from './pages/Promotions';
+import { Outlet } from 'react-router-dom';
 import AboutUs from './pages/AboutUs';
-import LoginCustomer from './pages/LoginCustomer.js';
-import LoginStaff from './pages/LoginStaff.js';
-import RegisterCustomer from './pages/RegisterCustomer.js';
-import StaffDashboard from './pages/StaffDashboard';
 import Checkout from './pages/Checkout';
+import Contact from './pages/Contact';
+import CustomerPanel from './pages/CustomerPanel.js';
+import EventsPage from './pages/EventsPage';
+import HomePage from './pages/HomePage';
+import LoginCustomer from './pages/LoginCustomer.js';
+import LoginManagement from './pages/LoginManagement.js';
+import MainLayout from './layouts/MainLayout';
+import ManagementLayout from './layouts/ManagementLayout';
+import ManagementPanel from './pages/ManagementPanel.js';
+import Menu from './pages/Menu';
 import NotFound from './pages/NotFound';
-import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCanceled from './pages/PaymentCanceled';
-import AuthSuccess from './components/AuthSuccess';
+import PaymentSuccess from './pages/PaymentSuccess';
+import Promotions from './pages/Promotions';
+import RegisterCustomer from './pages/RegisterCustomer.js';
 import { AuthProvider } from './context/authContext.js';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
-import ManagementLayout from './layouts/ManagementLayout';
-import CustomerDashboard from './pages/CustomerDashboard';
-import { Outlet } from 'react-router-dom';
+
 
 function App() {
     return (
@@ -41,15 +40,14 @@ function App() {
                         <Route path="/about-us" element={<AboutUs />} />
                     </Route>
 
-                    <Route path="/customer" element={<CustomerDashboard />} />
+                    <Route path="/customer" element={<CustomerPanel />} />
                     <Route path="/customer/login" element={<LoginCustomer />} />
                     <Route path="/customer/register" element={<RegisterCustomer />} />
                 </Route>
 
                 <Route element={<ManagementLayout />}>
-                    <Route path="/staff" element={<StaffDashboard />} />
-                    <Route path="/staff/login" element={<LoginStaff />} />
-                    <Route path="/staff/*" element={<StaffDashboard />} />
+                    <Route path="/management/login" element={<LoginManagement />} />
+                    <Route path="/management/*" element={<ManagementPanel />} />
                 </Route>
 
                 {/* Przeniesienie catch-all poza ścieżki */}

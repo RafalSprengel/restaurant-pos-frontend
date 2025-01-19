@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-
 /**
  * Custom hook that manages data in localStorage and validates products by checking if they still exist in the database.
  * If a product no longer exists, it is removed from the state and localStorage.
  */
+import { useEffect, useState } from 'react';
+import api from '../utils/axios';
 export function useLocalStorageWithValidation(key, initialValue) {
     const [value, setValue] = useState(() => {
         const jsonValue = localStorage.getItem(key);
@@ -26,9 +26,9 @@ export function useLocalStorageWithValidation(key, initialValue) {
         for (const item of value) {
             try {
                 // Check if the product exists in the database
-                const response = await fetch(`http://localhost:3001/api/getSingleProduct/${item._id}`);
-                if (response.ok) {
-                    const product = await response.json();
+                const response = await api.get(`/getSingleProduct/${item._id}`);
+                if (response.status === 200) {
+                    const product = response.data;
                     if (product) {
                         updatedValue.push(item); // Product exists, add to updated list
                     }
@@ -39,15 +39,17 @@ export function useLocalStorageWithValidation(key, initialValue) {
                 console.error(`Error validating product with ID ${item._id}:`, error);
             }
         }
-
+    
         // Update state and localStorage with only the existing products
         setValue(updatedValue);
     };
+    
 
     useEffect(() => {
         if (Array.isArray(value) && value.length > 0) {
             validateProducts();
         }
     }, []);
+    
     return [value, setValue];
 }

@@ -7,6 +7,7 @@ const api = axios.create({
 
 api.defaults.headers.common['Content-Type'] = 'application/json';
 
+
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -23,9 +24,12 @@ api.interceptors.response.use(
 
                 if (refreshResponse.status === 200) {
                     return api.request(error.config);
+                } else {
+                    api.setIsAuthenticated(false);
                 }
             } catch (refreshError) {
-                console.error('Failed to refresh token:', refreshError);
+                console.log('failed to refresh access token');
+                api.setIsAuthenticated(false);
             }
         }
 

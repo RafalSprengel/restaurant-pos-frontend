@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useShoppingCart } from '../context/ShoppingCartContext';
 import Navi from '../components/Navi';
 import logoImg from '../img/logo-white-XL.png';
 import '../styles/Header.scss';
-import { useShoppingCart } from '../context/ShoppingCartContext';
 
 export default function Header() {
     const [isSticky, setIsSticky] = useState(false);

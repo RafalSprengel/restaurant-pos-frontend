@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useLocalStorageWithValidation } from '../hooks/useLocalStorageWithValidation.js';
 import Cart from '../components/Cart.js';
 import ProductCard from '../components/ProductCard.js';
@@ -70,24 +70,22 @@ export function ShoppingCartProvider({ children }) {
     function increaseCartQuantity(product) {
         setCartItems((curr) => {
             if (curr.find((el) => el._id === product._id)) {
-                //when element exists
                 return curr.map((el) => {
                     if (el._id === product._id)
                         return { ...el, quantity: el.quantity + 1 };
                     else return el;
                 });
-            } else return [...curr, { ...product, quantity: 1 }]; //when not element with this id already exists
+            } else return [...curr, { ...product, quantity: 1 }];
         });
     }
 
     function decreaseCartQuantity(product) {
         if (
             cartItems.find((el) => el._id === product._id)?.quantity ===
-            1 /*when el.quantity is just 1*/
+            1
         ) {
             openDelConfirmModal(product);
         } else {
-            // when el.quantity is higher then 1
             setCartItems((curr) => {
                 return curr.map((el) => {
                     if (el._id === product._id)
@@ -100,8 +98,7 @@ export function ShoppingCartProvider({ children }) {
 
     function removeProductFromCart(removedItemId) {
         setCartItems((curr) => {
-            const newTab = curr.filter((el) => el._id !== removedItemId);
-            return newTab;
+            return curr.filter((el) => el._id !== removedItemId);
         });
     }
 

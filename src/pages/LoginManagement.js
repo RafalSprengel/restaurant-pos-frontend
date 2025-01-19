@@ -10,23 +10,25 @@ export default function StaffLogin() {
     const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false); // Dodanie stanu loading
-    const { isAuthenticated, isLoading, login, user } = useAuth('staff');
+    const { isAuthenticated, isLoading, login, user } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError(null);
-        setLoading(true); // Ustawienie loading na true
+        setLoading(true);
 
         try {
-            const response = await api.post('/auth/login-staff', { email, password });
+            const response = await api.post('/auth/login/mgmt', { email, password });
             const { user } = response.data;
             login(user);
-            navigate('/staff');
+            navigate('/management');
         } catch (err) {
             if (err.message && err.message.includes('Network Error')) {
                 setError('Unable to connect to the server. Please try again later.');
             } else {
-                setError(err.response?.data?.message || 'Error during login');
+                const errorqq = new Error(); const stack = errorqq.stack.split('\n')[1];
+                console.log('## err: ', err,' ', stack)
+                setError(err.response?.data?.error || 'Error during login');
             }
         }finally {
             setLoading(false);
@@ -34,12 +36,12 @@ export default function StaffLogin() {
     };
 
     useEffect(() => {
-        if (!isLoading && isAuthenticated) navigate('/staff');
-    }, [isLoading, isAuthenticated]);
+        if (!isLoading && isAuthenticated) navigate('/management');
+    }, [isLoading, isAuthenticated, navigate]);
 
     return (
         <div className="login-container">
-            <h1>Staff Login</h1>
+            <h1>Management Login</h1>
             {isAuthenticated && user && <div>You are already logged in as {user.name}</div>}
             <form onSubmit={handleLogin} className="login-form">
                 <label className="login-label">

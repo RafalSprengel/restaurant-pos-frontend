@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import axios from 'axios';
 import api from '../utils/axios';
+
 export function useFetch(initialUrl) {
+
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -14,13 +15,11 @@ export function useFetch(initialUrl) {
             setError(null);
             try {
                 const response = await api(url);
-                // if (!response.ok) throw new Error('Network response was not ok');
-
                 if (!response.status === 200) setError(response.data.error);
                 setResponseStatus(response.status);
                 setData(response.data);
             } catch (error) {
-                setError(error.response.data.error);
+                setError("Network connection error");
             } finally {
                 setLoading(false);
             }
@@ -46,7 +45,6 @@ export function useFetch(initialUrl) {
     }, [initialUrl, fetchData]);
 
     useEffect(() => {
-        // Initial fetch on component mount
         if (firstRender.current && initialUrl) {
             fetchData();
         }

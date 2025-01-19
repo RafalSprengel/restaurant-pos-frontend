@@ -13,7 +13,7 @@ export default function ConfirmationModal({ isOpen, close, onConfirm, message })
             <div className='confirmationModal'>
                 <h2>{message}</h2>
                 <div className='confirmationModal__buttons'>
-                    <button onClick={() => handleOnConfirm()}>Yes</button>
+                    <button onClick={handleOnConfirm}>Yes</button>
                     <button onClick={close}>No</button>
                 </div>
             </div>

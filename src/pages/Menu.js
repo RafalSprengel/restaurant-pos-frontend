@@ -1,11 +1,10 @@
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-//import { createSlug } from '../utils/utils.js';
 import '../styles/Menu.scss';
-import SingleDish from '../components/SingleDish';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import { useFetch } from '../hooks/useFetch.js';
 import { Alert } from 'react-bootstrap';
+import SingleDish from '../components/SingleDish';
 
 export const Menu = () => {
     const { openProduct } = useShoppingCart();
@@ -13,16 +12,19 @@ export const Menu = () => {
     const location = useLocation();
     const queryString = location.search;
     const [currentCategory, setCurrentCategory] = useState('');
+
     const {
         data: categoriesList,
         loading: categoriesLoading,
         error: categoriesError,
-    } = useFetch('http://localhost:3001/api/productCategories/getAllCategories');
+    } = useFetch('/product-categories/');
+
     const {
         data,
         loading: productsLoading,
         error: productsError,
-    } = useFetch('http://localhost:3001/api/products/getProducts' + queryString);
+    } = useFetch('/products/' + queryString);
+
     const products = data?.products || [];
 
     const getCurrentCategoryFromURL = () => {

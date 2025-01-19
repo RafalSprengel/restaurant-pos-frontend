@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Modal, Button, Alert } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Alert } from 'react-bootstrap';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
+import api from '../utils/axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Checkout.scss';
 
 export default function Checkout() {
@@ -95,50 +96,44 @@ export default function Checkout() {
                       street: '',
                       houseNo: '',
                   };
-
+    
         setErrors(requiredFields);
-
+    
         const hasErrors = Object.values(requiredFields).some((el) => el !== '');
-
+    
         if (hasErrors) {
             setShowErrorMessage(true);
             return;
         } else {
             setShowErrorMessage(false);
         }
-
+    
         const dataToSend = cartItems.map((el) => ({ id: el._id, quantity: el.quantity }));
-
+    
         try {
-            const response = await fetch('http://localhost:3001/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    items: [...dataToSend],
-                    customer: { name: order.customer.name, surname: order.customer.surname, email: order.customer.email },
-                    deliveryAddress:
-                        order.delivery === 1
-                            ? {
-                                  city: order.address.city,
-                                  street: order.address.street,
-                                  houseNo: order.address.houseNo,
-                                  flatNo: order.address.flatNo,
-                                  floor: order.address.floor,
-                              }
-                            : undefined, // don't send address if delivery is set to 0
-                    note: order.note,
-                    orderType: order.delivery === 1 ? 'delivery' : order.delivery === 2 ? 'pickup' : 'dine-in', // Include order type
-                    orderTime: order.time.option === 2 ? order.time.hour : null, // Include order time if scheduled
-                    successUrl: `${window.location.origin}/order/success`,
-                    cancelUrl: `${window.location.origin}/order/cancel`,
-                }),
+            const response = await api.post('/create-checkout-session', {
+                items: [...dataToSend],
+                customer: { name: order.customer.name, surname: order.customer.surname, email: order.customer.email },
+                deliveryAddress:
+                    order.delivery === 1
+                        ? {
+                              city: order.address.city,
+                              street: order.address.street,
+                              houseNo: order.address.houseNo,
+                              flatNo: order.address.flatNo,
+                              floor: order.address.floor,
+                          }
+                        : undefined, // don't send address if delivery is set to 0
+                note: order.note,
+                orderType: order.delivery === 1 ? 'delivery' : order.delivery === 2 ? 'pickup' : 'dine-in', // Include order type
+                orderTime: order.time.option === 2 ? order.time.hour : null, // Include order time if scheduled
+                successUrl: `${window.location.origin}/order/success`,
+                cancelUrl: `${window.location.origin}/order/cancel`,
             });
-
-            const res = await response.json();
-
-            if (!response.ok) {
+    
+            const res = response.data;
+    
+            if (!response.status === 200) {
                 console.error(res.error);
             } else {
                 window.location = res.url;
@@ -147,10 +142,7 @@ export default function Checkout() {
             console.error(error);
         }
     };
-
-    // useEffect(() => {
-    //     console.log('errors: ', errors);
-    // });
+    
 
     return (
         <form className="checkout" onSubmit={handleSubmit}>

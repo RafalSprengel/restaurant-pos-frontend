@@ -11,7 +11,7 @@ const LoginCustomer = () => {
     const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { isAuthenticated,isLoading,  login } = useAuth('customer');
+    const { isAuthenticated,isLoading,  login } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -19,7 +19,7 @@ const LoginCustomer = () => {
         setError(null);
     
         try {
-            const response = await api.post('/auth/login-customer', { email, password });
+            const response = await api.post('/auth/login/customer', { email, password });
             const { customer } = response.data;
             login(customer);
             navigate('/customer');

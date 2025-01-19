@@ -3,15 +3,15 @@ import api from '../utils/axios.js';
 
 const AuthContext = createContext();
 
-export function useAuth(role = 'customer') {
+export function useAuth() {
     const context = useContext(AuthContext);
     if (!context) {
         throw new Error(`useAuth must be used within an AuthProvider`);
     }
 
     useEffect(() => {
-        if (role) {
-            context.checkAuthStatus(role); 
+        if (!context.user) {
+            context.checkAuthStatus();
         }
     }, []); 
 
@@ -20,20 +20,16 @@ export function useAuth(role = 'customer') {
     };
 }
 
-
-
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const checkAuthStatus = async (role = 'customer') => {
-        console.log('## role w checkAuthStatus: ', role);
+    const checkAuthStatus = async () => {
         try {
             setLoading(true);
-            const endpoint = role === 'staff' ? '/staff/session' : '/customers/session';
-            const response = await api.get(endpoint, { withCredentials: true });
+            const response = await api.get('/auth/session', { withCredentials: true });
             if (response.status === 200) {
                 setUser(response.data);
                 setIsAuthenticated(true);
@@ -65,6 +61,15 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
         }
     };
+
+    const setAuthStatus = (status) => {
+        setIsAuthenticated(status);
+    };
+
+    useEffect(() => {
+        api.setIsAuthenticated = setAuthStatus;
+        api.logout = logout;
+    }, []);
 
     return (
         <AuthContext.Provider

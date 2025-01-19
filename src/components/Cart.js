@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import Modal from '../components/Modal.js';
+import { useShoppingCart } from '../context/ShoppingCartContext.js';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Cart.scss';
 
 export default function Cart({ isOpen, close }) {
@@ -15,6 +15,7 @@ export default function Cart({ isOpen, close }) {
         getItemQuantity,
     } = useShoppingCart();
     const navigate = useNavigate();
+
     const handleClickGoToCheckout = () => {
         navigate('order/checkout');
         closeCart();
@@ -32,8 +33,7 @@ export default function Cart({ isOpen, close }) {
                 </div>
                 <div className="cartItem__content__item__subtotal">
                     <div className="cartItem__content__item__subtotal__price">
-                        &#163;
-                        {item.price}
+                        &#163;{item.price}
                     </div>
                     <div className="cartItem__content__item__subtotal__stepper">
                         <span className="cartItem__content__item__subtotal__stepper__minus" onClick={() => decreaseCartQuantity(item)}>
@@ -58,13 +58,10 @@ export default function Cart({ isOpen, close }) {
                 <div className="cartItem__header">
                     <div className="cartItem__header__left">YOUR CART</div>
                     {cartItems.length !== 0 && (
-                        <>
-                            <div className="cartItem__header__center" onClick={openDelAllConfirmModal}>
-                                (Clear basket)
-                            </div>
-                        </>
+                        <div className="cartItem__header__center" onClick={openDelAllConfirmModal}>
+                            (Clear basket)
+                        </div>
                     )}
-
                     <div className="cartItem__header__right" onClick={closeCart}>
                         X
                     </div>
@@ -78,12 +75,11 @@ export default function Cart({ isOpen, close }) {
                 </div>
                 <div className="cartItem__footer">
                     <button className="button-outlined" onClick={closeCart}>
-                        Back to shooping
+                        Back to shopping
                     </button>
                     {cartItems.length > 0 && (
                         <button className="button-contained" onClick={handleClickGoToCheckout}>
-                            Proceed to Checkout | &#163;
-                            {cartSummaryPrice()}
+                            Proceed to Checkout | &#163;{cartSummaryPrice()}
                         </button>
                     )}
                 </div>

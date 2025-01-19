@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Register.scss';
-import axios from 'axios';
+import api from '../utils/axios';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -14,22 +14,21 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
+    
         setLoading(true);
         setError(null);
-
+    
         try {
-            const response = await axios.post(
-                'http://localhost:3001/api/auth/register-new-customer',
+            const response = await api.post(
+                '/auth/register/customer',
                 JSON.stringify({ name, surname, email, password }),
                 {
-                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 }
             );
-
+    
             const { token } = response.data;
             localStorage.setItem('jwtToken', token);
             alert('Registration successful!, please login to continue');
@@ -44,6 +43,7 @@ const Register = () => {
             setLoading(false);
         }
     };
+    
 
     const handleGoogleRegister = () => {
         window.location.href = 'http://localhost:3001/auth/google';

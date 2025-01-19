@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
+import api from '../utils/axios';
 import '../styles/PaymentSuccess.scss';
 
 const PaymentSuccess = () => {
@@ -18,28 +19,21 @@ const PaymentSuccess = () => {
 
     const fetchSession = async () => {
         try {
-            const response = await fetch(
-                `http://localhost:3001/session_status?session_id=${session_id}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            const stripeSession = await response.json(); // Upewnij się, że zamieniasz odpowiedź na JSON
-            if (response.ok) {
-                setSessionData(stripeSession);
+            const response = await api.get(`/session-status?session_id=${session_id}`);
+            if (response.status === 200) {
+                setSessionData(response.data);
             } else {
-                console.error('Failed to fetch session data:', stripeSession);
-                setErrorMessage(stripeSession.error.toString());
+                console.error('Failed to fetch session data:', response.data);
+                setErrorMessage(response.data.error.toString());
             }
         } catch (error) {
             console.log(error);
+            setErrorMessage('Error fetching session data. Please try again later.');
         } finally {
             setIsLoading(false);
         }
     };
+    
 
     useEffect(() => {
         //set how interval you want to fetch the session data
