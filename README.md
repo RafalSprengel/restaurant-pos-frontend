@@ -17,6 +17,7 @@ Frontend:
 - React.js
 - JavaScript
 - CSS
+  
 Backend:
 - Node.js
 - Express.js
