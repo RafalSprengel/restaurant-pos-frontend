@@ -7,15 +7,15 @@ import AddCategory from '../components/managementPanel/categories/AddCategory.js
 import AddProduct from '../components/managementPanel/products/AddProduct.js';
 import AddUser from '../components/managementPanel/mgmtMembers/AddMgmt.js';
 import AddCustomer from '../components/managementPanel/customers/AddCustomer.js';
-import Categories from '../components/managementPanel/categories/CategoriesList.js';
-import Customers from '../components/managementPanel/customers/CustomersList.js';
+import CategoriesList from '../components/managementPanel/categories/CategoriesList.js';
+import CustomersList from '../components/managementPanel/customers/CustomersList.js';
 import ManagementLayout from '../layouts/ManagementLayout.js';
 import UpdateOrder from '../components/managementPanel/orders/UpdateOrder.js';
-import Orders from '../components/managementPanel/orders/OrdersList.js';
-import Products from '../components/managementPanel/products/ProductsList.js';
+import OrdersList from '../components/managementPanel/orders/OrdersList.js';
+import ProductsList from '../components/managementPanel/products/ProductsList.js';
 import UpdateCategory from '../components/managementPanel/categories/UpdateCategory.js';
 import UpdateProduct from '../components/managementPanel/products/UpdateProduct.js';
-import Mgnts from '../components/managementPanel/mgmtMembers/MgmtsList.js';
+import MgmtsList from '../components/managementPanel/mgmtMembers/MgmtsList.js';
 import UpdateCustomer from '../components/managementPanel/customers/UpdateCustomer.js';
 import UpdateMgmt from '../components/managementPanel/mgmtMembers/UpdateMgmt.js';
 import AddMgmt from '../components/managementPanel/mgmtMembers/AddMgmt.js';
@@ -31,7 +31,7 @@ export const Management = () => {
                 withCredentials: true,
             });
             logout();
-            navigate('login');
+            navigate('login', {replace: true});
         } catch (error) {
             console.error('Error during logout:', error);
             setErrorLogout('Logout failed: ' + error.message);
@@ -40,15 +40,14 @@ export const Management = () => {
         }
     };
 
-    useEffect(()=>{
-        if(user && !['member', 'moderator', 'admin'].includes(user.role)) navigate('/customer/')
-        if (!isLoading && !isAuthenticated) navigate('login')
-    },[isAuthenticated, isLoading, navigate])
-
-    if (isLoading) {
-        return <div className="customer-panel">Loading...</div>;
-    }
-
+    useEffect(() => {
+        if (user && !['member', 'moderator', 'admin'].includes(user.role)) {
+          navigate('/customer/', { replace: true });
+        } 
+        if (!isLoading && !isAuthenticated) {
+          navigate('login', { replace: true });
+        }
+      }, [isAuthenticated, isLoading, navigate, user]);
 
 
     return (
@@ -194,22 +193,22 @@ export const Management = () => {
                         <div className="admin__right">
                         <Routes>
                             <Route element={<ManagementLayout />}>
-                                <Route path="products" element={<Products />} />
+                                <Route path="products" element={<ProductsList />} />
                                 <Route path="products/:id" element={<UpdateProduct />} />
                                 <Route path="add-product" element={<AddProduct />} />
 
-                                <Route path="categories" element={<Categories />} />
+                                <Route path="categories" element={<CategoriesList />} />
                                 <Route path="categories/:id" element={<UpdateCategory />} />
                                 <Route path="add-category" element={<AddCategory />} />
 
-                                <Route path="customers" element={<Customers />} />
+                                <Route path="customers" element={<CustomersList />} />
                                 <Route path="customers/:id" element={<UpdateCustomer />} />
                                 <Route path="add-customer" element={<AddCustomer />} />
 
-                                <Route path="orders" element={<Orders />} />
+                                <Route path="orders" element={<OrdersList />} />
                                 <Route path="orders/:id" element={<UpdateOrder />} />
 
-                                <Route path="mgnts" element={<Mgnts />} />
+                                <Route path="mgnts" element={<MgmtsList />} />
                                 <Route path="mgnts/:id" element={<UpdateMgmt />} />
                                 <Route path="add-mgmt" element={<AddMgmt />} />
                                 

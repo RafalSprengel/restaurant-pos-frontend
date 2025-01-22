@@ -26,7 +26,7 @@ export function useLocalStorageWithValidation(key, initialValue) {
         for (const item of value) {
             try {
                 // Check if the product exists in the database
-                const response = await api.get(`/getSingleProduct/${item._id}`);
+                const response = await api.get(`/products/${item._id}`);
                 if (response.status === 200) {
                     const product = response.data;
                     if (product) {

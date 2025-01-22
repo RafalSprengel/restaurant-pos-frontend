@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
+import {useAuth} from '../context/authContext.js';
 import api from '../utils/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Checkout.scss';
@@ -8,9 +9,15 @@ import '../styles/Checkout.scss';
 export default function Checkout() {
     const { cartItems, cartSummaryPrice } = useShoppingCart();
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const { user} = useAuth();
 
     const [order, setOrder] = useState({
-        customer: { name: '', surname: '', email: '' },
+        customer: {
+            name: '',
+            surname:'',
+            phone:'',
+            email: '',
+        },
         time: { option: 1, hour: '16:30' },
         delivery: 1,
         address: { city: '', street: '', houseNo: '', flatNo: '', floor: '' },
@@ -20,6 +27,7 @@ export default function Checkout() {
     const [errors, setErrors] = useState({
         name: '',
         surname: '',
+        phone:'',
         email: '',
         city: '',
         street: '',
@@ -82,6 +90,7 @@ export default function Checkout() {
                       // for delivery
                       name: !order.customer.name.trim() ? 'This field cannot be empty' : errors.name,
                       surname: !order.customer.surname.trim() ? 'This field cannot be empty' : errors.surname,
+                      phone: !order.customer.phone.trim() ? 'This field cannot be empty' : errors.phone,
                       email: !order.customer.email.trim() ? 'This field cannot be empty' : errors.email,
                       city: !order.address.city.trim() ? 'This field cannot be empty' : errors.city,
                       street: !order.address.street.trim() ? 'This field cannot be empty' : errors.street,
@@ -91,6 +100,7 @@ export default function Checkout() {
                       // for pickup and dine in
                       name: !order.customer.name.trim() ? 'This field cannot be empty' : errors.name,
                       surname: !order.customer.surname.trim() ? 'This field cannot be empty' : errors.surname,
+                    phone: !order.customer.phone.trim() ? 'This field cannot be empty' : errors.phone,
                       email: !order.customer.email.trim() ? 'This field cannot be empty' : errors.email,
                       city: '',
                       street: '',
@@ -111,9 +121,9 @@ export default function Checkout() {
         const dataToSend = cartItems.map((el) => ({ id: el._id, quantity: el.quantity }));
     
         try {
-            const response = await api.post('/create-checkout-session', {
+            const response = await api.post('/stripe/create-checkout-session', {
                 items: [...dataToSend],
-                customer: { name: order.customer.name, surname: order.customer.surname, email: order.customer.email },
+                customer: { name: order.customer.name, surname: order.customer.surname, phone: order.customer.phone , email: order.customer.email },
                 deliveryAddress:
                     order.delivery === 1
                         ? {
@@ -144,6 +154,15 @@ export default function Checkout() {
     };
     
 
+    useEffect(() => {
+        if (user) {
+            setOrder((prevOrder) => ({
+                ...prevOrder,
+                customer: { name: user.name || '' , surname: user.surname || '' ,phone: user.phone || '' , email: user.email || '' },
+            }));
+        }
+    }, [user]);
+
     return (
         <form className="checkout" onSubmit={handleSubmit}>
             <div className="checkout__form">
@@ -163,6 +182,12 @@ export default function Checkout() {
                         <br></br>
                         <input type="text" id="surname" name="surname" onChange={handleCustomerFieldChange} value={order.customer.surname} />
                         {errors.surname && <span className="error">{errors.surname}</span>}
+                    </div>
+                    <div className="checkout__form__field">
+                        <label htmlFor="phone">Phone:</label>
+                        <br></br>
+                        <input type="text" id="phone" name="phone" onChange={handleCustomerFieldChange} value={order.customer.phone} />
+                        {errors.phone && <span className="error">{errors.phone}</span>}
                     </div>
                     <div className="checkout__form__field">
                         <label htmlFor="email">Email:</label>

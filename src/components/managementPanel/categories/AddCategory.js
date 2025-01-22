@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import api from '../../../utils/axios.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../styles/FormStyles.scss';
 
 const AddCategory = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +65,7 @@ const AddCategory = () => {
     return (
         <>
             <h3>Add a new category</h3>
-            <form className="menu-item-form" onSubmit={handleSubmit}>
+            <form className="form-container" onSubmit={handleSubmit}>
                 {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <label>Name:</label>
                 <input

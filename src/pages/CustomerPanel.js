@@ -46,17 +46,15 @@ const CustomerDashboard = () => {
         try {
             await api.post('/auth/logout'); 
             logout(); 
-            navigate('/customer/login');
+            navigate('/customer/login', {replace: true});
         } catch (error) {
             console.error('Logout failed:', error.message);
         }
     };
   
     useEffect(()=>{
-        const errorqq = new Error(); const stack = errorqq.stack.split('\n')[1];
-        console.log('## user: ', user,' ', stack)
         if(user && ['member', 'moderator', 'admin'].includes(user.role)) navigate('/management')
-        if (!isLoading && !isAuthenticated) navigate('login')
+        if (!isLoading && !isAuthenticated) navigate('login', {replace: true})
     },[isAuthenticated, isLoading,navigate])
 
     return (

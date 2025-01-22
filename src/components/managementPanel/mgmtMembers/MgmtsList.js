@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
+import dayjs from 'dayjs';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Stack from 'react-bootstrap/Stack';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 
-const Mgnts = () => {
+const MgmtsList = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [errorMessage, setErrorMessage] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [staffList, setStaffList] = useState([]);
@@ -39,10 +40,10 @@ const Mgnts = () => {
             const response = await api.get(`/staff/${queryString}`);
     
             if (response.status === 200) {
-                const data = response.data;
-                setStaffList(data.staff);
-                setTotalPages(data.totalPages);
-                setCurrentPage(data.currentPage);
+                const { staff, totalPages, currentPage } = response.data;
+                setStaffList(staff);
+                setTotalPages(totalPages);
+                setCurrentPage(currentPage);
             } else {
                 setErrorMessage(`Server error: ${response.data.error}`);
             }
@@ -135,10 +136,11 @@ const Mgnts = () => {
 
     const staffRows = staffList.map((staff) => (
         <tr key={staff._id} onClick={() => handleRowClick(staff._id)}>
+            <td>{staff.staffNumber}</td>
             <td>{`${staff.name} ${staff.surname || ''}`}</td>
             <td>{staff.email}</td>
             <td>{staff.role}</td>
-            <td>{staff.createdAt}</td>
+            <td>{dayjs(staff.createdAt).format('HH:mm DD/MM/YY')}</td>
             <td className="admin__deleteElement">
                 {isVisible.deleteStaffButt && (
                     <button type="button" className="btn btn-danger" onClick={(e) => handleDeleteClick(e, staff._id)}>
@@ -177,6 +179,9 @@ const Mgnts = () => {
                     <table>
                         <thead>
                             <tr>
+                                <th data-name="staffNumber" onClick={handleSort}>
+                                    Number <SortArrow criteria="staffNumber" />
+                                </th>
                                 <th data-name="name" onClick={handleSort}>
                                     Name <SortArrow criteria="name" />
                                 </th>
@@ -204,9 +209,7 @@ const Mgnts = () => {
                             <Pagination.Item
                                 key={index}
                                 active={index + 1 === currentPage}
-                                onClick={() => handlePageChange(index + 1)}>
-                                {index + 1}
-                            </Pagination.Item>
+                                onClick={() => handlePageChange(index + 1)}>{index + 1}</Pagination.Item>
                         ))}
                         <Pagination.Next
                             disabled={currentPage === totalPages}
@@ -241,4 +244,4 @@ const Mgnts = () => {
     );
 };
 
-export default Mgnts;
+export default MgmtsList;

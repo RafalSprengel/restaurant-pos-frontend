@@ -22,7 +22,7 @@ const LoginCustomer = () => {
             const response = await api.post('/auth/login/customer', { email, password });
             const { customer } = response.data;
             login(customer);
-            navigate('/customer');
+            navigate('/customer', { replace: true });
         } catch (err) {
             if (err.message && err.message.includes('Network Error')) {
                 setError('Unable to connect to the server. Please try again later.');
@@ -44,7 +44,7 @@ const LoginCustomer = () => {
     };
 
 useEffect(()=>{
-    if(isAuthenticated) navigate('/customer')
+    if(isAuthenticated) navigate('/customer', {replace: true})
 }, [isLoading, isAuthenticated])
 
     return (

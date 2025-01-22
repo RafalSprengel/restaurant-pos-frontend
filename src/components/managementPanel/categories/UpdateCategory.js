@@ -4,6 +4,7 @@ import { Modal, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../../styles/FormStyles.scss';
 
 const UpdateCategory = () => {
     const { id } = useParams();
@@ -84,7 +85,7 @@ const UpdateCategory = () => {
 
     return (
         <>
-            <form className="menu-item-form" onSubmit={handleSubmit}>
+            <form className="form-container" onSubmit={handleSubmit}>
                 <h2>Update existing category</h2>
                 {showErrorAlert && <Alert variant="danger">{errorMessage}</Alert>}
 

@@ -7,7 +7,7 @@ import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import dayjs from 'dayjs';
 
-const Orders = () => {
+const OrdersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -90,21 +90,24 @@ const Orders = () => {
 
     const handleConfirmDelete = async () => {
         setShowModal(false);
+        setIsLoading(true);
         try {
-            await deleteOrder(orderToDelete);
+            const response = await api.delete(`/orders/${orderToDelete}`);
+  
+            if (response.status === 200) {
+                setErrorMessage(null); 
+                getOrders();
+            } else {
+                setErrorMessage('Unable to delete this order.');
+            }
         } catch (error) {
             setErrorMessage('Failed to delete the order. Please try again.');
             console.error('Error deleting order:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
-
-    const deleteOrder = async (id) => {
-        setErrorMessage(null);
-        const response = await api.delete(`/orders/${id}`);
-        if (response.status !== 200) {
-            setErrorMessage(`Unable to delete this order.`);
-        }
-    };
+    
 
     const OrderRow = ({ order }) => {
         return (
@@ -245,4 +248,4 @@ const Orders = () => {
     );
 };
 
-export default Orders;
+export default OrdersList;

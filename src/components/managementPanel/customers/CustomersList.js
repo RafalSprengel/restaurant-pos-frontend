@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 
-const Customers = () => {
+const CustomersList = () => {
     const [customers, setCustomers] = useState([]);
     const [customerIdToDelete, setCustomerIdToDelete] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -31,7 +31,6 @@ const Customers = () => {
 
     const isVisible = rolePermissions[user.role] || { deleteButt: false };
 
-    // Pobieranie danych o klientach
     const fetchCustomers = async () => {
         const queryString = location.search;
         try {
@@ -52,34 +51,40 @@ const Customers = () => {
         }
     };
 
-    // Funkcja obsługująca kliknięcie w wiersz tabeli
     const handleRowClick = (id) => {
         navigate(`${id}`);
     };
 
-    // Funkcja obsługująca usunięcie klienta
     const deleteCustomer = async () => {
         try {
             const res = await api.delete(`/customers/${customerIdToDelete}`);
             if (res.status !== 200) {
+                setError(`Error: ${res.data.error || 'Unable to delete customer'}`);
                 console.error('Unable to delete customer:', res.data.error);
             }
         } catch (e) {
-            console.error('Error deleting customer:', e.response.data.error);
+            if (e.response) {
+                setError(`Error: ${e.response.data.error || 'Unknown error'}`);
+                console.error('Error deleting customer:', e.response.data.error);
+            } else {
+                setError('Error: Unable to delete customer.');
+                console.error('Error deleting customer:', e.message);
+            }
         } finally {
             setShowModal(false);
-            fetchCustomers(); // Odśwież dane po usunięciu
+            if (!error) {
+                fetchCustomers();
+            }
         }
     };
+    
 
-    // Funkcja obsługująca kliknięcie w przycisk usuwania
     const handleConfirmDelete = (e, id) => {
         e.stopPropagation();
         setCustomerIdToDelete(id);
         setShowModal(true);
     };
 
-    // Funkcja obsługująca zmianę wyszukiwania
     const handleSearchChange = (e) => {
         const { value } = e.target;
         setSearchString(value);
@@ -89,7 +94,6 @@ const Customers = () => {
         navigate('?' + params);
     };
 
-    // Funkcja obsługująca zmianę sortowania
     const handleSort = (e) => {
         const { name } = e.currentTarget.dataset;
         const params = new URLSearchParams(location.search);
@@ -104,14 +108,12 @@ const Customers = () => {
         navigate('?' + params);
     };
 
-    // Funkcja do zmiany strony
     const handlePageChange = (page) => {
         const params = new URLSearchParams(location.search);
         params.set('page', page);
         navigate('?' + params.toString());
     };
 
-    // Inicjalizacja wyszukiwania, sortowania i paginacji
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const searchFromUrl = params.get('search');
@@ -122,12 +124,10 @@ const Customers = () => {
         setSearchString(searchFromUrl || '');
     }, [location.search]);
 
-    // Pobieranie danych po każdej zmianie
     useEffect(() => {
         fetchCustomers();
     }, [searchParams, searchString, sortCriteria, sortOrder]);
 
-    // Komponent strzałki do nagłówka tabeli
     const SortArrow = ({ criteria }) => {
         const arrow = () => {
             if (criteria === sortCriteria) return sortOrder === 'desc' ? '▼' : '▲';
@@ -263,4 +263,4 @@ const Customers = () => {
     );
 };
 
-export default Customers;
+export default CustomersList;

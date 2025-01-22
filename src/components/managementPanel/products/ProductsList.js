@@ -6,7 +6,7 @@ import Stack from 'react-bootstrap/Stack';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 
-const Products = () => {
+const ProductsList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -69,25 +69,31 @@ const Products = () => {
         setShowModal(false);
         setIsDeleting(true);
         setErrorMessage(null);
+    
         try {
-            await deleteProduct(productToDelete);
-            navigate(location.pathname, { replace: true });
+            const response = await api.delete(`/products/${productToDelete}`);
+    
+            if (response.status === 200) {
+                console.log('## przechodze na url bez querystring');
+                navigate(location.pathname, { replace: true });
+            } else {
+                const errorData = response.data; 
+                setErrorMessage(`Unable to delete this product (${errorData.message || 'unknown error'})`);
+            }
         } catch (error) {
-            setErrorMessage('Failed to delete the product. Please try again.');
-            console.error('Error deleting product:', error);
+            if (error.response) {
+                const errorMessage = error.response.data?.message || 'Failed to delete the product. Please try again.';
+                setErrorMessage(errorMessage);
+                console.error('Error deleting product:', errorMessage);
+            } else {
+                setErrorMessage('Network error. Please check your connection.');
+                console.error('Error deleting product:', error);
+            }
         } finally {
             setIsDeleting(false);
         }
     };
-
-    const deleteProduct = async (id) => {
-        setErrorMessage(null);
-        const response = await api.delete(`/products/${id}`);
-        if (!response.ok) {
-            const errorData = await response.json();
-            setErrorMessage(`Unable to delete this product (${errorData})`);
-        }
-    };
+    
 
     const handlePageChange = (page) => {
         const params = new URLSearchParams(location.search);
@@ -97,6 +103,7 @@ const Products = () => {
 
     const productRows = productsList.map((item) => (
         <tr key={item._id} onClick={() => handleRowClick(item._id)}>
+            <td>{item.productNumber}</td>
             <td>{item.name}</td>
             <td>{item.category?.name || 'N/A'}</td>
             <td>{item.price}</td>
@@ -193,6 +200,9 @@ const Products = () => {
                     <table>
                         <thead>
                             <tr>
+                                <th data-name="productNumber" onClick={handleSort}>
+                                    Number <SortArrow criteria="productNumber" />
+                                </th>
                                 <th data-name="name" onClick={handleSort}>
                                     Name <SortArrow criteria="name" />
                                 </th>
@@ -263,4 +273,4 @@ const Products = () => {
     );
 };
 
-export default Products;
+export default ProductsList;

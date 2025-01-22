@@ -7,7 +7,7 @@ import Stack from 'react-bootstrap/Stack';
 import api from '../../../utils/axios.js';
 import { useAuth } from '../../../context/authContext.js';
 
-const Categories = () => {
+const CategoriesList = () => {
     const [deletingError, setDeletingErrors] = useState(null);
     const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -46,52 +46,56 @@ const Categories = () => {
         setShowModal(true);
     };
 
-    const deleteCategory = async (id) => {
-        setDeletingErrors(false);
+    const deleteCategory = async () => {
+        setDeletingErrors(null);
         try {
-            const response = await api.delete('/product-categories/' + categoryIdToDelete);
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Unable do delete element, datails: ' + errorData.error);
-                throw new Error(errorData.error);
+            const response = await api.delete(`/product-categories/${categoryIdToDelete}`);
+            if (response.status === 200) {
+                refetch(); 
+            } else {
+                const errorMessage = response.data?.error || 'Nieznany błąd';
+                console.error('Nie udało się usunąć kategorii:', errorMessage);
+                throw new Error(errorMessage);
             }
         } catch (error) {
-            console.error(error);
-            setDeletingErrors(error.toString());
+            if (error.response) {
+                const errorMessage = error.response.data?.error || 'Błąd podczas usuwania kategorii';
+                console.error('Błąd odpowiedzi serwera:', errorMessage);
+                setDeletingErrors(errorMessage);
+            } else {
+                console.error('Błąd sieciowy:', error);
+                setDeletingErrors('Błąd sieciowy. Sprawdź połączenie.');
+            }
         } finally {
-            setShowModal(false);
-            refetch();
-        }
+            setShowModal(false); 
     };
+}
 
-    const Row = ({ el }) => {
-        return (
-            <tr onClick={() => handleRowClick(el._id)}>
-                <td>{el.name}</td>
-                <td>
-                    <img
-                        src={el.image}
-                        className="admin__categoryImg"
-                        onClick={() => handleImageClick(el.image)}
-                        style={{ cursor: 'pointer' }}
-                        alt="Category"
-                    />
-                </td>
-                <td>{el.index}</td>
-                <td>
-                    {isVisible.deleteButt && (
-                        <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, el._id)}>
-                            Delete
-                        </button>
-                    )}
-                </td>
-            </tr>
-        );
-    };
+    const Row = ({ el }) => (
+        <tr onClick={() => handleRowClick(el._id)}>
+            <td>{el.name}</td>
+            <td>
+            <img
+                src={el.image || 'path/to/default-image.jpg'} // Domyślny obraz, jeśli brak
+                className="admin__categoryImg"
+                onClick={() => handleImageClick(el.image)}
+                style={{ cursor: 'pointer' }}
+                alt="Category"
+            />
 
-    const categoriesRows = categoryList?.map((el) => {
-        return <Row key={el._id} el={el} />;
-    });
+            </td>
+            <td>{el.index}</td>
+            <td>
+                {isVisible.deleteButt && (
+                    <button className="btn btn-danger" onClick={(e) => handleConfirmDelete(e, el._id)}>
+                        Delete
+                    </button>
+                )}
+            </td>
+        </tr>
+    );
+
+    const categoriesRows = categoryList?.map((el) => <Row key={el._id} el={el} />);
 
     return (
         <>
@@ -99,13 +103,9 @@ const Categories = () => {
             <Stack direction="horizontal" gap={3}>
                 <div className="p-2">
                     {isVisible.addNewButt && (
-                       <button
-                       className="btn btn-primary"
-                       onClick={() => navigate('/management/add-category')}
-                   >
-                       Add new..
-                   </button>
-                   
+                        <button className="btn btn-primary" onClick={() => navigate('/management/add-category')}>
+                            Add new..
+                        </button>
                     )}
                 </div>
                 <div className="p-2 ms-auto"></div>
@@ -140,7 +140,7 @@ const Categories = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want do delete this category?</Modal.Body>
+                <Modal.Body>Are you sure you want to delete this category?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancel
@@ -168,4 +168,4 @@ const Categories = () => {
     );
 };
 
-export default Categories;
+export default CategoriesList;

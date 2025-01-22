@@ -6,7 +6,7 @@ import api from '../utils/axios'; // Importowanie instancji axios
 
 export default function StaffLogin() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('member@wp.pl');
+    const [email, setEmail] = useState('admin@wp.pl');
     const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false); // Dodanie stanu loading
@@ -21,7 +21,7 @@ export default function StaffLogin() {
             const response = await api.post('/auth/login/mgmt', { email, password });
             const { user } = response.data;
             login(user);
-            navigate('/management');
+            navigate('/management', {replace: true});
         } catch (err) {
             if (err.message && err.message.includes('Network Error')) {
                 setError('Unable to connect to the server. Please try again later.');
@@ -36,13 +36,12 @@ export default function StaffLogin() {
     };
 
     useEffect(() => {
-        if (!isLoading && isAuthenticated) navigate('/management');
+        if (!isLoading && isAuthenticated) navigate('/management', {replace: true});
     }, [isLoading, isAuthenticated, navigate]);
 
     return (
         <div className="login-container">
             <h1>Management Login</h1>
-            {isAuthenticated && user && <div>You are already logged in as {user.name}</div>}
             <form onSubmit={handleLogin} className="login-form">
                 <label className="login-label">
                     Email:
