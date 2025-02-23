@@ -9,8 +9,8 @@ import '../styles/Checkout.scss';
 export default function Checkout() {
     const { cartItems, cartSummaryPrice } = useShoppingCart();
     const [showErrorMessage, setShowErrorMessage] = useState(false);
-    const { user} = useAuth();
-
+   const { isAuthenticated, user} = useAuth();
+   
     const [order, setOrder] = useState({
         customer: {
             name: '',
@@ -19,7 +19,7 @@ export default function Checkout() {
             email: '',
         },
         time: { option: 1, hour: '16:30' },
-        delivery: 1,
+        delivery: 2,
         address: { city: '', street: '', houseNo: '', flatNo: '', floor: '' },
         note: '',
     });
@@ -133,12 +133,13 @@ export default function Checkout() {
                               flatNo: order.address.flatNo,
                               floor: order.address.floor,
                           }
-                        : undefined, // don't send address if delivery is set to 0
+                        : undefined,
                 note: order.note,
-                orderType: order.delivery === 1 ? 'delivery' : order.delivery === 2 ? 'pickup' : 'dine-in', // Include order type
-                orderTime: order.time.option === 2 ? order.time.hour : null, // Include order time if scheduled
+                orderType: order.delivery === 1 ? 'delivery' : order.delivery === 2 ? 'pickup' : 'dine-in',
+                orderTime: order.time.option === 2 ? order.time.hour : null,
                 successUrl: `${window.location.origin}/order/success`,
                 cancelUrl: `${window.location.origin}/order/cancel`,
+                isGuest: !isAuthenticated,
             });
     
             const res = response.data;
@@ -146,6 +147,7 @@ export default function Checkout() {
             if (!response.status === 200) {
                 console.error(res.error);
             } else {
+                console.log('## line 150 Checkout')
                 window.location = res.url;
             }
         } catch (error) {
@@ -155,6 +157,7 @@ export default function Checkout() {
     
 
     useEffect(() => {
+     
         if (user) {
             setOrder((prevOrder) => ({
                 ...prevOrder,
@@ -162,6 +165,7 @@ export default function Checkout() {
             }));
         }
     }, [user]);
+
 
     return (
         <form className="checkout" onSubmit={handleSubmit}>

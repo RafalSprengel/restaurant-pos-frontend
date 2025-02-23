@@ -1,24 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext.js';
 import '../styles/Management.scss';
 import api from '../utils/axios.js';
-import AddCategory from '../components/managementPanel/categories/AddCategory.js';
-import AddProduct from '../components/managementPanel/products/AddProduct.js';
-import AddUser from '../components/managementPanel/mgmtMembers/AddMgmt.js';
-import AddCustomer from '../components/managementPanel/customers/AddCustomer.js';
-import CategoriesList from '../components/managementPanel/categories/CategoriesList.js';
-import CustomersList from '../components/managementPanel/customers/CustomersList.js';
-import ManagementLayout from '../layouts/ManagementLayout.js';
-import UpdateOrder from '../components/managementPanel/orders/UpdateOrder.js';
-import OrdersList from '../components/managementPanel/orders/OrdersList.js';
-import ProductsList from '../components/managementPanel/products/ProductsList.js';
-import UpdateCategory from '../components/managementPanel/categories/UpdateCategory.js';
-import UpdateProduct from '../components/managementPanel/products/UpdateProduct.js';
-import MgmtsList from '../components/managementPanel/mgmtMembers/MgmtsList.js';
-import UpdateCustomer from '../components/managementPanel/customers/UpdateCustomer.js';
-import UpdateMgmt from '../components/managementPanel/mgmtMembers/UpdateMgmt.js';
-import AddMgmt from '../components/managementPanel/mgmtMembers/AddMgmt.js';
 
 export const Management = () => {
     const navigate = useNavigate();
@@ -48,7 +32,6 @@ export const Management = () => {
           navigate('login', { replace: true });
         }
       }, [isAuthenticated, isLoading, navigate, user]);
-
 
     return (
         <>
@@ -191,30 +174,12 @@ export const Management = () => {
                             )}
                         </div>
                         <div className="admin__right">
-                        <Routes>
-                            <Route element={<ManagementLayout />}>
-                                <Route path="products" element={<ProductsList />} />
-                                <Route path="products/:id" element={<UpdateProduct />} />
-                                <Route path="add-product" element={<AddProduct />} />
+                
+                        <main className="admin-layout">
+                            <Outlet />
+                        </main> 
 
-                                <Route path="categories" element={<CategoriesList />} />
-                                <Route path="categories/:id" element={<UpdateCategory />} />
-                                <Route path="add-category" element={<AddCategory />} />
-
-                                <Route path="customers" element={<CustomersList />} />
-                                <Route path="customers/:id" element={<UpdateCustomer />} />
-                                <Route path="add-customer" element={<AddCustomer />} />
-
-                                <Route path="orders" element={<OrdersList />} />
-                                <Route path="orders/:id" element={<UpdateOrder />} />
-
-                                <Route path="mgnts" element={<MgmtsList />} />
-                                <Route path="mgnts/:id" element={<UpdateMgmt />} />
-                                <Route path="add-mgmt" element={<AddMgmt />} />
-                                
-                            </Route>
-                        </Routes>
-
+                  
                         </div>
                     </div>
                 </div>

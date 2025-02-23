@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
+        checkAuthStatus();
         api.setIsAuthenticated = setAuthStatus;
         api.logout = logout;
     }, []);

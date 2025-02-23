@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext.js';
 import '../styles/CustomerDashboard.scss';
 import api from '../utils/axios.js';
+import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+
+
+
 
 const CustomerDashboard = () => {
+
+
+
     const orders = [
         {
             status: 'Awaiting delivery',
@@ -58,47 +64,47 @@ const CustomerDashboard = () => {
     },[isAuthenticated, isLoading,navigate])
 
     return (
-        user ? (
+        user ? ( 
             <div className="customer-panel">
-                <div className="sidebar">
-                    <ul>
-                        <li>Overview</li>
-                        <li className="active">Orders</li>
-                        <li>Payment</li>
-                        <li>Refund and return</li>
-                        <li>Settings</li>
-                        <li>Shipping address</li>
-                        <li onClick={handleLogout}>Logout</li>
-                    </ul>
-                </div>
+               <div className="sidebar">
+    <ul>
+        <li>
+            <NavLink to="/customer/recent-orders">
+                Recent orders
+            </NavLink>
+        </li>
+        <li>
+            <NavLink to="/customer/addresses">
+                My addresses
+            </NavLink>
+        </li>
+        <li>
+            <NavLink to="/customer/personal-details">
+                Personal details
+            </NavLink>
+        </li>
+        <li>
+            <NavLink onClick={handleLogout} className="logout-button">
+                Logout
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
                 <div className="orders-section">
                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                        <h1>Orders</h1>
-                        <h3>{user.name + ' ' + user.surname}</h3>
+                        <div></div>
+                        <h5>{user.name + ' ' + user.surname}</h5>
+                    </div>
+
+                    <div className="orders-list">
+                    
+                        <main className="admin-layout">
+                            <Outlet />
+                        </main> 
                     </div>
                     
-                    {orders.map((order, index) => (
-                        <div
-                            key={index}
-                            className={`order-card ${order.status.toLowerCase().replace(' ', '-')}`}
-                        >
-                            <div className="order-info">
-                                <p><strong>Store:</strong> {order.store}</p>
-                                <p><strong>Product:</strong> {order.product}</p>
-                                <p><strong>Order ID:</strong> {order.orderId}</p>
-                                <p><strong>Order Date:</strong> {order.orderDate}</p>
-                            </div>
-                            <div className="order-actions">
-                                <p><strong>Total:</strong> {order.price}</p>
-                                {order.status === 'Awaiting delivery' && (
-                                    <>
-                                        <button className="btn-confirm">Confirm received</button>
-                                        <button className="btn-track">Track order</button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                
                 </div>
             </div>
         ) : isLoading ? (

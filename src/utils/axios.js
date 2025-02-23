@@ -32,7 +32,7 @@ api.interceptors.response.use(
                 api.setIsAuthenticated(false);
             }
         }
-
+        console.log('## Linia 38 axios.js')
         return Promise.reject(error);
     }
 );

@@ -4,10 +4,11 @@ import '../styles/Register.scss';
 import api from '../utils/axios';
 
 const Register = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Register = () => {
         try {
             const response = await api.post(
                 '/auth/register/customer',
-                JSON.stringify({ name, surname, email, password }),
+                JSON.stringify({ name, surname, email, phone, password }),
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -32,7 +33,7 @@ const Register = () => {
             const { token } = response.data;
             localStorage.setItem('jwtToken', token);
             alert('Registration successful!, please login to continue');
-            navigate('/login');
+            navigate('/customer/login');
         } catch (e) {
             if (e.response) {
                 setError(e.response.data.error);
@@ -73,6 +74,16 @@ const Register = () => {
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)}
                         required
+                        className="register-input"
+                    />
+                </div>
+                <div className="register-inputGroup">
+                    <label htmlFor="phone">Phone:</label>
+                    <input
+                        type="text"
+                        id="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                         className="register-input"
                     />
                 </div>

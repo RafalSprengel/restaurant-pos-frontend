@@ -7,7 +7,7 @@ import api from '../utils/axios';
 
 const LoginCustomer = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('kowalski@wp.pl');
+    const [email, setEmail] = useState('client_1@wp.pl');
     const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
