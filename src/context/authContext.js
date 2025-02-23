@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/auth/session', { withCredentials: true });
+            const response = await api.get('/auth/session');
             if (response.status === 200) {
                 setUser(response.data);
                 setIsAuthenticated(true);

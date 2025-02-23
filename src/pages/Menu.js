@@ -12,7 +12,6 @@ export const Menu = () => {
     const location = useLocation();
     const queryString = location.search;
     const [currentCategory, setCurrentCategory] = useState('');
-
     const {
         data: categoriesList,
         loading: categoriesLoading,

@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+//const apiURL= process.env.NODE_ENV === 'development' ? 'http://localhost:3001/api' : 'https://api.justcode.uk/api';
+
+const apiURL = 'https://api.justcode.uk/api';
 const api = axios.create({
-    baseURL: 'http://localhost:3001/api',
+    baseURL: apiURL,
     withCredentials: true,
 });
 
@@ -17,7 +20,7 @@ api.interceptors.response.use(
                     '/auth/refresh-token',
                     {},
                     {
-                        baseURL: 'http://localhost:3001/api',
+                        baseURL: apiURL,
                         withCredentials: true,
                     }
                 );
@@ -28,11 +31,9 @@ api.interceptors.response.use(
                     api.setIsAuthenticated(false);
                 }
             } catch (refreshError) {
-                console.log('failed to refresh access token');
                 api.setIsAuthenticated(false);
             }
         }
-        console.log('## Linia 38 axios.js')
         return Promise.reject(error);
     }
 );
