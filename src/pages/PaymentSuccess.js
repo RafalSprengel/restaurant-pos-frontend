@@ -74,9 +74,10 @@ const PaymentSuccess = () => {
                 </button>
             )}
             {errorMessage && <p>{errorMessage}</p>}
-            <button className="button-contained" onClick={() => navigate('/')}>
+            {!isLoading && <button className="button-contained" onClick={() => navigate('/')}>
                 Go back to homepage
             </button>
+}
         </div>
     );
 };
