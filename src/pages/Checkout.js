@@ -123,6 +123,7 @@ export default function Checkout() {
         try {
             const response = await api.post('/stripe/create-checkout-session', {
                 items: [...dataToSend],
+                customerId: user?._id, //If registered user
                 customer: { name: order.customer.name, surname: order.customer.surname, phone: order.customer.phone , email: order.customer.email },
                 deliveryAddress:
                     order.delivery === 1

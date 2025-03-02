@@ -19,7 +19,7 @@ const PaymentSuccess = () => {
 
     const fetchSession = async () => {
         try {
-            const response = await api.get(`/session-status?session_id=${session_id}`);
+            const response = await api.get(`/stripe/session-status?session_id=${session_id}`);
             if (response.status === 200) {
                 setSessionData(response.data);
             } else {
