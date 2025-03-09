@@ -27,20 +27,44 @@ const LoginCustomer = () => {
             if (err.message && err.message.includes('Network Error')) {
                 setError('Unable to connect to the server. Please try again later.');
             } else {
-                setError(err.response?.data?.message || 'Error during login');
+                switch (err.response?.status) {
+                    case 400:
+                        setError('Bad request. Please check your input.');
+                        break;
+                    case 401:
+                        setError('Incorrect email or password.');
+                        break;
+                    case 403:
+                        setError('You do not have permission to access this resource.');
+                        break;
+                    case 404:
+                        setError('Requested resource not found.');
+                        break;
+                    case 500:
+                        setError('Internal server error. Please try again later.');
+                        break;
+                    case 503:
+                        setError('Service unavailable. Please try again later.');
+                        break;
+                    default:
+                        setError(err.response?.data?.message || 'An unexpected error occurred.');
+                }
             }
         } finally {
             setLoading(false);
         }
     };
     
+    
 
     const handleGoogleLogin = () => {
-        window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
+        //window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
+        window.location.href = `http://localhost:3001/v1/auth/google`;
     };
 
     const handleFacebookLogin = () => {
-        window.location.href = `${process.env.REACT_APP_API_URL}/auth/facebook`;
+        //window.location.href = `${process.env.REACT_APP_API_URL}/v1/auth/google`;
+        window.location.href = `http://localhost:3001/v1/auth/facebook`;
     };
 
 useEffect(()=>{

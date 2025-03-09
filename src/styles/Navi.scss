@@ -12,17 +12,17 @@
         flex-direction: row;
         align-items: center;
         min-width: 350px;
+    }
 
-        & li {
-            padding: 3px 10px;
-            cursor: pointer;
-            transition: color 0.15s;
-            min-width: 100px;
-            color: #a8a8a8;
+    & li {
+        padding: 3px 10px;
+        cursor: pointer;
+        transition: color 0.15s;
+        min-width: 100px;
+        color: #a8a8a8;
 
-            &:hover {
-                color: $primary-color;
-            }
+        &:hover {
+            color: $primary-color;
         }
     }
 
@@ -35,21 +35,8 @@
         cursor: pointer;
         transform: scaleY(0.9);
     }
-
 }
-
 @media only screen and (max-width: $breakpointLargeScreen) {
-    .header {
-        &__order_now {
-            & button {
-                min-width: 100px;
-                padding: 5px;
-            }
-        }
-    }
-}
-
-@media only screen and (max-width: $breakpointMediumScreen) {
     .navi {
         width: 0%;
         opacity: 0;
@@ -91,27 +78,10 @@
                 padding: 20px 0px;
                 font-size: 18px;
                 max-width: 70px;
-
-
             }
         }
     }
 }
 
-@media only screen and (max-width: $breakpointSmallScreen) {
-    .navi {
-        & ul {
-            top: -50px;
-            ;
 
-            & li {
-                font-size: 20px;
-            }
-        }
 
-        &__close-button {
-            font-size: 35px !important;
-        }
-    }
-
-}

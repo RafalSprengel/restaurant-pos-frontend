@@ -8,8 +8,7 @@ import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 
 
 const CustomerDashboard = () => {
-
-
+console.log('Renderuje komponent Customer panel');
 
     const orders = [
         {
@@ -94,7 +93,7 @@ const CustomerDashboard = () => {
                 <div className="orders-section">
                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                         <div></div>
-                        <h5>{user.name + ' ' + user.surname}</h5>
+                        <h5>{user.name + ' ' + user.surname }</h5>
                     </div>
 
                     <div className="orders-list">

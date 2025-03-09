@@ -71,7 +71,7 @@ export default function Checkout() {
         let error = '';
         if (!value.trim()) {
             error = 'This field cannot be empty';
-        } else if (!validateField(value, /^[a-zA-Z0-9-\s]+$/)) {
+        } else if (!validateField(value, /^[a-zA-Z0-9-\sąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$/)) {
             error = 'This field may only contain letters, numbers, and hyphens';
         }
 
@@ -197,7 +197,13 @@ export default function Checkout() {
                     <div className="checkout__form__field">
                         <label htmlFor="email">Email:</label>
                         <br></br>
-                        <input type="email" id="email" name="email" onChange={handleCustomerFieldChange} value={order.customer.email} />
+                        <input
+                        type="email"
+                        id="email"
+                        name="email" 
+                        disabled={isAuthenticated}
+                        onChange={handleCustomerFieldChange}
+                        value={order.customer.email} />
                         {errors.email && <span className="error">{errors.email}</span>}
                     </div>
                 </div>
