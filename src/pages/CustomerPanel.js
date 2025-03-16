@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../context/authContext.js';
-import '../styles/CustomerDashboard.scss';
+import '../styles/CustomerPanel.scss';
 import api from '../utils/axios.js';
 import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 
@@ -8,7 +8,6 @@ import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 
 
 const CustomerDashboard = () => {
-console.log('Renderuje komponent Customer panel');
 
     const orders = [
         {
@@ -68,13 +67,8 @@ console.log('Renderuje komponent Customer panel');
                <div className="sidebar">
     <ul>
         <li>
-            <NavLink to="/customer/recent-orders">
+            <NavLink to="/customer" end>
                 Recent orders
-            </NavLink>
-        </li>
-        <li>
-            <NavLink to="/customer/addresses">
-                My addresses
             </NavLink>
         </li>
         <li>
@@ -83,10 +77,18 @@ console.log('Renderuje komponent Customer panel');
             </NavLink>
         </li>
         <li>
+            <NavLink to="/">
+                Homepage
+            </NavLink>
+        </li>
+       <br></br>
+        <li>
             <NavLink onClick={handleLogout} className="logout-button">
                 Logout
             </NavLink>
         </li>
+        <br></br>
+       
     </ul>
 </div>
 

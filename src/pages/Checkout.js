@@ -118,11 +118,11 @@ export default function Checkout() {
             setShowErrorMessage(false);
         }
     
-        const dataToSend = cartItems.map((el) => ({ id: el._id, quantity: el.quantity }));
+        const itemsToSend = cartItems.map((el) => ({ id: el._id, quantity: el.quantity }));
     
         try {
             const response = await api.post('/stripe/create-checkout-session', {
-                items: [...dataToSend],
+                items: [...itemsToSend],
                 customerId: user?._id, //If registered user
                 customer: { name: order.customer.name, surname: order.customer.surname, phone: order.customer.phone , email: order.customer.email },
                 deliveryAddress:
@@ -171,6 +171,11 @@ export default function Checkout() {
     return (
         <form className="checkout" onSubmit={handleSubmit}>
             <div className="checkout__form">
+                <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'flex-end'}}>
+                    <h5>
+                        {user?.name || 'Guest'}
+                        </h5>
+                    </div>
                 <div className="checkout__form__header">Order Options:</div>
 
                 {showErrorMessage && <Alert variant="danger">Please fill in all required fields</Alert>}
@@ -270,11 +275,11 @@ export default function Checkout() {
                             </div>
                         </div>
                         <div className="checkout__form__orderAddress__group2">
-                            <div className="checkout__form__orderAddress__group2__apartmentNumber">
-                                <label htmlFor="apartmentNumber">Apartment Number</label>
+                            <div className="checkout__form__orderAddress__group2__flatNumber">
+                                <label htmlFor="flatNumber">Flat Number</label>
                                 <input
                                     type="text"
-                                    id="apartmentNumber"
+                                    id="flatNumber"
                                     onChange={handleAddressFieldChange}
                                     name="flatNo"
                                     value={order?.address?.flatNo}

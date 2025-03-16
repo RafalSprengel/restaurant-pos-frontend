@@ -113,9 +113,9 @@ const OrdersList = () => {
         return (
             <tr onClick={() => navigate(`${order._id}`)}>
                 <td>{order.orderNumber}</td>
-                <td>{order.customer.name}</td>
+                <td>{order.purchaserDetails.firstName+' '+order.purchaserDetails.surname}</td>
                 <td>{dayjs(order.createdAt).format('HH:mm DD/MM/YY')}</td>
-                <td>{order.totalPrice}</td>
+                <td>&pound;{order.totalPrice}</td>
                 <td>{order.status}</td>
                 <td>
                     {isVisible.deleteOrderButt && (

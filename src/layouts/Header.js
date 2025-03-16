@@ -37,7 +37,7 @@ export default function Header() {
                     </NavLink>
                 </div>
                 <Navi isVisibleMobileNavi={isVisibleMobileNavi} handleIsVisibleMobile={handleIsVisibleMobile} />
-                <div className='header__wrap-icons'>
+                <div className='header__login-icon-wrap'>
                     <div className="header__cart-wrap" onClick={() => openCart()}>
                         <div className="header__cart-wrap__inner" alt="Cart" title="Cart">
                             <span className="material-symbols-outlined header__cart-wrap__inner__cart">shopping_cart</span>

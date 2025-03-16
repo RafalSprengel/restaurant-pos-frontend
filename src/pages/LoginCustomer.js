@@ -7,7 +7,7 @@ import api from '../utils/axios';
 
 const LoginCustomer = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('client_1@wp.pl');
+    const [email, setEmail] = useState('nowak@wp.pl');
     const [password, setPassword] = useState('123');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -114,6 +114,9 @@ useEffect(()=>{
                 </button>
                 <NavLink to="/customer/register" className="login-registerLink">
                     Not registered yet? Register now.
+                </NavLink>
+                <NavLink to="/" className="login-registerLink">
+                    Back to Homepage.
                 </NavLink>
             </div>
         </div>

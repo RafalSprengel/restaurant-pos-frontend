@@ -20,7 +20,8 @@ const PersonalDetails = () => {
         houseNo: '',
         flatNo: ''
         });
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingAddress, setIsEditingAddress] = useState(false);
     const [isEditingPassword, setIsEditingPassword] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -65,7 +66,8 @@ const PersonalDetails = () => {
 
             if (response.status === 200) {
                 setSuccess('Details updated successfully!');
-                setIsEditing(false);
+                setIsEditingProfile(false);
+                setIsEditingAddress(false);
                 refetchCustomerData();
             } else {
                 throw new Error(response.data.error || 'Failed to update details.');
@@ -97,6 +99,7 @@ const PersonalDetails = () => {
 
     return (
         <div className="personal-details">
+            <div className='personal-details__profile'>
                 <h4>Profile</h4>
             <form onSubmit={(e) => e.preventDefault()}>
                 {error && <p className="error">{error}</p>}
@@ -104,7 +107,7 @@ const PersonalDetails = () => {
 
                 <div className="form-group">
                     <label htmlFor="name">Name:</label>
-                    {isEditing ? (
+                    {isEditingProfile ? (
                         <input
                             type="text"
                             id="name"
@@ -118,7 +121,7 @@ const PersonalDetails = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="surname">Surname:</label>
-                    {isEditing ? (
+                    {isEditingProfile ? (
                         <input
                             type="text"
                             id="surname"
@@ -132,7 +135,7 @@ const PersonalDetails = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="email">Email:</label>
-                    {isEditing ? (
+                    {isEditingProfile ? (
                         <input
                             type="email"
                             id="email"
@@ -146,7 +149,7 @@ const PersonalDetails = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="phone">Phone:</label>
-                    {isEditing ? (
+                    {isEditingProfile ? (
                         <input
                             type="text"
                             id="phone"
@@ -158,9 +161,8 @@ const PersonalDetails = () => {
                         <p>{details.phone}</p>
                     )}
                 </div>
-                
-                {isEditing && !isEditingPassword && <a onClick={()=>setIsEditingPassword(!isEditingPassword)}>Change password</a>}
-                {isEditing && isEditingPassword &&  (
+                {isEditingProfile && !isEditingPassword && <a onClick={()=>setIsEditingPassword(!isEditingPassword)}>Change password</a>}
+                {isEditingProfile && isEditingPassword &&  (
                     <>
                         <div className="form-group">
                             <label htmlFor="oldPassword">Old Password:</label>
@@ -194,9 +196,31 @@ const PersonalDetails = () => {
                         </div>
                     </>
                 )}
+                {isEditingProfile ? (
+                    <div className="actions">
+                        <button type="button" onClick={handleSave} disabled={isLoading}>
+                            {isLoading ? 'Saving...' : 'Save'}
+                        </button>
+                        <button type="button" onClick={() => {setIsEditingProfile(false); setIsEditingPassword(false)}}>
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <button type="button" onClick={() => {setIsEditingProfile(true); setIsEditingPassword(false); setIsEditingAddress(false)}}>
+                        Edit 
+                    </button>
+                )}
+            </form>
+            </div>
+            <div className='personal-details__address'>
+        <h4>Address</h4>
+        <form onSubmit={(e) => e.preventDefault()}>
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
+
             <div className="form-group">
                 <label htmlFor="name">City:</label>
-                {isEditing ? (
+                {isEditingAddress ? (
                     <input
                         type="text"
                         id="city"
@@ -210,7 +234,7 @@ const PersonalDetails = () => {
             </div>
             <div className="form-group">
                 <label htmlFor="street">Street:</label>
-                {isEditing ? (
+                {isEditingAddress ? (
                     <input
                         type="text"
                         id="street"
@@ -224,7 +248,7 @@ const PersonalDetails = () => {
             </div>
             <div className="form-group">
                 <label htmlFor="houseNo">House number:</label>
-                {isEditing ? (
+                {isEditingAddress ? (
                     <input
                         type="houseNo"
                         id="houseNo"
@@ -238,7 +262,7 @@ const PersonalDetails = () => {
             </div>
             <div className="form-group">
                 <label htmlFor="flatNo">FlatNo:</label>
-                {isEditing ? (
+                {isEditingAddress ? (
                     <input
                         type="text"
                         id="flatNo"
@@ -250,22 +274,23 @@ const PersonalDetails = () => {
                     <p>{details.flatNo}</p>
                 )}
             </div>
-            {isEditing ? (
+            {isEditingAddress ? (
                 <div className="actions">
                     <button type="button" onClick={handleSave} disabled={isLoading}>
                         {isLoading ? 'Saving...' : 'Save'}
                     </button>
-                    <button type="button" onClick={() => {setIsEditing(false)}}>
+                    <button type="button" onClick={() => {setIsEditingAddress(false)}}>
                         Cancel 
                     </button>
                 </div>
             ) : (
-                <button type="button" onClick={() => { setIsEditing(true)}}>
+                <button type="button" onClick={() => {setIsEditingAddress(true); setIsEditingProfile(false)}}>
                     Edit
                 </button>
             )}
         </form>
-            </div>
+        </div>
+    </div>
     );
 };
 

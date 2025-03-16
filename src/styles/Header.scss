@@ -4,23 +4,9 @@
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
-}
-
-.shoping-cart {
-    font-size: 50px !important;
-    color: #ffc457;
-
-    &__number {
-        color: red;
-    }
-}
-
-.material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .header {
@@ -31,6 +17,25 @@
     background-color: #78787830;
     position: absolute;
     width: 100%;
+
+    &--sticky {
+        position: fixed;
+        top: 0;
+        z-index: 4;
+        animation: fadeIn 0.5s;
+        height: 50px;
+        background-color: #343434;
+
+        .header__logo img {
+            height: 35px;
+            width: 25px;
+        }
+
+        .header__cart-wrap__inner__cart,
+        .header__login-icon {
+            font-size: 1.7rem !important;
+        }
+    }
 
     &__inner-wrap {
         width: $page-width;
@@ -48,18 +53,19 @@
         display: flex;
         justify-content: center;
 
-        & img {
+        img {
             height: 50px;
             width: 40px;
         }
     }
-    
-    &__wrap-icons{
+
+    &__wrap-icons {
         display: flex;
         gap: 10px;
         justify-content: center;
         align-items: center;
     }
+
     &__cart-wrap {
         display: flex;
         align-items: center;
@@ -93,13 +99,14 @@
         }
     }
 
-    &__login-icon-wrap div {
-    }
-
-    &__login-icon {
-        font-size: 2.5rem !important;
-        color: rgb(206, 141, 2);
+    &__login-icon-wrap {
         cursor: pointer;
+        display: flex;
+        gap:10px;
+        .header__login-icon {
+            font-size: 2.5rem !important;
+            color: rgb(206, 141, 2);
+        }
     }
 
     &__mobile-nav-icon {
@@ -111,42 +118,14 @@
     }
 }
 
-.sticky {
-    position: fixed;
-    top: 0;
-    z-index: 4;
-    animation: fadeIn 0.5s;
-    height: 50px;
-    background-color: #343434;
-
-    & img {
-        height: 35px;
-        width: 25px;
-    }
-
-    & button {
-        padding: 5px 10px;
-    }
-
-    & li {
-        font-size: 17px;
-    }
-
-    & button {
-        font-size: 17px;
-    }
-}
-
 @media only screen and (min-width: $breakpointMediumScreen) {
     .header {
         height: 90px;
 
-        &__logo {
-            & img {
-                height: 80px;
-                width: 70px;
-                margin: 0;
-            }
+        &__logo img {
+            height: 80px;
+            width: 70px;
+            margin: 0;
         }
 
         &__mobile-nav-icon {
@@ -154,10 +133,10 @@
         }
     }
 
-    .sticky {
+    .header--sticky {
         height: 70px;
 
-        & img {
+        .header__logo img {
             height: 50px;
             width: 40px;
         }
@@ -169,6 +148,7 @@
         &__inner-wrap {
             width: $page-width;
         }
+
         &__mobile-nav-icon {
             display: none;
         }
@@ -182,10 +162,10 @@
         }
     }
 
-    .sticky {
+    .header--sticky {
         height: 70px;
 
-        & img {
+        .header__logo img {
             height: 50px;
             width: 40px;
         }

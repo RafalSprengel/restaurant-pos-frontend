@@ -21,6 +21,7 @@ import RegisterCustomer from './pages/RegisterCustomer.js';
 import { AuthProvider } from './context/authContext.js';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 
+import Dashboard from './components/managementPanel/Dashboard.js';
 import AddCategory from './components/managementPanel/categories/AddCategory.js';
 import AddProduct from './components/managementPanel/products/AddProduct.js';
 import AddCustomer from './components/managementPanel/customers/AddCustomer.js';
@@ -37,7 +38,6 @@ import UpdateMgmt from './components/managementPanel/mgmtMembers/UpdateMgmt.js';
 import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
 
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
-import Addresses from './components/customerPanel/Addresses.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
 
 
@@ -59,8 +59,7 @@ function App() {
                     </Route>
 
                     <Route path="/customer" element={<CustomerPanel />} >
-                        <Route path="recent-orders" element={<RecentOrdersList />} />
-                        <Route path="addresses" element={<Addresses />} />
+                        <Route index element={<RecentOrdersList />} /> 
                         <Route path="personal-details" element={<PersonalDetails />} />
                     </Route>
                     <Route path="/customer/login" element={<LoginCustomer />} />
@@ -70,6 +69,9 @@ function App() {
                 
                     <Route path="/management/login" element={<LoginManagement />} />
                     <Route path="/management/" element={<ManagementPanel />} >
+
+                        <Route index element={<Dashboard />} />
+
                         <Route path="products" element={<ProductsList />} />
                         <Route path="products/:id" element={<UpdateProduct />} />
                         <Route path="add-product" element={<AddProduct />} />
@@ -89,8 +91,6 @@ function App() {
                         <Route path="mgnts/:id" element={<UpdateMgmt />} />
                         <Route path="add-mgmt" element={<AddMgmt />} />
                     </Route>
-                
-
                 
                 <Route path="*" element={<NotFound />} />
             </Routes>

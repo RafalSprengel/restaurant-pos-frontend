@@ -1,9 +1,10 @@
 import { useFetch } from '../../hooks/useFetch';
 
 const RecentOrderList = () => {
-    const { data: orders, loading: loadingOrders, error: fetchError, refetch } = useFetch('/orders/customer');
+    const { data, loading: loadingOrders, error: fetchError, refetch } = useFetch('/orders/customer');
+    let orders = data || [];
 
-    if (loadingOrders) return <p>Loading orders...</p>;
+    if (loadingOrders) return <p>Loading orders...</p>
     if (fetchError) return <p>Error fetching orders: {fetchError.message}</p>;
 
     return (
@@ -20,9 +21,9 @@ const RecentOrderList = () => {
                                 <p><strong>Order Type:</strong> {order.orderType}</p>
                                 <ul>
                                     <strong>Items:</strong>
-                                    {order.items.map((item) => (
-                                        <li key={item._id}>
-                                            {item.name} - {item.quantity} x ${item.price}
+                                    {order.products.map((product) => (
+                                        <li key={product._id}>
+                                            {product.name} - {product.quantity}  (${product.price})
                                         </li>
                                     ))}
                                 </ul>
@@ -36,6 +37,6 @@ const RecentOrderList = () => {
             )}
         </div>
     );
-};
+}; 
 
 export default RecentOrderList;

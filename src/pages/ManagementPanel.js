@@ -19,9 +19,7 @@ export const Management = () => {
         } catch (error) {
             console.error('Error during logout:', error);
             setErrorLogout('Logout failed: ' + error.message);
-        } finally {
-            console.log('Logout successful');
-        }
+        } 
     };
 
     useEffect(() => {
@@ -75,6 +73,26 @@ export const Management = () => {
                     </div>
                     <div className="admin__content">
                         <div className="admin__left">
+                            <NavLink
+                            className={({ isActive }) =>isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'} 
+                            to="/management"
+                            end
+                            >
+                             {({ isActive }) => (
+                                    <>
+                                        <span
+                                            className={
+                                                isActive
+                                                    ? 'admin__menuSymbol admin__menuSymbol--active'
+                                                    : 'admin__menuSymbol'
+                                            }>
+                                            &#8283;
+                                        </span>
+                                        Dashboard
+                                    </>
+                                )}
+                            </NavLink>
+
                             <NavLink
                                 className={({ isActive }) =>
                                     isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem'
