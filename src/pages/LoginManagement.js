@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/LoginManagement.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios'; // Importowanie instancji axios
@@ -68,6 +68,8 @@ export default function StaffLogin() {
                 </button>
                 {error && <p className="error-message">{error}</p>}
             </form>
+            <br></br>
+            <NavLink to="/" className="login-link">Back to Homepage</NavLink>
         </div>
     );
 }

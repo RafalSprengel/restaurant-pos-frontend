@@ -1,13 +1,49 @@
 import { useFetch } from '../../hooks/useFetch';
+import { useState } from 'react';
+import api from '../../utils/axios';
+import { Modal, Button, Alert, Pagination } from 'react-bootstrap';
 
 const RecentOrderList = () => {
-    const { data, loading: loadingOrders, error: fetchError, refetch } = useFetch('/orders/customer');
+
+    const [orderToDelete, setOrderToDelete] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+     const [errorMessage, setErrorMessage] = useState(null);
+    const { data, loading: loadingOrders, error: fetchError, refetch: refetchOrders } = useFetch('/orders/customer');
     let orders = data || [];
 
     if (loadingOrders) return <p>Loading orders...</p>
     if (fetchError) return <p>Error fetching orders: {fetchError.message}</p>;
 
+const handleDeleteClick=(id)=>{
+    setOrderToDelete(id);
+    setShowModal(true);
+}
+
+const handleConfirmDelete= async()=>{
+    setShowModal(false);
+    setIsLoading(true);
+
+    try{
+        const response = await api.delete(`/orders/customer/${orderToDelete}`);
+        if(response.status === 200){
+            await refetchOrders();
+            setIsLoading(false);
+        }else{
+            setErrorMessage('Unable to delete this order.');
+        }
+
+    }catch(error){
+        setIsLoading(false);
+        setErrorMessage('Unable to delete this order.');
+    }finally{
+        setOrderToDelete(null);
+        setIsLoading(false);
+    }
+}
+
     return (
+        <>
         <div>
             <h4>Recent Orders</h4>
             {orders && orders.length > 0 ? (
@@ -28,6 +64,7 @@ const RecentOrderList = () => {
                                     ))}
                                 </ul>
                                 <p><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+                                <p><button type="button" className="btn btn-danger" onClick={()=>handleDeleteClick (order._id)}>Delete</button></p>
                             </div>
                         </li>
                     ))}
@@ -36,6 +73,21 @@ const RecentOrderList = () => {
                 <p>No recent orders found.</p>
             )}
         </div>
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete this order?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleConfirmDelete}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 }; 
 

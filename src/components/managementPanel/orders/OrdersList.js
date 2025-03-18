@@ -105,6 +105,7 @@ const OrdersList = () => {
             console.error('Error deleting order:', error);
         } finally {
             setIsLoading(false);
+            setOrderToDelete(null);
         }
     };
     
