@@ -14,8 +14,8 @@ export const MainPage = () => {
                               </h2>
                               <p className="hero__description">Delivering great food for more than 18 years!</p>
                               <div className="hero__buttons">
-                                   <button className="button  btn-accent-primary">BOOK A TABLE</button>
-                                   <button className="button  btn-accent-secondary">ORDER NOW</button>
+                                   <button className="button  btn-accent-secondary">BOOK A TABLE</button>
+                                   <button className="button  btn-accent-primary">ORDER NOW</button>
                               </div>
                          </div>
                          <div className="hero__image-container">
