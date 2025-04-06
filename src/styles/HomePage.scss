@@ -44,15 +44,14 @@
      &__content{
           display: flex;
           flex-direction: column;
-          gap:10px;
           justify-content: center;
+          align-items: center;
+          gap:10px;
+          
      }
 
-     &__title {
-          //font-size: 48px;
-     }
 
-     &__text--accent {
+     &__title--accent {
           color: $accent-color;
      }
 
@@ -115,7 +114,7 @@
      &__content{
           display: flex;
           flex-direction: column;
-          gap:10px;
+          gap:20px;
           justify-content: center;
      }
 
@@ -149,7 +148,7 @@
           &-item {
                display: flex;
                gap: 10px;
-               line-height: 2;
+               line-height: 1.5;
                color: $light-white-font-color;
                margin: 10px 0;
 
@@ -188,7 +187,7 @@
      &__container{
           display: flex;
           flex-direction: column;
-          gap: 40px;
+          gap: 25px;
      }
 
      &__title{
@@ -214,40 +213,40 @@
           }
      }
 
-}
-.why-us__description {
-     color: $light-white-font-color;
-}
-
-.why-us__cards{
-     display: flex;
-     gap: 20px;
-     justify-content: center;
-     width: 100%;
-     padding: 40px 0;
-     flex-wrap: wrap;
-}
-
-.why-us__card{
-     width: 100%;
-     display: flex;
-     flex-direction: column;
-     gap: 20px;
-     padding: 40px 20px;
-     background-color: #151412;
-     overflow-wrap: break-word;
-
-     &__card-number{
-          color: $accent-color;
-          font-size: 1.65rem;
-          font-family: $p-font;
-          font-weight: 600;
+     &__description {
+          color: $light-white-font-color;
      }
 
-     & p{
-          font-size: 0.9rem;
-          color: #8b8b8bb1;
-          letter-spacing: -0.2px
+     &__card{
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          padding: 40px 20px;
+          background-color: #151412;
+          overflow-wrap: break-word;
+     
+          &__card-number{
+               color: $accent-color;
+               font-size: 1.65rem;
+               font-family: $p-font;
+               font-weight: 600;
+          }
+     
+          & p{
+               font-size: 0.9rem;
+               color: #8b8b8bb1;
+               letter-spacing: -0.2px
+          }
+     }
+
+     &__cards{
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          width: 100%;
+          padding: 40px 0;
+          flex-wrap: wrap;
      }
 }
 

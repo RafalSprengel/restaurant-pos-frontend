@@ -9,8 +9,8 @@ export const MainPage = () => {
                <section id= "hero" className="hero">
                      <div className="container hero__container">
                          <div className="hero__content">
-                              <h2 className="hero__text">
-                                   Welcome to <span className="hero__text--accent">Restoran</span>
+                              <h2 className="hero__title">
+                                   Welcome to <span className="hero__title--accent">Restoran</span>
                               </h2>
                               <p className="hero__description">Delivering great food for more than 18 years!</p>
                               <div className="hero__buttons">
