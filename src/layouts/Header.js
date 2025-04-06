@@ -1,47 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 import Navi from '../components/Navi';
-import logoImg from '../img/logo-white-XL.png';
 import '../styles/Header.scss';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUtensils } from '@fortawesome/free-solid-svg-icons';
+
 export default function Header() {
-    const [isSticky, setIsSticky] = useState(false);
-    const [isVisibleMobileNavi, setIsVisibleMobileNavi] = useState(false);
-    const { cartQuantity, openCart } = useShoppingCart();
-    const navigate = useNavigate();
+     const [isScrolled, setIsScrolled] = useState(false);
+     const [showMobNav, setShowMobNav] = useState(false);
+     const { cartQuantity, openCart } = useShoppingCart();
+     const infoBarRef = useRef(null);
+     const navigate = useNavigate();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsSticky(window.scrollY > 90);
-        };
+     const handleToggleMobileMenu = () => {
+          document.querySelector('body').style.overflow = showMobNav ? 'visible' : 'hidden';
+          setShowMobNav(!showMobNav);
+     };
 
-        window.addEventListener('scroll', handleScroll);
+     useEffect(() => {
+          const handleScroll = () => setIsScrolled(window.scrollY > 3);
+          window.addEventListener('scroll', handleScroll);
+          return () => window.removeEventListener('scroll', handleScroll);
+     }, [isScrolled]);
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+     return (
+          <>
+               <header className="header">
+                    <div className={'header__info-bar-outer ' + (isScrolled ? 'header__info-bar-outer--hidden' : '')}>
+                         <div ref={infoBarRef} className="header__info-bar-inner">
+                              <a href="#">📞 +48 123 456 789 | 📍 Adres Restauracji</a>
+                         </div>
+                    </div>
 
-    const handleIsVisibleMobile = () => {
-        document.querySelector('body').style.overflow = isVisibleMobileNavi ? 'visible' : 'hidden';
-        setIsVisibleMobileNavi(!isVisibleMobileNavi);
-    };
+                    <div className={'header__nav-outer ' + (!isScrolled ? 'header__nav-outer--lighter-bg' : '')}>
+                         <div className="header__nav-inner container">
+                              <div>
+                                   <NavLink to="#" className="header__logo">
+                                        <FontAwesomeIcon icon={faUtensils} className="header__icon" />
+                                        Restoran
+                                   </NavLink>
+                              </div>
+                              <Navi showMobNav={showMobNav} toggleMobNav={handleToggleMobileMenu} />
+                              <NavLink to="#booka-a-table" className="btn-accent-primary header__btn-book-a-table">
+                                   BOOK A TABLE
+                              </NavLink>
+                              <div className={'header__hamburger-icon ' + (showMobNav ? 'header__ico-habmurger--hidden' : '')} onClick={handleToggleMobileMenu}>
+                                   ☰
+                              </div>
+                         </div>
 
-    return (
-        <header className={'header ' + (isSticky ? 'sticky' : '')}>
-            <div className="header__inner-wrap" alt="Hot Food" title="Hot Food">
-                <div className="header__logo">
-                    <NavLink to="">
-                        <img src={logoImg} alt="" />
-                    </NavLink>
-                </div>
-                <Navi isVisibleMobileNavi={isVisibleMobileNavi} handleIsVisibleMobile={handleIsVisibleMobile} />
-                <div className='header__login-icon-wrap'>
+                         {/* <Navi showMobNav={showMobNav} handleToggleMobileMenu={handleToggleMobileMenu} /> */}
+                         {/* <div className='header__login-icon-wrap'>
                     <div className="header__cart-wrap" onClick={() => openCart()}>
                         <div className="header__cart-wrap__inner" alt="Cart" title="Cart">
                             <span className="material-symbols-outlined header__cart-wrap__inner__cart">shopping_cart</span>
-                            <span className="header__cart-wrap__inner__number">{cartQuantity}</span>
+                            { cartQuantity> 0 && 
+                                <span className="header__cart-wrap__inner__number">{cartQuantity}</span>
+                            }
+                            
                         </div>
                     </div>
                     <div
@@ -51,12 +69,12 @@ export default function Header() {
                         onClick={() => navigate('/customer/login')}>
                         <div className="material-symbols-outlined header__login-icon">person</div>
                     </div>
-                    <div className="header__mobile-nav-icon" onClick={handleIsVisibleMobile}>
+                    <div className="header__mobile-nav-icon" onClick={handleToggleMobileMenu}>
                         ☰
                     </div>
-                </div>
-               
-            </div>
-        </header>
-    );
+                </div> */}
+                    </div>
+               </header>
+          </>
+     );
 }

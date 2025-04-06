@@ -1,7 +1,5 @@
 import './styles/App.scss';
-import './styles/Bootstrap.scss';
 import { Routes, Route } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
 import AboutUs from './pages/AboutUs';
 import Checkout from './pages/Checkout';
 import Contact from './pages/Contact';
@@ -40,62 +38,57 @@ import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
 
-
 function App() {
-    return (
-        <AuthProvider>
-            <Routes>
-                <Route element={<Outlet />}>
-                    <Route element={<ShoppingCartProvider><MainLayout /></ShoppingCartProvider>}>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/menu" element={<Menu />} />
-                        <Route path="/order/checkout" element={<Checkout />} />
-                        <Route path="/order/success" element={<PaymentSuccess />} />
-                        <Route path="/order/cancel" element={<PaymentCanceled />} />
-                        <Route path="/events" element={<EventsPage />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/promotions" element={<Promotions />} />
-                        <Route path="/about-us" element={<AboutUs />} />
+     return (
+          <AuthProvider>
+               <Routes>
+                    <Route
+                         element={
+                              <ShoppingCartProvider>
+                                   <MainLayout />
+                              </ShoppingCartProvider>
+                         }>
+                         <Route path="/" element={<HomePage />} />
+                         <Route path="/menu" element={<Menu />} />
+                         <Route path="/order/checkout" element={<Checkout />} />
+                         <Route path="/order/success" element={<PaymentSuccess />} />
+                         <Route path="/order/cancel" element={<PaymentCanceled />} />
+                         <Route path="/events" element={<EventsPage />} />
+                         <Route path="/contact" element={<Contact />} />
+                         <Route path="/promotions" element={<Promotions />} />
+                         <Route path="/about-us" element={<AboutUs />} />
                     </Route>
 
-                    <Route path="/customer" element={<CustomerPanel />} >
-                        <Route index element={<RecentOrdersList />} /> 
-                        <Route path="personal-details" element={<PersonalDetails />} />
+                    <Route path="/customer" element={<CustomerPanel />}>
+                         <Route index element={<RecentOrdersList />} />
+                         <Route path="personal-details" element={<PersonalDetails />} />
                     </Route>
                     <Route path="/customer/login" element={<LoginCustomer />} />
                     <Route path="/customer/register" element={<RegisterCustomer />} />
-                </Route>
 
-                
                     <Route path="/management/login" element={<LoginManagement />} />
-                    <Route path="/management/" element={<ManagementPanel />} >
-
-                        <Route index element={<Dashboard />} />
-
-                        <Route path="products" element={<ProductsList />} />
-                        <Route path="products/:id" element={<UpdateProduct />} />
-                        <Route path="add-product" element={<AddProduct />} />
-
-                        <Route path="categories" element={<CategoriesList />} />
-                        <Route path="categories/:id" element={<UpdateCategory />} />
-                        <Route path="add-category" element={<AddCategory />} />
-
-                        <Route path="customers" element={<CustomersList />} />
-                        <Route path="customers/:id" element={<UpdateCustomer />} />
-                        <Route path="add-customer" element={<AddCustomer />} />
-
-                        <Route path="orders" element={<OrdersList />} />
-                        <Route path="orders/:id" element={<UpdateOrder />} />
-
-                        <Route path="mgnts" element={<MgmtsList />} />
-                        <Route path="mgnts/:id" element={<UpdateMgmt />} />
-                        <Route path="add-mgmt" element={<AddMgmt />} />
+                    <Route path="/management/" element={<ManagementPanel />}>
+                         <Route index element={<Dashboard />} />
+                         <Route path="products" element={<ProductsList />} />
+                         <Route path="products/:id" element={<UpdateProduct />} />
+                         <Route path="add-product" element={<AddProduct />} />
+                         <Route path="categories" element={<CategoriesList />} />
+                         <Route path="categories/:id" element={<UpdateCategory />} />
+                         <Route path="add-category" element={<AddCategory />} />
+                         <Route path="customers" element={<CustomersList />} />
+                         <Route path="customers/:id" element={<UpdateCustomer />} />
+                         <Route path="add-customer" element={<AddCustomer />} />
+                         <Route path="orders" element={<OrdersList />} />
+                         <Route path="orders/:id" element={<UpdateOrder />} />
+                         <Route path="mgnts" element={<MgmtsList />} />
+                         <Route path="mgnts/:id" element={<UpdateMgmt />} />
+                         <Route path="add-mgmt" element={<AddMgmt />} />
                     </Route>
-                
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        </AuthProvider>
-    );
+
+                    <Route path="*" element={<NotFound />} />
+               </Routes>
+          </AuthProvider>
+     );
 }
 
 export default App;

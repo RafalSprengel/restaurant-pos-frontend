@@ -1,117 +1,367 @@
-// Tworzenie własnej wersji Pico
-@use '@picocss/pico/scss/pico' with (
-    $parent-selector: '.pico',
-    $enable-semantic-container: true,
-    $semantic-root-element: '.my-custom-class',
-    $enable-classes: true,
-    $modules: (
-        'themes/default': true,
-        'components/tooltip': true,
-    )
-);
 @import 'variables';
-@import url('https://fonts.googleapis.com/css2?family=Cuprum:ital,wght@0,400..700;1,400..700&family=IM+Fell+French+Canon:ital@0;1&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Marck+Script&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sansita:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,800;1,900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cuprum:ital,wght@0,400..700;1,400..700&family=IM+Fell+French+Canon:ital@0;1&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Marck+Script&family=Palanquin:wght@100;200;300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Sansita:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,800;1,900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=person');
-
+@import '@fontsource/cuprum/400.css';
+@import '@fontsource/cuprum/700.css';
+@import '@fontsource/im-fell-french-canon/index.css';
+@import '@fontsource/libre-franklin/400.css';
+@import '@fontsource/libre-franklin/700.css';
+@import '@fontsource/marck-script/index.css';
+@import '@fontsource/palanquin/400.css';
+@import '@fontsource/palanquin/700.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/700.css';
+@import '@fontsource/rubik/400.css';
+@import '@fontsource/rubik/700.css';
+@import '@fontsource/sansita/400.css';
+@import '@fontsource/sansita/700.css';
+@import '@fontsource/vollkorn/400.css';
+@import '@fontsource/vollkorn/700.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/playfair-display/700.css';
 @font-face {
-    font-family: 'Cuprum';
-    src: local('Cuprum'), url('../fonts/Cuprum-Regular.ttf') format('truetype');
-    font-weight: normal;
+     font-family: 'Cuprum';
+     src:
+          local('Cuprum'),
+          url('../fonts/Cuprum-Regular.ttf') format('truetype');
+     font-weight: normal;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'rubik';
+/* RESET CSS */
+*,
+*::before,
+*::after {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+}
+
+// html, body {
+//   height: 100%;
+//   width: 100%;
+//   font-family: sans-serif;
+// }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+     font-family: $heading-font;
+}
+
+p {
+     font-family: $p-font;
+}
+button {
+     font-family: $p-font;
+     font-weight: $btn-font-weight;
+}
+
+a {
+     text-decoration: none;
+     color: inherit;
+}
+body {
+     // line-height: 1.5;
+     color: $white-font-color;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+     background: none;
+     cursor: pointer;
 }
 
 ul,
 ol {
-    list-style: none;
+     list-style: none;
 }
-
-button {
-    cursor: pointer;
-}
+//-----------------------------------------
 
 input,
 textarea {
-    border: 1px solid rgb(211, 211, 211);
-    padding: 20px;
-    font-size: 19px;
+     border: 1px solid rgb(211, 211, 211);
+     padding: 20px;
+     //font-size: 19px;
 }
 
 input[type='radio'] {
-    border: 1px solid black;
+     border: 1px solid black;
 }
 
 input[type='textarea'] {
-    padding: 15px;
-    resize: vertical;
-}
-
-a {
-    text-decoration: none;
-    color: black;
+     padding: 15px;
+     resize: vertical;
 }
 
 .App {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     min-height: 100dvh;
+     min-height: 100vh;
 }
 
-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    width: 100%;
-    //overflow: hidden;
+.container {
+     width: 100%;
+     padding: 0 12px;
+     margin-left: auto;
+     margin-right: auto;
+}
+
+section {
+     scroll-margin-top: 60px;
+}
+
+@media (min-width: $sm) {
+     .container {
+          max-width: 540px;
+     }
+}
+
+@media (min-width: $md) {
+     .container {
+          max-width: 720px;
+     }
+}
+
+@media (min-width: $lg) {
+     .container {
+          max-width: 960px;
+     }
+}
+
+@media (min-width: $xl) {
+     .container {
+          max-width: 1140px;
+     }
+}
+
+@media (min-width: $xxl) {
+     .container {
+          max-width: 1320px;
+     }
+}
+
+.font-italic-style {
+     font-family: 'Roboto', sans-serif;
+     font-weight: 100;
+     font-style: italic;
+     font-size: 1rem;
+     color: rgb(107, 107, 107) !important;
 }
 
 .button-contained {
-    padding: 15px 20px;
-    min-width: 150px;
-    border: none;
-    font-family: 'Cuprum', sans-serif;
-    font-weight: 100;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 20px;
-    border-radius: 1px;
-    background-color: $primary-color;
-    color: rgb(255, 255, 255);
+     padding: 15px 20px;
+     min-width: 150px;
+     border: none;
+     font-family: 'Cuprum', sans-serif;
+     font-weight: 100;
+     font-style: normal;
+     font-weight: 500;
+     //font-size: 20px;
+     border-radius: 1px;
+     background-color: $primary-color;
+     color: rgb(255, 255, 255);
 }
 
 .button-outlined {
-    padding: 15px 30px;
-    min-width: 150px;
-    border: 1px solid $primary-color;
-    font-family: 'Cuprum', sans-serif;
-    font-weight: 100;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 20px;
-    border-radius: 1px;
-    background-color: inherit;
-    color: $primary-color;
+     padding: 15px 30px;
+     min-width: 150px;
+     border: 1px solid $primary-color;
+     font-family: 'Cuprum', sans-serif;
+     font-weight: 100;
+     font-style: normal;
+     font-weight: 500;
+     //font-size: 20px;
+     border-radius: 1px;
+     background-color: inherit;
+     color: $primary-color;
 }
 
-.formFieldWrap {
-    border: 1px solid rgb(211, 211, 211);
-    padding: 20px 10px;
-    cursor: pointer;
-
-    & label {
-        padding-inline-start: 15px;
-    }
-
-    &--active {
-        border: 1px solid black;
-    }
+.btn-accent-primary {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     color: rgba(255, 255, 255, 0.7);
+     text-transform: uppercase;
+     font-size: 0.9rem;
+     height: 37px;
+     border: 1px solid $accent-color;
+     border-radius: 50px;
+     transition: all 0.4s;
+     padding: 6px 24px;
+     &:hover {
+          background-color: $accent-color;
+          color: #fff;
+     }
 }
+.btn-accent-secondary {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     color: rgba(255, 255, 255, 0.7);
+     text-transform: uppercase;
+     font-size: 0.9rem;
+     height: 37px;
+     border: 1px solid $accent-color;
+     background-color: $accent-color;
+     border-radius: 50px;
+     transition: all 0.4s;
+     padding: 6px 24px;
+     &:hover {
+          background-color: $accent-color;
+          color: #fff;
+          background-color: #bdae93;
+     }
+}
+
+h1 {
+     letter-spacing: -0.05em;
+     font-size: clamp(2.4rem, 5vw, 4.8rem);
+}
+
+h2 {
+     letter-spacing: -0.02em;
+     font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+h3 {
+     letter-spacing: 0;
+     font-size: clamp(1.6rem, 5vw, 2.4rem);
+}
+
+h4 {
+     letter-spacing: 0.02em;
+     font-size: clamp(1.4rem, 5vw, 2rem);
+}
+
+h5 {
+     letter-spacing: 0.02em;
+     font-size: clamp(1.2rem, 5vw, 1.8rem);
+}
+
+p {
+     letter-spacing: 0;
+     font-size: clamp(1.125rem, 0.8571rem + 0.8571vw, 1.5rem);
+}
+
+a {
+     letter-spacing: 0.05em;
+     //font-size: clamp(1rem, 0.875rem + 0.5vw, 1.25rem);
+}
+
+//----Font sizes for headings (h1 to h5) with responsive design---
+
+// h1 {
+//   font-size: 2.25rem; /* 36px */
+// }
+
+// h2 {
+//   font-size: 2rem; /* 32px */
+// }
+
+// h3 {
+//   font-size: 1.75rem; /* 28px */
+// }
+
+// h4 {
+//   font-size: 1.5rem; /* 24px */
+// }
+
+// h5 {
+//   font-size: 1.25rem; /* 20px */
+// }
+
+// @media (min-width: $sm) {
+//   h1 {
+//     font-size: 2.5rem; /* 40px */
+//   }
+//   h2 {
+//     font-size: 2.25rem; /* 36px */
+//   }
+//   h3 {
+//     font-size: 2rem; /* 32px */
+//   }
+//   h4 {
+//     font-size: 1.75rem; /* 28px */
+//   }
+//   h5 {
+//     font-size: 1.5rem; /* 24px */
+//   }
+// }
+
+// @media (min-width: $md) {
+//   h1 {
+//     font-size: 2.75rem; /* 44px */
+//   }
+//   h2 {
+//     font-size: 2.5rem; /* 40px */
+//   }
+//   h3 {
+//     font-size: 2.25rem; /* 36px */
+//   }
+//   h4 {
+//     font-size: 2rem; /* 32px */
+//   }
+//   h5 {
+//     font-size: 1.75rem; /* 28px */
+//   }
+// }
+
+// @media (min-width: $lg) {
+//   h1 {
+//     font-size: 3rem; /* 48px */
+//   }
+//   h2 {
+//     font-size: 2.75rem; /* 44px */
+//   }
+//   h3 {
+//     font-size: 2.5rem; /* 40px */
+//   }
+//   h4 {
+//     font-size: 2.25rem; /* 36px */
+//   }
+//   h5 {
+//     font-size: 2rem; /* 32px */
+//   }
+// }
+
+// @media (min-width: $xl) {
+//   h1 {
+//     font-size: 3.25rem; /* 52px */
+//   }
+//   h2 {
+//     font-size: 3rem; /* 48px */
+//   }
+//   h3 {
+//     font-size: 2.75rem; /* 44px */
+//   }
+//   h4 {
+//     font-size: 2.5rem; /* 40px */
+//   }
+//   h5 {
+//     font-size: 2.25rem; /* 36px */
+//   }
+// }
+
+// @media (min-width: $xxl) {
+//   h1 {
+//     font-size: 3.5rem; /* 56px */
+//   }
+//   h2 {
+//     font-size: 3.25rem; /* 52px */
+//   }
+//   h3 {
+//     font-size: 3rem; /* 48px */
+//   }
+//   h4 {
+//     font-size: 2.75rem; /* 44px */
+//   }
+//   h5 {
+//     font-size: 2.5rem; /* 40px */
+//   }
+// }
+
+//-----------------------------------------

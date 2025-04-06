@@ -1,110 +1,283 @@
 @import 'variables';
 @import url('https://fonts.googleapis.com/css2?family=Cuprum:ital,wght@0,400..700;1,400..700&family=IM+Fell+French+Canon:ital@0;1&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Marck+Script&family=Sansita:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,800;1,900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap');
 
-.home-page {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-
-    &__section-1 {
-        flex: 1 1 auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        height: 100%;
-        width: 100vw;
-        color: white;
-        z-index: 2;
-        overflow: hidden;
-
-        &::after {
-            z-index: -1;
-            content: '';
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            background: url("../img/section-1.jpg") no-repeat center;
-            background-size: cover;
-            filter: brightness(0.6) blur(1px);
-
-        }
-
-        &__content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: "Marck Script", cursive;
-            font-weight: 400;
-            font-style: normal;
-            font-size: 44px;
-            gap: 15px;
-
-            & img {
-                max-width: 100%;
-                height: auto;
-                filter: contrast(1.5);
-                filter: blur(0.5px);
-                margin-bottom: 10px;
-            }
-
-            &__buttons-wrap {
-                display: flex;
-                margin-top: 40px;
-                gap: 30px;
-
-
-                & button {
-                    padding-left: 30px;
-                    padding-right: 30px;
-                    font-weight: 700;
-                }
-            }
-
-
-            &__button-menu {
-                position: relative;
-
-                z-index: 1;
-
-                &::after {
-                    content: '';
-                    position: absolute;
-                    background-color: rgb(0 0 0 / 0%);
-                    top: 0px;
-                    left: 0px;
-                    width: 100%;
-                    height: 100%;
-                    z-index: -1;
-                }
-            }
-        }
-
-
-    }
+@keyframes rotateImage {
+     from {
+          transform: rotate(0deg);
+     }
+     to {
+          transform: rotate(360deg);
+     }
 }
 
+.section {
+     display: flex;
+     position: relative;
+     justify-content: center;
+     align-items: center;
+     width: 100%;
 
-@media only screen and (max-width: $breakpointSmallScreen) {
-    .home-page {
-        &__section-1 {
-            &__content {
-                margin-top: 40px;
-                font-size: 30px;
-                margin-bottom: 150px;
-                gap: 0;
+     &__title {
+          // font-size: 48px;
+     }
 
-                & img {
-                    height: 250px;
-                }
+     &__text--accent {
+          color: $accent-color;
+     }
+}
 
-                &__buttons-wrap {
-                    flex-direction: column;
-                    gap: 20px;
-                }
-            }
-        }
-    }
+.hero {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 100%;
+     min-height: 100vh;
+     position: relative;
+     overflow: hidden;
+
+     &__container {
+          display: flex;
+          gap:20px;
+          justify-content: center;
+     }
+
+     &__content{
+          display: flex;
+          flex-direction: column;
+          gap:10px;
+          justify-content: center;
+     }
+
+     &__title {
+          //font-size: 48px;
+     }
+
+     &__text--accent {
+          color: $accent-color;
+     }
+
+     &__buttons{
+          display: flex;
+          gap: 15px;
+          margin-top:15px;
+
+     }
+
+     &::before {
+          content: '';
+          background: url('../img/hero-bg.jpg') no-repeat center center/cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -2;
+     }
+
+     &::after {
+          content: '';
+          background: rgba(0, 0, 0, 0.5);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+     }
+
+     &__image {
+          max-width: 100%;
+          height: auto;
+          max-height: clamp(250px,25vw,400px);
+          animation: rotateImage 40s linear infinite;
+          filter: brightness(0.8);
+     }
+     &__image-container{
+          display: none;
+     }
+}
+
+.about {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 100%;
+     padding: 80px 0;
+     position: relative;
+     overflow: hidden;
+
+     &__container{
+          display: flex;
+          gap: 20px;
+          flex-direction: column-reverse;
+     }
+
+     &__content{
+          display: flex;
+          flex-direction: column;
+          gap:10px;
+          justify-content: center;
+     }
+
+     &::before {
+          content: '';
+          background: url('../img/about-bg.jpg') no-repeat center center/cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -2;
+     }
+
+     &::after {
+          content: '';
+          background: rgba(0, 0, 0, 0.8);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+     }
+
+     &__description {
+          color: $light-white-font-color;
+     }
+
+     &__list {
+          &-item {
+               display: flex;
+               gap: 10px;
+               line-height: 2;
+               color: $light-white-font-color;
+               margin: 10px 0;
+
+               & svg {
+                    stroke: $accent-color;
+                    min-width: 30px;
+               }
+          }
+     }
+
+     &__bottom-text{
+          font-size: 1rem;;
+     }
+
+     &__image-container {
+          border: 3px solid rgba(82, 82, 82, 0.5);
+     }
+
+     &__image {
+          max-width: 100%;
+          height: auto;
+          filter: brightness(0.8);
+     }
+}
+
+.why-us {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 100%;
+     padding: 80px 0;
+    // position: relative;
+    // overflow: hidden;
+     background-color: #0c0b09;
+
+     &__container{
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
+     }
+
+     &__title{
+          display: flex;
+          flex-direction: column;
+          gap:10px;
+          justify-content: center;
+          & h2{
+               font-size: 1rem;
+               color: rgba(166, 166, 166, 0.7);
+               &::after{
+                    content: "";
+                    width: 120px;
+                    height: 1px;
+                    display: inline-block;
+                    background: $accent-color;
+                    margin: 4px 10px;
+               }
+          }
+          & p{
+               color: $accent-color;
+               font-family: $heading-font;
+          }
+     }
+
+}
+.why-us__description {
+     color: $light-white-font-color;
+}
+
+.why-us__cards{
+     display: flex;
+     gap: 20px;
+     justify-content: center;
+     width: 100%;
+     padding: 40px 0;
+     flex-wrap: wrap;
+}
+
+.why-us__card{
+     width: 100%;
+     display: flex;
+     flex-direction: column;
+     gap: 20px;
+     padding: 40px 20px;
+     background-color: #151412;
+     overflow-wrap: break-word;
+
+     &__card-number{
+          color: $accent-color;
+          font-size: 1.65rem;
+          font-family: $p-font;
+          font-weight: 600;
+     }
+
+     & p{
+          font-size: 0.9rem;
+          color: #8b8b8bb1;
+          letter-spacing: -0.2px
+     }
+}
+
+@media only screen and (min-width: $lg) {
+     .about{
+          &__container{
+               flex-direction: row;
+          }
+     }
+}
+
+@media only screen and (min-width: $xl){
+     .why-us__cards{
+          flex-flow: row nowrap;
+     }
+
+     .why-us__card{
+          width: 33.33%;
+          white-space: normal;
+
+     }
+}
+
+@media only screen and (min-width: $xxl) {
+     .hero{
+          &__container{
+               justify-content: space-between;
+          }
+     }
+     .hero__image-container {
+         display: inherit;
+     }
 }
