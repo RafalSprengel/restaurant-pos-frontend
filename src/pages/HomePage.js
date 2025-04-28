@@ -1,9 +1,17 @@
-import { CheckCheck } from 'lucide-react';
+import { CheckCheck } from 'lucide-react'; //icons 'check-check'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useFetch } from '../hooks/useFetch.js';
 import '../styles/HomePage.scss';
 import pizza from '../img/pizza.png';
 import about from '../img/about.jpg';
 
 export const MainPage = () => {
+      const { data: categories, loading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
+      const location = useLocation();
+      const queryString = location.search;
+      const { data: productsData, loading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
+     let products = productsData?.products || [];
+
      return ( 
           <>
                <section id= "hero" className="hero">
@@ -78,8 +86,63 @@ export const MainPage = () => {
                         </div>
                     </div>
                </section>
-               <section id="menu">
+               <section id="our-menu" className='our-menu'>
+                    <div className="container our-menu__container">
+                         <div className="our-menu__title">
+                              <h2>Our Menu</h2>
+                              <p>Discover Our Delicious Menu</p>
+                         </div>
+                         <div className="our-menu__content">
+                              <ul className='our-menu__categories-list'>
+                                   <li>
+                                        <a href="#">All</a>
+                                   </li>
+                                   {categories?.map((cat, index)=>{
+                                        return (
+                                             <li key={index} className='our-menu__categories-list-item'>
+                                                  <a href={`#${cat.name}`}>{cat.name}</a>
+                                             </li>
+                                        )
+                                   })}
+                              </ul>
+                              <div className='our-menu__items'>
 
+                                   {products?.map((product, index) => {
+                                        return (
+                                             <div key={index} className="our-menu__item">
+                                                  <div className='our-menu__item-image-container'>
+                                                       <img src={pizza} alt={product.name} className="our-menu__item-image" />
+                                                  </div>
+                                                  <div className='our-menu__item-content'>
+                                                       <div className='our-menu__item-title-container'>
+                                                            <h5 className='our-menu__item-title'>{product.name}</h5>
+                                                            <span className='our-menu__item-dots'></span>
+                                                            <span className='our-menu__item-price'>&#163;{product.price}</span>
+                                                       </div>
+                                                       <p className='our-menu__item-description font-italic-style'>{product.desc}</p>
+                                                  </div>
+                                             </div>
+                                        )
+                                   })}
+
+                                   <div className="our-menu__item">
+                                        <div className='our-menu__item-image-container'>
+                                             <img  src={pizza} alt="pizza" className="our-menu__item-image" />
+                                        </div>
+                                        <div className='our-menu__item-content'>
+                                             <div className='our-menu__item-title-container'>
+                                                  <h5 className='our-menu__item-title'>Pizza</h5>
+                                                  <span className='our-menu__item-dots'></span>
+                                                  <span className='our-menu__item-price'>&#163;25</span>
+                                             </div>
+                                             <p className='our-menu__item-description font-italic-style'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                        </div>
+                                   </div>
+                                  
+                              </div>
+
+                         </div>
+                    </div>
                </section>
           </>
      );
