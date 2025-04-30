@@ -1,5 +1,5 @@
-export const Kontakt = () => {
+export const Contact = () => {
      return <>Contact</>;
 };
 
-export default Kontakt;
+export default Contact;

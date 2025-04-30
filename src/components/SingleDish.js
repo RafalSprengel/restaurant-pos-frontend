@@ -1,5 +1,5 @@
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
-import '../styles/SingleDish.scss';
+import '../styles/single-dish.scss';
 
 export const SingleDish = ({ singleDish }) => {
      const { getItemQuantity } = useShoppingCart();

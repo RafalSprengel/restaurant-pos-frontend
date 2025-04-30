@@ -1,0 +1,18 @@
+.my-lightbox{
+    &__gallery{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    &__image-wrap{
+        //overflow: hidden;
+        cursor: pointer;
+    }
+    &__image{
+        transition: transform 0.3s ease-in;
+        &:hover{
+            transform: scale(1.05);
+        }
+    }
+}

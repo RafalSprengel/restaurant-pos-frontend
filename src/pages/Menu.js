@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import '../styles/Menu.scss';
+import '../styles/menu.scss';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import { useFetch } from '../hooks/useFetch.js';
 import SingleDish from '../components/SingleDish';

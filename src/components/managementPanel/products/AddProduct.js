@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../utils/axios.js';
-import '../../../styles/AddProduct.scss';
+import '../../../styles/add-product.scss';
 
 const AddProduct = () => {
      const [categories, setCategories] = useState([]);

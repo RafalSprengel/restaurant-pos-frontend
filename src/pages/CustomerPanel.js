@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../context/authContext.js';
-import '../styles/CustomerPanel.scss';
+import '../styles/customer-panel.scss';
 import api from '../utils/axios.js';
 import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 

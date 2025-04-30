@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import '../styles/Navi.scss';
+import '../styles/navi.scss';
 
 export default function Navi({ showMobNav, toggleMobNav }) {
      return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
-import '../../../styles/UpdateOrder.scss';
+import '../../../styles/update-order.scss';
 
 const UpdateOrder = () => {
      const { id } = useParams();

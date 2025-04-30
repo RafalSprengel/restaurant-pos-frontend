@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import '../styles/ModalConfirm.scss';
+import '../styles/modal-confirm.scss';
 
 export default function ModalConfirm({ isOpen, close, children, onConfirm }) {
      const layer = useRef();

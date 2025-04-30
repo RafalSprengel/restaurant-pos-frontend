@@ -1,6 +1,6 @@
 import Modal from '../components/Modal.js';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
-import '../styles/ProductCard.scss';
+import '../styles/product-card.scss';
 
 export default function ProductCard({ currentProduct: product, isOpen, close }) {
      const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity, openCart } = useShoppingCart();

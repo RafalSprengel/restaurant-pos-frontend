@@ -1,0 +1,67 @@
+.tm-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+
+  &__card {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-color: #fff;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: rgba(0, 0, 0, 0.6);
+      transition: height 0.4s ease;
+      z-index: 1;
+    }
+
+    &:hover::after {
+      height: 30%;
+    }
+
+    &:hover .tm-cards__card-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__card-info {
+    position: absolute;
+    bottom: 20px;
+    left: 10%;
+    transform: translate(-50%, 20px);
+    text-align: center;
+    width: 90%;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 2;
+  }
+
+  &__card-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  &__card-role,
+  &__card-description {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+}

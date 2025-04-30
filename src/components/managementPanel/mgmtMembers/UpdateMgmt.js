@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import '../../../styles/AddUser.scss';
+import '../../../styles/add-user.scss';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '../../../hooks/useFetch';
 import api from '../../../utils/axios';
 
 export default function UpdateMgmt() {
-     const { id } = useParams(); // Zakładając, że ID użytkownika jest w URL
+     const { id } = useParams();
      const navigate = useNavigate();
      const [errorMessage, setErrorMessage] = useState(null);
      const { data: roles = [] } = useFetch('http://localhost:3001/api/staff/roles');

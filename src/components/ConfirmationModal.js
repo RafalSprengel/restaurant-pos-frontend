@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from './Modal.js';
-import '../styles/ConfirmationModal.scss';
+import '../styles/confirmation-modal.scss';
 
 export default function ConfirmationModal({ isOpen, close, onConfirm, message }) {
      function handleOnConfirm() {

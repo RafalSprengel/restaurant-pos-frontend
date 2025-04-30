@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import '../styles/LoginCustomer.scss';
+import '../styles/login-customer.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios';
 

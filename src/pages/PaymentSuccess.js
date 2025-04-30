@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import api from '../utils/axios';
-import '../styles/PaymentSuccess.scss';
+import '../styles/payment-success.scss';
 
 const PaymentSuccess = () => {
      const navigate = useNavigate();

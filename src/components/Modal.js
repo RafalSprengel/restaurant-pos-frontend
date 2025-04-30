@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import '../styles/Modal.scss';
+import '../styles/modal.scss';
 
 export default function Modal({ isOpen, close, children }) {
      const layer = useRef();

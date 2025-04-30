@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../utils/axios.js';
-import '../../../styles/FormStyles.scss';
+import '../../../styles/form-styles.scss';
 
 const AddCategory = () => {
      const [isLoading, setIsLoading] = useState(false);

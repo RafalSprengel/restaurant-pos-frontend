@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext.js';
-import '../styles/Management.scss';
+import '../styles/management.scss';
 import api from '../utils/axios.js';
 
 export const Management = () => {

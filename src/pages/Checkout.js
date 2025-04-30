@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import { useAuth } from '../context/authContext.js';
 import api from '../utils/axios';
-import '../styles/Checkout.scss';
+import '../styles/checkout.scss';
 
 export default function Checkout() {
      const { cartItems, cartSummaryPrice } = useShoppingCart();

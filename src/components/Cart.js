@@ -1,7 +1,7 @@
 import Modal from '../components/Modal.js';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Cart.scss';
+import '../styles/cart.scss';
 
 export default function Cart({ isOpen, close }) {
      const {

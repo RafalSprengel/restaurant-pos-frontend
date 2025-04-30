@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
-import '../../../styles/UpdateCustomer.scss';
+import '../../../styles/update-customer.scss';
 
 const AddCustomer = () => {
      const [formData, setFormData] = useState({

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import '../styles/LoginManagement.scss';
+import '../styles/login-management.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios'; // Importowanie instancji axios
 

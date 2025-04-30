@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/authContext.js';
 import api from '../../utils/axios';
-import '../../styles/PersonalDetails.scss';
+import '../../styles/personal-details.scss';
 import { useFetch } from '../../hooks/useFetch.js';
 
 const PersonalDetails = () => {

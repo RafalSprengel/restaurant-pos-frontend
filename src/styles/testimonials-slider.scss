@@ -1,0 +1,114 @@
+@import 'variables';
+
+.testimonial-slider {
+    &__wrap {
+        overflow: hidden;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    &__track {
+        display: flex;
+        flex-direction: row;
+        flex-shrink: 0;
+        will-change: transform;
+        transition: transform 0.8s ease-in-out;
+    }
+
+    &__slide {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        padding: 0 20px;
+        width: 33.33%;
+    }
+
+    &__slide-quote {
+        flex:3 3;
+        background-color: #161513;
+       // padding: 25px 15px 60px 15px;
+        padding: 35px 15px;
+        line-height: 1.6;
+        min-height: 217px;
+        overflow: hidden;  
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+       // -webkit-box-orient: vertical; 
+        white-space: normal;
+    }
+
+    &__slide-profile {
+        flex: 1 1;
+        transform: translate(8%, -25px);
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &__slide-profile-image {
+        border-radius: 50%;
+        width: 90px;
+        margin-bottom: 10px;
+    }
+
+    &__slide-profile-name {
+        font-family: $heading-font;
+        font-size: 1rem;
+    }
+
+    &__slide-profile-profession {
+        font-family: $heading-font;
+        font-size: 0.8rem;
+    }
+
+    &__pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    &__pagination-bullet {
+        cursor: pointer;
+        width: 10px;
+        height: 10px;
+        background-color: rgb(100, 100, 100);
+        border-radius: 50%;
+        transition: all 0.3s ease-in;
+
+        &--active {
+            background-color: $accent-color;
+        }
+    }
+
+    &__slide-quote-mark {
+        display: inline-block;
+        font-size: 2.3rem;
+        font-weight: 800;
+        color: $accent-color;
+        margin: 0 10px 0 1px;
+        line-height: 0.1;
+        transform: translate(0px, 7px);
+    }
+}
+   
+@media only screen and (max-width: $lg) {
+    .testimonial-slider {
+        &__slide {
+            width: 33.33%;
+        }
+    }
+}
+
+
+@media only screen and (max-width: $md) {
+    .testimonial-slider {
+        &__slide-quote {
+            //padding-bottom: 570px;;
+        }
+    }
+}
+
+
