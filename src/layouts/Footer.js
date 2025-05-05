@@ -4,22 +4,18 @@ import '../styles/footer.scss';
 import logoXL from '../img/logo-white-XL.png';
 import { Link } from 'react-router-dom';
 export default function Footer() {
-     return (
-          <footer className="footer">
-               <div className="footer__inner-wrap">
-                    <div className="footer__section-1">
-                         <img src={logoXL} alt="Logo" />
-                    </div>
-                    <div className="footer__section-2">
-                         <span>Cwiartki 3/4, Wrocław</span>
-                         <span>Telefon: 516 909 517</span>
-                         <span>E-mail: hot.food@mail.com</span>
-                         <Link to="/management/login">Management login</Link>
-                    </div>
-                    <div className="footer__section-3">
-                         <FontAwesomeIcon icon={faBaseball} />
-                    </div>
-               </div>
-          </footer>
-     );
+  return (
+    <footer className="footer">
+      <div className="footer__content">
+        <p className="footer__text">Design & development by <strong>Rafał Sprengel</strong></p>
+        <p className="footer__contact">
+          <a href="mailto:rafal.sprengel@gmail.com">rafal.sprengel@gmail.com</a> |
+          <a href="tel:+48516909517">+48 516 909 517</a> |
+          <a href="tel:+447518577503">+44 7518 577503</a> |
+          <Link to="/management/login">Admin login</Link>
+        </p>
+      </div>
+    </footer>
+
+  );
 }

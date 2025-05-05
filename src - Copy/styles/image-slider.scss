@@ -1,0 +1,85 @@
+@import 'variables';
+
+.imageSlider{
+
+    &__wrap{
+        overflow: hidden;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    &__track{
+        display: flex;
+        flex-direction: row;
+        width: 300%;
+        flex-shrink: 0;
+        will-change: transform;
+        transition: transform 0.8s ease-in-out;
+    }
+
+    &__slide{
+        display: flex;
+        gap: 30px;
+        flex-shrink: 0;
+    }
+
+    &__slide-image-container{
+        flex: 1 1 auto;
+    }
+    
+    &__slide-image{ 
+        width: 100%;
+        object-fit: cover;
+    }
+
+    &__slide-header{
+        font-size: 1.6rem;
+    }
+
+    &__slide-price{
+        font-weight: 700;
+        font-size: 1.5rem;;
+        text-decoration: underline;
+        text-underline-offset: 4px;;
+        text-decoration-color: $accent-color;
+    }
+
+    &__slide-content{
+        flex: 1 1 auto;
+        flex-direction: column;
+        display: flex;
+        gap: 25px;
+        font-family: $p-font;
+        line-height: 1.5;
+    }
+
+    &__pagination{
+        display: flex;
+        justify-content: center;
+        gap: 10px;;
+    }
+    
+    &__pagination-bullet{
+        cursor: pointer;
+        width: 10px;
+        height: 10px;
+        background-color: rgb(100, 100, 100);
+        border-radius: 50%;
+        transition: all 0.3s ease-in;
+
+        &--active{
+            background-color: $accent-color
+        }
+    }
+}
+
+@media only screen and (max-width: $lg) {
+    .imageSlider{
+
+        &__slide{
+            flex-direction: column;
+        }
+    }
+}

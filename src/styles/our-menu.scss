@@ -1,0 +1,118 @@
+@import "variables.scss";
+
+.food-menu{
+
+    &__categories-list{
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: center;
+              width: 100%;
+              padding: 0;
+
+              & li{
+                   list-style: none;
+                   font-family: $heading-font;
+                   padding: 3px 10px;
+                   border-radius: 3px;
+                   cursor: pointer;
+                   transition: all 0.2s ease-in;
+                   &:hover{
+                        background-color: $accent-color;
+                        color: white;
+                   }
+              }
+    }
+
+    &__content{
+         display: flex;
+         flex-direction: column;
+         gap: 50px;
+         justify-content: center;
+    }
+
+    &__items{
+         display: flex;
+         flex-direction: column;
+         gap: 35px;
+
+    }
+
+    &__item{
+         display: flex;
+         gap: 10px;
+    }
+
+    &__item-image-container{
+         flex: 0 0 80px;
+        
+
+    }
+
+    &__item-image{
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         width: 100%;
+         height: auto;
+         filter: brightness(0.8);
+         border-radius: 50%;
+         border: 6px solid rgba(107, 107, 107, 0.2);
+    }
+
+    &__item-content{
+         flex: 5 5 auto;
+         display: flex;
+         flex-direction: column;
+         gap: 10px;
+    }
+
+    &__item-title-container{
+         display: flex;
+         justify-content: space-between;
+    }
+
+    &__item-title{
+         font-size: 1rem;
+         font-family: $p-font;
+         background-color: black;
+         padding: 2px 6px;
+    }
+
+    &__item-dots{
+         flex: 1;
+         height: 50%;
+         border-bottom: 2px dotted rgb(107, 107, 107);
+    }
+
+    &__item-price{
+         background-color: black;
+         padding: 2px 6px;
+         font-family: 'Roboto', sans-serif;
+         font-weight: 600;
+         color: $accent-color;
+    }
+
+    &__item-description{
+         font-size: 14px;
+         line-height: 1.5;;
+    }
+
+    &__pagin{
+     display: flex;
+     justify-content: center;
+    }
+
+    &__pagin-digit, &__pagin-arrow {
+     color: white;
+     padding: 5px 10px;
+     border: none;
+     &--active{
+          background-color: $accent-color;
+          border-radius: 5px;
+     }
+    }
+
+    &__pagin-arrow{
+     color: $accent-color;
+    }
+}
