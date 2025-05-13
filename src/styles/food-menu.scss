@@ -33,7 +33,10 @@
     &__items{
          display: flex;
          flex-direction: column;
-         gap: 35px;
+         gap: 35px; 
+         overflow: hidden;
+         max-height: 3000px;
+         transition: max-height 0.3s ease-in;
 
     }
 

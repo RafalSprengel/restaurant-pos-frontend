@@ -1,0 +1,50 @@
+@import "variables.scss";
+
+.table-booking-form{
+    &__wrap{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    &__group{
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    &__field{
+        color: #e4e4e4;
+        border: 1px solid #3a3a3a;
+        background-color: transparent;
+        flex: 1 1 30%;
+        min-width: 296px;
+        transition: all 0.15s ease-in;
+        font-size: 1rem;
+    
+        &::-webkit-calendar-picker-indicator {
+             width: 20px;
+             height: 20px;
+             filter: brightness(0.5) invert(1);
+             cursor: pointer;
+           }
+    
+        &::placeholder{
+             color: #6b6b6b;
+        }
+    
+        &:focus{
+             outline: none;
+             border-color: $accent-color;
+        }
+    }
+    
+    &__btn{
+        width: 215px;
+        padding: 20px 0;
+        margin-top: 10px;
+        align-self: center;
+    }
+}
+

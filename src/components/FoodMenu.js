@@ -1,25 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
-import "../styles/our-menu.scss";
+import "../styles/food-menu.scss";
 import pizza from '../img/pizza.png';
 
-export default function FoodMenu() {
+
+export default function FoodMenu({ }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = new URLSearchParams(location.search);
 
-    // Paginacja
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+
+    const contentRef = useRef()
 
     const { data: categories, loading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
     const queryString = location.search;
     const { data: productsData, loading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
+    const prod = productsData;
 
     let products = productsData?.products || [];
 
-    // Ustawienie totalPages i currentPage z danych API
     useEffect(() => {
         if (productsData) {
             setCurrentPage(productsData.currentPage || 1);
@@ -30,6 +32,7 @@ export default function FoodMenu() {
     const handleCategoryClick = (categoryName) => {
         const params = new URLSearchParams(location.search);
         params.forEach((value, key) => params.delete(key));
+        if (categoryName == null) { navigate('/'); return }
         params.set('category', categoryName);
         navigate('?' + params);
     };
@@ -38,12 +41,20 @@ export default function FoodMenu() {
         const params = new URLSearchParams(location.search);
         params.set('page', newPage);
         navigate('?' + params);
+
+        setTimeout(() => {
+            const yOffset = -150;
+            const y = contentRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }, 300);
+
+
     };
 
     return (
-        <div className="food-menu__content">
+        <div className="food-menu__content" ref={contentRef} >
             <ul className='food-menu__categories-list'>
-                <li><a href="#" >All</a></li>
+                <li onClick={() => handleCategoryClick(null)}> All</li>
                 {categories?.map((cat, index) => (
                     <li key={index} className='food-menu__categories-list-item'>
                         <a onClick={() => handleCategoryClick(cat.name)}>{cat.name}</a>
@@ -54,7 +65,7 @@ export default function FoodMenu() {
             <div className='food-menu__items'>
                 {products?.length > 0 ? (
                     products.map((product, index) => (
-                        <div key={index} className="food-menu__item">
+                        <div key={index} className="food-menu__item" data-aos='fade-up' data-aos-once="false" data-aos-duration="300" data-aos-delay={index * 50}>
                             <div className='food-menu__item-image-container'>
                                 <img src={pizza} alt={product.name} className="food-menu__item-image" />
                             </div>
@@ -75,7 +86,6 @@ export default function FoodMenu() {
                 )}
             </div>
 
-            {/* Paginacja */}
             <div className="food-menu__pagin" style={{ marginTop: '20px' }}>
                 <button className="food-menu__pagin-arrow" onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
                     &lt; &lt;

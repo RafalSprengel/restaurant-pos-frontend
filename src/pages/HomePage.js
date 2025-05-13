@@ -1,7 +1,5 @@
 import { CheckCheck } from 'lucide-react'; // icons 'check-check'
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { useFetch } from '../hooks/useFetch.js';
 import '../styles/home-page.scss';
 import pizza from '../img/pizza.png';
 import about from '../img/about.jpg';
@@ -11,19 +9,14 @@ import ImageSlider from '../components/ImageSlider.js';
 import TestimonialsSlider from '../components/TestimonialsSlider.js';
 import MyLightbox from '../components/MyLightbox.js';
 import TeamMembersCards from '../components/TeamMembersCards.js';
-import OurMenu from '../components/OurMenu.js';
+import FoodMenu from '../components/FoodMenu.js';
+import TableBookingForm from '../components/TableBookingForm.js'
 
 // AOS Animations
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 export const MainPage = () => {
-     const { data: categories, loading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
-     const navigate = useNavigate();
-     const location = useLocation();
-     const queryString = location.search;
-     const { data: productsData, loading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
-     let products = productsData?.products || [];
      const [specialsActiveTab, setSpecialsActiveTab] = useState(0);
 
      // Tabs for Specials Section
@@ -275,14 +268,14 @@ export const MainPage = () => {
                </section>
 
                {/* OUR MENU SECTION */}
-               <section id="our-menu" className='our-menu'>
-                    <div className="container our-menu__container">
+               <section id="our-menu" className='our-menu' >
+                    <div className="container our-menu__container" >
                          <div className="our-menu__title">
                               <h2>OUR MENU</h2>
                               <p>Discover Our Delicious Menu</p>
                          </div>
                          <div className="our-menu__content">
-                              <OurMenu />
+                              <FoodMenu />
                          </div>
                     </div>
                </section>
@@ -351,18 +344,7 @@ export const MainPage = () => {
                               <p>Book A Table</p>
                          </div>
                          <div className='book-a-table__content'>
-                              <div className='book-a-table__form-wrap'>
-                                   <div className='book-a-table__form-group'>
-                                        <input type='text' placeholder='Your Name' className='book-a-table__form-field' data-aos='fade-up' />
-                                        <input type='text' placeholder='Your Email' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="100" data-aos-duration="400" />
-                                        <input type='text' placeholder='Your Phone' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="200" data-aos-duration="400" />
-                                        <input type='date' placeholder='dd:mm:rr' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="300" data-aos-duration="400" />
-                                        <input type='time' placeholder='--:--' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="500" data-aos-duration="400" />
-                                        <input type='number' placeholder='#of People' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="600" data-aos-duration="400" />
-                                   </div>
-                                   <textarea placeholder='Your Message' rows="6" className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="700" data-aos-duration="400"></textarea>
-                                   <button className='btn-accent-primary book-a-table__form-btn' data-aos="fade-up">Book a Table</button>
-                              </div>
+                              <TableBookingForm />
                          </div>
                     </div>
                </section>
