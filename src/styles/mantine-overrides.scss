@@ -1,0 +1,61 @@
+/* ==================== Common Styles ==================== */
+.mantine-TextInput-input,
+.mantine-Select-input,
+.mantine-Textarea-input,
+.mantine-DatePickerInput-input {
+    background-color: transparent;
+    border: 1px solid #3a3a3a;
+    color: white;
+    &::placeholder{
+        color: #6b6b6b
+    }
+}
+
+.mantine-TextInput-input,
+.mantine-Select-input {
+    padding: 25px 15px;
+}
+
+.mantine-Textarea-input {
+    padding: 10px 15px; /* Dostosuj padding dla Textarea */
+}
+
+.mantine-DatePickerInput-input {
+    padding: 13px 15px;
+}
+
+/* ==================== DatePickerInput Specific Styles ==================== */
+.mantine-DatePickerInput-day[data-weekend='true'] {
+    color: red !important; /* Weekend days in red */
+}
+
+.mantine-DatePickerInput-weekday {
+    color: #ffffff;
+    background-color: rgb(173, 173, 173);
+    margin: 10px;
+    padding-top: 5px;
+}
+
+.mantine-DatePickerInput-weekday:first-child {
+    border-radius: 5px 0 0 5px;
+    padding-left: 5px;
+}
+
+.mantine-DatePickerInput-weekday:last-child {
+    border-radius: 0 5px 5px 0;
+    padding-right: 5px;
+}
+
+.mantine-InputPlaceholder-placeholder{
+    color:#6b6b6b;
+}
+
+/*===================== SelectInput Specyfic Style ======================== */
+.mantine-Select-input{
+    background-color: transparent !important;
+}
+
+.mantine-InputWrapper-label{
+    padding: 2px;
+    color: #6b6b6b
+}

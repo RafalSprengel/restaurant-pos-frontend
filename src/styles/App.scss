@@ -17,6 +17,7 @@
 @import '@fontsource/vollkorn/700.css';
 @import '@fontsource/playfair-display/700.css';
 @import '@fontsource/playfair-display/700.css';
+
 @font-face {
      font-family: 'Cuprum';
      src:
@@ -25,8 +26,8 @@
      font-weight: normal;
 }
 
-*{
-    //outline: 1px solid red;
+* {
+     //outline: 1px solid red;
 }
 
 /* RESET CSS */
@@ -51,6 +52,7 @@ h6 {
 p {
      font-family: $p-font;
 }
+
 button {
      font-family: $p-font;
      font-weight: $btn-font-weight;
@@ -58,10 +60,11 @@ button {
 
 a {
      text-decoration: none;
-     color: inherit;
+     //color: inherit;
 }
+
 body {
-     color: $white-font-color;
+    // color: $white-font-color;
      -webkit-font-smoothing: antialiased;
      -moz-osx-font-smoothing: grayscale;
 }
@@ -75,6 +78,7 @@ ul,
 ol {
      list-style: none;
 }
+
 //-----------------------------------------
 
 input,
@@ -188,11 +192,13 @@ section {
      border-radius: 50px;
      transition: all 0.4s;
      padding: 6px 24px;
+
      &:hover {
           background-color: $accent-color;
           color: #fff;
      }
 }
+
 .btn-accent-secondary {
      display: flex;
      align-items: center;
@@ -206,6 +212,7 @@ section {
      border-radius: 50px;
      transition: all 0.4s;
      padding: 6px 24px;
+
      &:hover {
           background-color: $accent-color;
           color: #fff;
@@ -247,5 +254,3 @@ a {
      letter-spacing: 0.05em;
      //font-size: clamp(1rem, 0.875rem + 0.5vw, 1.25rem);
 }
-
-

@@ -35,18 +35,14 @@
 
      &__main {
           display: flex;
+          flex: 0 1 650px;
           flex-direction: column;
           justify-content: center;
+          align-items: center;
           border-radius: 7px;
-          max-width: 80vw;
-          min-width: 650px;
-          min-height: 30vh;
-          padding: 15px;
+          padding: 40px 15px;
+          margin: 15px;
           background-color: white;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
           animation: slideDown 0.5s;
      }
 }

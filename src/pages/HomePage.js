@@ -184,7 +184,7 @@ export const MainPage = () => {
      // Initialize AOS Animation on Mount
      useEffect(() => {
           AOS.init({
-               duration: 1000,
+               duration: 500,
                once: true,
           });
      }, []);

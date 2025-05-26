@@ -1,240 +1,214 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import Modal from '../components/Modal.js';
 import "../styles/table-booking-form.scss";
+import '../styles/mantine-overrides.scss'
 import { useFetch } from '../hooks/useFetch.js';
-import Select from 'react-select';
+import api from '../utils/axios';
+import { useForm } from '@mantine/form';
+import {
+    TextInput,
+    Select,
+    Textarea,
+    Button,
+    Group,
+    Grid
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
 
 export default function TableBookingForm() {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        date: '',
-        timeSlotOption: '',
-        tableOption: '',
-        message: ''
-    });
-    const [formErrors, setFormErrors] = useState()
-    const { data: tablesData, loading: loadingTablesData, error: fetchTablesDataError, refetch: refetchTablesData } = useFetch('/tables');
+    const [isSuccessfulModalOpen, setIsSuccessfulModalOpen] = useState(false);
+    const { data: tablesData } = useFetch('/tables');
 
-    const availabilityUrl = formData.date && formData.tableOption
-        ? `/tables/availability?date=${formData.date}&tableNumber=${formData.tableOption.value}`
+    const form = useForm({
+        initialValues: {
+            name: '',
+            email: '',
+            phone: '',
+            date: null,
+            time: '',
+            table: '',
+            message: ''
+        },
+        validate: {
+            name: (value) => (value.trim() === '' ? 'Name is required' : null),
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            phone: (value) => (/^\d{5,}$/.test(value) ? null : 'Phone must have at least 5 digits'),
+            date: (value) => (!value ? 'Date is required' : null),
+            time: (value) => (!value || value.trim() === '' ? 'Time slot is required' : null),
+            table: (value) => (!value || value.trim() === '' ? 'Table selection is required' : null),
+        },
+    });
+
+    const availabilityUrl = form.values.date && form.values.table
+        ? `/tables/availability?date=${form.values.date}&tableNumber=${form.values.table}`
         : null;
 
-    const { data: timeSlotsData, loading: loadingTimeSlots, error: fetchTimeSlotsError, refetch: refetchTimeSlots } = useFetch(availabilityUrl);
+    const { data: timeSlotsData } = useFetch(availabilityUrl);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value
-        }));
-    };
+    const tablesOption = tablesData?.map((el) => ({
+        value: el.tableNumber.toString(),
+        label: `No.${el.tableNumber} ${el.location} for ${el.capacity} people`
+    }));
 
-    const handleTableChange = (option) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            timeSlotOption: '',
-            tableOption: option
-        }));
-    };
-
-    const handleDateChange = (e) => {
-        const { value } = e.target;
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            timeSlotOption: '',
-            date: value
-        }));
-    };
-
-    const handleTimeChange = (option) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            timeSlotOption: option
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const errors = {};
-
-        for (let key in formData) {
-            if (formData[key].trim() === '') {
-                errors[key] = 'This field must be filled';
-            }
-        }
-
-        setFormErrors(errors);
-    };
-
-    const customSelectStyles = {
-        container: (base) => ({
-            ...base,
-            flex: '1 1 31%',
-            fontSize: '1.1rem',
-        }),
-        control: (base) => ({
-            ...base,
-            backgroundColor: '#0c0b09',
-            color: '#fff',
-            borderColor: '#555',
-            height: '100%',
-            padding: '15px 10px',
-            borderRadius: '0'
-        }),
-        option: (base, state) => ({
-            ...base,
-            backgroundColor: state.isFocused ? '#333' : '#222',
-            color: state.isDisabled ? '#777' : '#fff',
-            cursor: state.isDisabled ? 'not-allowed' : 'pointer',
-        }),
-        menu: (base) => ({
-            ...base,
-            backgroundColor: '#222'
-        }),
-        singleValue: (base) => ({
-            ...base,
-            color: '#fff'
-        })
-    };
-
-    let slotsOption = timeSlotsData?.slots.map((slot) => {
+    const slotsOption = timeSlotsData?.slots.map((slot) => {
         const date = new Date(slot.time);
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
+        const time = `${hours}:${minutes}`;
         return {
-            value: hours + ':' + minutes,
-            label: hours + ':' + minutes + ' ' + ((!slot.available) ? 'Unavailable' : ''),
-            isDisabled: !slot.available
+            value: time,
+            label: `${time} ${!slot.available ? 'Unavailable' : ''}`,
+            disabled: !slot.available
         };
     });
 
-    let tablesOption = tablesData?.map((el) => {
-        return ({
-            value: el.tableNumber,
-            label: 'No.' + el.tableNumber + ' ' + el.location + ' for ' + el.capacity + ' people'
-        });
-    });
+    const handleSubmit = async (values) => {
+        try {
+            const response = await api.post('/tables/reservation', {
+                tableNumber: values.table,
+                reservedTime: values.time,
+                reservedDate: values.date,
+                customerDetails: {
+                    name: values.name,
+                    email: values.email,
+                    phone: values.phone
+                },
+                message: values.message
+            });
+
+            if (response.status === 201) {
+                form.reset();
+                setIsSuccessfulModalOpen(true);
+            }
+        } catch (err) {
+            console.error('Reservation failed:', err.response?.data?.error || err.message);
+        }
+    };
 
     return (
-        <form className='table-booking-form__wrap' onSubmit={handleSubmit}>
-            <div className='table-booking-form__group'>
-                <input
-                    type='text'
-                    name='name'
-                    placeholder='Your Name'
-                    value={formData.name}
-                    onChange={handleChange}
-                    className='table-booking-form__field'
-                    data-aos='fade-up'
-                    required
-                    onInvalid={(e) => e.target.setCustomValidity('Please provide your name')}
-                    onInput={(e) => e.target.setCustomValidity("")}
-                />
-                <input
-                    type='email'
-                    name='email'
-                    placeholder='Your Email'
-                    value={formData.email}
-                    onChange={handleChange}
-                    className='table-booking-form__field'
-                    data-aos='fade-up'
-                    data-aos-delay="100"
-                    data-aos-duration="400"
-                    required
-                />
-                <input
-                    type="tel"
-                    name="phone"
-                    placeholder="Your Phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="table-booking-form__field"
-                    data-aos="fade-up"
-                    data-aos-delay="200"
-                    data-aos-duration="400"
-                    required
-                    pattern="^\d{5,}$"
-                    onInvalid={(e) => e.target.setCustomValidity('Please provide your phone number')}
-                    onInput={(e) => e.target.setCustomValidity("")}
-                />
+        <>
+            <form className='table-booking-form__wrap' onSubmit={form.onSubmit(handleSubmit)}>
 
-                <div
-                    data-aos='fade-up'
-                    data-aos-delay="300"
-                    data-aos-duration="400"
-                    className='table-booking-form__field'
-                    style={{ zIndex: 2 }}
-                >
-                    <Select
-                        name="tableOption"
-                        value={formData.tableOption}
-                        onChange={(option) => handleTableChange(option)}
-                        required
-                        onInvalid={(e) => e.target.setCustomValidity('Please select a table')}
-                        onInput={(e) => e.target.setCustomValidity("")}
-                        options={tablesOption}
-                        styles={customSelectStyles}
-                        placeholder={"Please select a table"}
-                    />
-                </div>
+                <Grid>
+                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                        <TextInput
+                            label="Your Name"
+                            placeholder="Your Name"
+                            {...form.getInputProps('name')}
+                            styles={{
+                                input: {
+                                    borderColor: form.errors.name ? 'red' : undefined,
+                                    color: form.errors.name ? 'red' : undefined,
+                                },
+                            }}
+                        />
+                    </Grid.Col>
 
-                <input
-                    type='date'
-                    name='date'
-                    placeholder='dd:mm:rr'
-                    value={formData.date}
-                    onChange={handleDateChange}
-                    className='table-booking-form__field'
-                    data-aos='fade-up'
-                    data-aos-delay="300"
-                    data-aos-duration="400"
-                    required
-                    onInvalid={(e) => e.target.setCustomValidity('Please provide date')}
-                    onInput={(e) => e.target.setCustomValidity("")}
+                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                        <TextInput
+                            label="Your Email"
+                            placeholder="your@email.com"
+                            {...form.getInputProps('email')}
+                            styles={{
+                                input: {
+                                    borderColor: form.errors.email ? 'red' : undefined,
+                                    color: form.errors.email ? 'red' : undefined,
+                                },
+                            }}
+                        />
+                    </Grid.Col>
+
+                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                        <TextInput
+                            label="Your Phone"
+                            placeholder="12345"
+                            {...form.getInputProps('phone')}
+                            styles={{
+                                input: {
+                                    borderColor: form.errors.phone ? 'red' : undefined,
+                                    color: form.errors.phone ? 'red' : undefined,
+                                },
+                            }}
+                        />
+                    </Grid.Col>
+
+                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                        <Select
+                            label="Table"
+                            placeholder="Please select a table"
+                            data={tablesOption || []}
+                            {...form.getInputProps('table')}
+                            styles={{
+                                input: {
+                                    borderColor: form.errors.table ? 'red' : undefined,
+                                    color: form.errors.table ? 'red' : undefined,
+                                },
+                            }}
+                        />
+                    </Grid.Col>
+
+                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                        <DatePickerInput
+                            label="Pick a date"
+                            placeholder="Choose a date"
+                            valueFormat="YYYY-MM-DD"
+                            highlightToday
+                            minDate={new Date()}
+                            maxLevel='month'
+                            {...form.getInputProps('date')}
+                            styles={{
+                                input: {
+                                    borderColor: form.errors.date ? 'red' : undefined,
+                                    color: form.errors.date ? 'red' : undefined,
+                                },
+                            }}
+                        />
+                    </Grid.Col>
+
+                    <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+                        <Select
+                            label="Time Slot"
+                            placeholder={form.values.date && form.values.table ? "Select time" : "Select date and table first"}
+                            data={slotsOption || []}
+                            {...form.getInputProps('time')}
+                            disabled={!form.values.date || !form.values.table}
+                            styles={{
+                                input: {
+                                    borderColor: form.errors.time ? 'red' : undefined,
+                                    color: form.errors.time ? 'red' : undefined,
+                                },
+                            }}
+
+                        />
+                    </Grid.Col>
+                </Grid>
+
+                <Textarea
+                    label="Your Message"
+                    placeholder="Optional message"
+                    rows={4}
+                    {...form.getInputProps('message')}
                 />
-                <div
-                    data-aos='fade-up'
-                    data-aos-delay="300"
-                    data-aos-duration="400"
-                    className='table-booking-form__field'
-                    style={{ zIndex: 1 }}
-                >
-                    <Select
-                        name="timeSlotOption"
-                        value={formData.timeSlotOption}
-                        onChange={(option) => handleTimeChange(option)}
-                        required
-                        isDisabled={!formData.date || !formData.tableOption}
-                        onInvalid={(e) => e.target.setCustomValidity('Please provide time')}
-                        onInput={(e) => e.target.setCustomValidity("")}
-                        options={slotsOption}
-                        styles={customSelectStyles}
-                        placeholder={formData.date && formData.tableOption ? "Select time" : "Please select the date and table first"}
-                    />
+                    <Button type="submit" className='btn-accent-primary table-booking-form__btn'>Book a Table</Button>
+            </form>
+
+            <Modal isOpen={isSuccessfulModalOpen} close={() => setIsSuccessfulModalOpen(false)}>
+                <div className='table-booking-form__modal-wrap'>
+                    <h4 className='table-booking-form__modal-header'>Thank You for your reservation!</h4>
+                    <div>Your table has been booked successfully</div>
+                    <div className='table-booking-form__modal-details'>
+                        <div>Date: {form.values.date}</div>
+                        <div>Time: {form.values.time}</div>
+                        <div>Table: {tablesOption?.find(el => el.value === form.values.table)?.label}</div>
+                    </div>
+                    <button
+                        className='btn-accent-secondary table-booking-form__modal-button'
+                        onClick={() => setIsSuccessfulModalOpen(false)}
+                    >
+                        Ok
+                    </button>
                 </div>
-            </div>
-            <textarea
-                name='message'
-                placeholder='Your Message'
-                rows="6"
-                value={formData.message}
-                onChange={handleChange}
-                className='table-booking-form__field'
-                data-aos='fade-up'
-                data-aos-delay="700"
-                data-aos-duration="400"
-                required
-            />
-            <button
-                type='submit'
-                className='btn-accent-primary table-booking-form__btn'
-                data-aos="fade-up"
-                data-aos-delay="800"
-                data-aos-duration="400"
-            >
-                Book a Table
-            </button>
-        </form>
+            </Modal>
+        </>
     );
-}
+};

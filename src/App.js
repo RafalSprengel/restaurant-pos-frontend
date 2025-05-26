@@ -1,4 +1,8 @@
+
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import './styles/app.scss';
+
 import { Routes, Route } from 'react-router-dom';
 import AboutUs from './pages/AboutUs';
 import Checkout from './pages/Checkout';
@@ -37,6 +41,7 @@ import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
 
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
+
 
 function App() {
      return (
