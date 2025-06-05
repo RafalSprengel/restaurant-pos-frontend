@@ -7,6 +7,8 @@ import '../styles/header.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 
+import { IconPhone, IconMail, IconMapPin } from '@tabler/icons-react';
+
 export default function Header() {
      const [isScrolled, setIsScrolled] = useState(false);
      const [showMobNav, setShowMobNav] = useState(false);
@@ -30,7 +32,15 @@ export default function Header() {
                <header className="header">
                     <div className={'header__info-bar-outer ' + (isScrolled ? 'header__info-bar-outer--hidden' : '')}>
                          <div ref={infoBarRef} className="header__info-bar-inner">
-                              <a href="#">📞 +48 123 456 789 | 📍 Adres Restauracji</a>
+                              <a href="tel:+48123456789">
+                                   <IconMail size={18} stroke={1} style={{ color: '#cda45e', fontSize: '6px' }} />
+                                   <p>+48 123 456 789</p>
+                              </a>
+                              <p>|</p>
+                              <a href="https://www.google.com/maps?q=222+Holderness+Road+Hull" target="_blank" rel="noopener noreferrer">
+                                   <IconPhone size={18} stroke={1} style={{ color: '#cda45e', fontSize: '12px' }} />
+                                   <p>222 Holderness Road, Hull</p>
+                              </a>
                          </div>
                     </div>
 

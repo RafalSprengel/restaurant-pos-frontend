@@ -2,16 +2,16 @@ import { useRef } from 'react';
 import '../styles/modal.scss';
 
 export default function Modal({ isOpen, close, children }) {
-     const layer = useRef();
+     const overlay = useRef();
      const handleClickOnLayer = (e) => {
-          if (e.target === layer.current) close();
+          if (e.target === overlay.current) close();
      };
 
      return (
           <>
                {isOpen && (
-                    <div className="customModal" ref={layer} onClick={handleClickOnLayer}>
-                         <div className="customModal__main">{children}</div>
+                    <div className="custom-modal__overlay" ref={overlay} onClick={handleClickOnLayer}>
+                         <div className="custom-modal__main">{children}</div>
                     </div>
                )}
           </>

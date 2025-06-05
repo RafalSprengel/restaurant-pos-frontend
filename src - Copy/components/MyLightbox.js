@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import GLightbox from 'glightbox';
 import 'glightbox/dist/css/glightbox.min.css';
-import '../styles/my-lightbox.scss'; // Import your custom styles
+import '../styles/my-lightbox.scss';
 
 const MyLightbox = ({ images }) => {
   useEffect(() => {

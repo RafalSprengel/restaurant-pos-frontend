@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/home-page.scss';
 import pizza from '../img/pizza.png';
 import about from '../img/about.jpg';
+import { Link } from 'react-router-dom';
 
 // Components
 import ImageSlider from '../components/ImageSlider.js';
@@ -11,6 +12,7 @@ import MyLightbox from '../components/MyLightbox.js';
 import TeamMembersCards from '../components/TeamMembersCards.js';
 import FoodMenu from '../components/FoodMenu.js';
 import TableBookingForm from '../components/TableBookingForm.js'
+import ContactForm from '../components/ContactForm.js'
 
 // AOS Animations
 import AOS from 'aos';
@@ -186,6 +188,7 @@ export const MainPage = () => {
           AOS.init({
                duration: 500,
                once: true,
+               offset: -150,
           });
      }, []);
 
@@ -200,8 +203,8 @@ export const MainPage = () => {
                               </h2>
                               <p data-aos="fade-up" data-aos-delay="100" className="hero__description">Delivering great food for more than 18 years!</p>
                               <div data-aos="fade-up" data-aos-delay="200" className="hero__buttons">
-                                   <button className="button btn-accent-secondary">BOOK A TABLE</button>
-                                   <button className="button btn-accent-primary">ORDER NOW</button>
+                                   <a href='#book-a-table' className="button btn-accent-primary">Book A Table</a>
+                                   <a href='#our-menu' className="button btn-accent-primary">See Menu</a>
                               </div>
                          </div>
                          <div className="hero__image-container">
@@ -392,7 +395,7 @@ export const MainPage = () => {
                               <h2>CONTACT</h2>
                               <p>Get in Touch</p>
                          </div>
-                         <div className='contact__map'>
+                         <div>
                               <iframe
                                    style={{ border: 0, width: "100%", height: "400px" }}
                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-0.1365!3d53.7676!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b207957e1b087%3A0xa9839c8d05f31a29!2sHull%2C%20UK!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus&zoom=14"
@@ -421,17 +424,7 @@ export const MainPage = () => {
                                         </div>
                                    ))}
                               </div>
-                              <div className='contact__form'>
-                                   <div className='contact__form-group'>
-                                        <input type='text' placeholder='Your Name' className='contact__form-field' data-aos="fade-up" data-aos-duration="400" />
-                                        <input type='text' placeholder='Your Email' className='contact__form-field' data-aos="fade-up" data-aos-delay="100" data-aos-duration="400" />
-                                   </div>
-                                   <div className='contact__form-group'>
-                                        <input type='text' placeholder='Subject' className='contact__form-field' data-aos="fade-up" data-aos-delay="200" data-aos-duration="400" />
-                                   </div>
-                                   <textarea placeholder='Your Message' rows="6" className='contact__form-field' data-aos="fade-up" data-aos-delay="300" data-aos-duration="400"></textarea>
-                                   <button className='btn-accent-primary contact__form-btn' data-aos="fade-up" data-aos-delay="400" data-aos-duration="400">Send Message</button>
-                              </div>
+                              <ContactForm/>
                          </div>
                     </div>
                </section>

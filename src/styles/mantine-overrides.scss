@@ -4,6 +4,7 @@
 .mantine-Textarea-input,
 .mantine-DatePickerInput-input {
     background-color: transparent !important;
+    border-radius: 0;
     border: 1px solid #3a3a3a;
     color: white;
 
@@ -13,6 +14,7 @@
 
     &:focus {
         background-color: transparent !important;
+        border: 1px solid #cda45e;
     }
 
     &:focus-visible {
@@ -20,28 +22,18 @@
     }
 }
 
-// For autofill (eg. Chrome autofill)
-// input:-webkit-autofill,
-// input:-webkit-autofill:hover,
-// input:-webkit-autofill:focus,
-// input:-webkit-autofill:active {
-//     -webkit-box-shadow: 0 0 0 30px transparent inset !important;
-//     -webkit-text-fill-color: white !important;
-//     background-color: transparent !important;
-// }
 
 .mantine-TextInput-input,
 .mantine-Select-input {
-    padding: 25px 15px;
+    padding: 30px 15px;
 }
 
 .mantine-Textarea-input {
-    padding: 10px 15px;
-    /* Dostosuj padding dla Textarea */
+    padding: 15px 15px;
 }
 
 .mantine-DatePickerInput-input {
-    padding: 13px 15px;
+    padding: 18px 15px;
 }
 
 /* ==================== DatePickerInput Specific Styles ==================== */

@@ -17,7 +17,6 @@
      align-items: center;
      width: 100%;
      min-height: 100vh;
-     min-height: 100vh;
      position: relative;
      overflow: hidden;
      color: $light-font-color;
@@ -94,12 +93,16 @@
      position: relative;
      overflow: hidden;
      color: $light-font-color;
+     background-image: url('../img/homePage/about-bg.jpg');
+          background-size: cover;
+          background-position: center;
 
      &__container {
           display: flex;
           gap: 20px;
-
+          margin: 30px 0;
           flex-direction: row;
+          
      }
 
      &__content {
@@ -178,14 +181,12 @@
      &__container {
           display: flex;
           flex-direction: column;
-          gap: 25px;
      }
 
      &__title {
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 40px;
           justify-content: center;
 
           & h2 {
@@ -209,8 +210,6 @@
                ;
           }
      }
-
-
 
      &__description {
           color: $light-white-font-color;
@@ -274,7 +273,6 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 50px;
           justify-content: center;
 
           & h2 {
@@ -321,7 +319,6 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 50px;
           justify-content: center;
 
           & h2 {
@@ -440,7 +437,6 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 50px;
           justify-content: center;
 
           & h2 {
@@ -481,7 +477,6 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 50px;
           justify-content: center;
 
           & h2 {
@@ -521,7 +516,6 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 50px;
           justify-content: center;
 
           & h2 {
@@ -561,7 +555,6 @@
           display: flex;
           flex-direction: column;
           gap: 10px;
-          padding-bottom: 50px;
           justify-content: center;
 
           & h2 {
@@ -603,7 +596,6 @@
           flex-direction: column;
           flex: 1 1 auto;
           gap: 10px;
-          padding-bottom: 20px;
           justify-content: center;
 
           & h2 {
@@ -628,9 +620,6 @@
           }
      }
 
-     &__map {
-          padding: 50px 0;
-     }
 
      &__content {
           display: flex;
@@ -656,50 +645,7 @@
           flex: 3 3 600px;
      }
 
-     &__form-group {
-          display: flex;
-          gap: 20px;
-          flex-wrap: wrap;
 
-          & input {
-
-
-               &::placeholder {
-                    color: #6b6b6b;
-               }
-
-               &:focus {
-                    outline: none;
-                    border-color: $accent-color;
-               }
-          }
-     }
-
-     &__form-field {
-          color: #e4e4e4;
-          border: 1px solid #3a3a3a;
-          background-color: transparent;
-          flex: 1 1 30%;
-          min-width: 296px;
-          transition: all 0.15s ease-in;
-          font-size: 1rem;
-
-          &::placeholder {
-               color: #6b6b6b;
-          }
-
-          &:focus {
-               outline: none;
-               border-color: $accent-color;
-          }
-     }
-
-     &__form-btn {
-          width: 215px;
-          padding: 20px 0;
-          margin-top: 10px;
-          align-self: center;
-     }
 
      &__info-item {
           display: flex;
@@ -737,6 +683,17 @@
           font-family: $p-font;
      }
 
+
+}
+
+@media only screen and (max-width: $sm) {
+     .hero {
+          min-height: 89vh;
+
+          &__container {
+               padding-bottom: 0px;
+          }
+     }
 
 }
 

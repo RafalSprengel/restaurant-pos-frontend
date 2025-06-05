@@ -1,27 +1,27 @@
-import { CheckCheck } from 'lucide-react'; //icons 'check-check';
+import { CheckCheck } from 'lucide-react'; // icons 'check-check'
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { useFetch } from '../hooks/useFetch.js';
 import '../styles/home-page.scss';
 import pizza from '../img/pizza.png';
 import about from '../img/about.jpg';
-import ImageSlider from '../components/ImageSlider.js'
+import { Link } from 'react-router-dom';
+
+// Components
+import ImageSlider from '../components/ImageSlider.js';
 import TestimonialsSlider from '../components/TestimonialsSlider.js';
 import MyLightbox from '../components/MyLightbox.js';
 import TeamMembersCards from '../components/TeamMembersCards.js';
+import FoodMenu from '../components/FoodMenu.js';
+import TableBookingForm from '../components/TableBookingForm.js'
+import ContactForm from '../components/ContactForm.js'
+
+// AOS Animations
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 export const MainPage = () => {
-     const { data: categories, loading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
-     const navigate = useNavigate();
-     const location = useLocation();
-     const queryString = location.search;
-     const { data: productsData, loading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
-     let products = productsData?.products || [];
-
      const [specialsActiveTab, setSpecialsActiveTab] = useState(0);
 
+     // Tabs for Specials Section
      const specialsTabs = [
           {
                tabName: 'Modi sit est',
@@ -55,6 +55,7 @@ export const MainPage = () => {
           }
      ];
 
+     // Data for Events Slider
      const eventsSliderData = [
           {
                title: 'Birthday Parties',
@@ -74,8 +75,9 @@ export const MainPage = () => {
                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                image: '/img/homePage/slider/events-slider-2.jpg'
           }
-     ]
+     ];
 
+     // Testimonial Data
      const testimonialData = [
           {
                quote: 'This service exceeded my expectations. Everything was delivered on time and with great attention to detail. The team was incredibly professional and efficient. I am thoroughly impressed with the quality of work provided.',
@@ -109,6 +111,7 @@ export const MainPage = () => {
           }
      ];
 
+     // Lightbox Gallery Images
      const lightboxImages = [
           { full: '/img/homePage/lightboxGallery/gallery-1.jpg', thumb: '/img/homePage/lightboxGallery/thumb/gallery-1-thumb.jpg' },
           { full: '/img/homePage/lightboxGallery/gallery-2.jpg', thumb: '/img/homePage/lightboxGallery/thumb/gallery-2-thumb.jpg' },
@@ -120,6 +123,7 @@ export const MainPage = () => {
           { full: '/img/homePage/lightboxGallery/gallery-8.jpg', thumb: '/img/homePage/lightboxGallery/thumb/gallery-8-thumb.jpg' },
      ];
 
+     // Team Members Data
      const teamData = [
           {
                name: "Rafal Sprengel",
@@ -150,6 +154,7 @@ export const MainPage = () => {
           }
      ];
 
+     // Contact Icons & Info
      const contactIcons = [
           {
                icon: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/geo-alt.svg",
@@ -171,58 +176,35 @@ export const MainPage = () => {
                title: "Email Us",
                text: "info@example.com",
           }
-     ]
+     ];
 
+     // Handlers
      const handleSpecialsTabClick = (index) => {
           setSpecialsActiveTab(index);
-     }
-
-     const handleCategoryClick = (categoryName) => {
-          const params = new URLSearchParams(location.search);
-          params.forEach((value, key) => params.delete(key));
-          params.set('category', categoryName);
-          navigate('?' + params);
      };
 
+     // Initialize AOS Animation on Mount
      useEffect(() => {
           AOS.init({
-               duration: 1000,
+               duration: 500,
                once: true,
+               offset: -150,
           });
      }, []);
 
-     // useEffect(() => {
-     //      const handleScrollToSection = () => {
-     //        const hash = window.location.hash;
-     //        if (hash) {
-     //          const sectionId = hash.split('?')[0].substring(1); 
-     //          const section = document.getElementById(sectionId);
-     //          if (section) {
-     //            section.scrollIntoView({ behavior: 'smooth' });
-     //          }
-     //        }
-     //      };
-
-     //      handleScrollToSection();
-     //      window.addEventListener('hashchange', handleScrollToSection);
-     //      return () => {
-     //        window.removeEventListener('hashchange', handleScrollToSection);
-     //      };
-     //    }, []); 
-
-
      return (
           <>
+               {/* HERO SECTION */}
                <section id="hero" className="hero">
                     <div className="container hero__container">
                          <div className="hero__content">
-                              <h2 className="hero__title" data-aos="fade-up" >
+                              <h2 className="hero__title" data-aos="fade-up">
                                    Welcome to <span className="hero__title--accent">Restoran</span>
                               </h2>
                               <p data-aos="fade-up" data-aos-delay="100" className="hero__description">Delivering great food for more than 18 years!</p>
                               <div data-aos="fade-up" data-aos-delay="200" className="hero__buttons">
-                                   <button className="button  btn-accent-secondary">BOOK A TABLE</button>
-                                   <button className="button  btn-accent-primary">ORDER NOW</button>
+                                   <a href='#book-a-table' className="button btn-accent-primary">Book A Table</a>
+                                   <a href='#our-menu' className="button btn-accent-primary">See Menu</a>
                               </div>
                          </div>
                          <div className="hero__image-container">
@@ -231,13 +213,13 @@ export const MainPage = () => {
                     </div>
                </section>
 
+               {/* ABOUT SECTION */}
                <section id="about" className="about">
                     <div className="container about__container">
                          <div className="about__content" data-aos='fade-right'>
                               <h3 className="about__title">Voluptatem dignissimos provident</h3>
                               <p className="about__description font-italic-style">
-                                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                                   aliqua.
+                                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                               </p>
                               <ul className="about__list">
                                    <li className="about__list-item">
@@ -260,6 +242,8 @@ export const MainPage = () => {
                          </div>
                     </div>
                </section>
+
+               {/* WHY US SECTION */}
                <section id="why-us" className="why-us">
                     <div className="container why-us__container">
                          <div className="why-us__title">
@@ -275,7 +259,7 @@ export const MainPage = () => {
                               <div className="why-us__card" data-aos='zoom-in-up' data-aos-delay="100">
                                    <span className="why-us__card-number">02</span>
                                    <h4 className="why-us__card-title">Fast Delivery</h4>
-                                   <p className="why-us__card-description">  Lorem h4 dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                   <p className="why-us__card-description">Lorem h4 dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                               </div>
                               <div className="why-us__card" data-aos='zoom-in-up' data-aos-delay="200">
                                    <span className="why-us__card-number">03</span>
@@ -285,50 +269,21 @@ export const MainPage = () => {
                          </div>
                     </div>
                </section>
-               <section id="our-menu" className='our-menu'>
-                    <div className="container our-menu__container">
+
+               {/* OUR MENU SECTION */}
+               <section id="our-menu" className='our-menu' >
+                    <div className="container our-menu__container" >
                          <div className="our-menu__title">
                               <h2>OUR MENU</h2>
                               <p>Discover Our Delicious Menu</p>
                          </div>
                          <div className="our-menu__content">
-                              <ul className='our-menu__categories-list'>
-                                   <li>
-                                        <a href="/#our-menu">All</a>
-                                   </li>
-                                   {categories?.map((cat, index) => {
-                                        return (
-                                             <li key={index} className='our-menu__categories-list-item'>
-                                                  <a onClick={() => handleCategoryClick(cat.name)}>{cat.name}</a>
-                                             </li>
-                                        )
-                                   })}
-                              </ul>
-                              <div className='our-menu__items'>
-
-                                   {products?.map((product, index) => {
-                                        return (
-                                             <div key={index} className="our-menu__item">
-                                                  <div className='our-menu__item-image-container'>
-                                                       <img src={pizza} alt={product.name} className="our-menu__item-image" />
-                                                  </div>
-                                                  <div className='our-menu__item-content'>
-                                                       <div className='our-menu__item-title-container'>
-                                                            <h5 className='our-menu__item-title'>{product.name}</h5>
-                                                            <span className='our-menu__item-dots'></span>
-                                                            <span className='our-menu__item-price'>&#163;{product.price}</span>
-                                                       </div>
-                                                       <p className='our-menu__item-description font-italic-style'>{product.desc}</p>
-                                                  </div>
-                                             </div>
-                                        )
-                                   })}
-
-                              </div>
-
+                              <FoodMenu />
                          </div>
                     </div>
                </section>
+
+               {/* SPECIALS SECTION */}
                <section id="specials" className="specials">
                     <div className='container specials__container'>
                          <div className="specials__title">
@@ -343,16 +298,15 @@ export const MainPage = () => {
                                                   data-aos="fade-right"
                                                   data-aos-duration="500"
                                                   data-aos-delay={index * 150}
+                                                  key={index}
                                              >
                                                   <div
-                                                       key={index}
                                                        className={`specials__nav-tabs-item ${index === specialsActiveTab ? 'specials__nav-tabs-item--active' : ''}`}
                                                        onClick={() => handleSpecialsTabClick(index)}
                                                   >
                                                        {tab.tabName}
                                                   </div>
                                              </div>
-
                                         ))}
                                    </div>
                               </div>
@@ -360,7 +314,7 @@ export const MainPage = () => {
                                    {specialsTabs
                                         .filter((tab, index) => index === specialsActiveTab)
                                         .map((tab, index) => (
-                                             <>
+                                             <React.Fragment key={index}>
                                                   <div data-aos="fade-left" className='specials__item-text'>
                                                        <h4 className="specials__item-title">{tab.title}</h4>
                                                        <p className="specials__item-description font-italic-style">{tab.content}</p>
@@ -371,19 +325,21 @@ export const MainPage = () => {
                                                        data-aos="fade-left"
                                                        data-aos-delay='200'
                                                        alt="specials" />
-
-                                             </>
+                                             </React.Fragment>
                                         ))}
-
                               </div>
                          </div>
                     </div>
                </section>
+
+               {/* EVENTS SECTION */}
                <section id="events" className="events">
                     <div className='events__slider-wrapper container'>
                          <ImageSlider data={eventsSliderData} />
                     </div>
                </section>
+
+               {/* BOOK A TABLE SECTION */}
                <section id="book-a-table" className="book-a-table">
                     <div className='container book-a-table__container'>
                          <div className="book-a-table__title">
@@ -391,23 +347,12 @@ export const MainPage = () => {
                               <p>Book A Table</p>
                          </div>
                          <div className='book-a-table__content'>
-                              <div className='book-a-table__form-wrap'>
-                                   <div className='book-a-table__form-group'>
-                                        <input type='text' placeholder='Your Name' className='book-a-table__form-field' data-aos='fade-up' />
-                                        <input type='text' placeholder='Your Email' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="100" data-aos-duration="400" />
-                                        <input type='text' placeholder='Your Phone' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="200" data-aos-duration="400" />
-                                        <input type='date' placeholder='dd:mm:rr' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="300" data-aos-duration="400" />
-                                        <input type='time' placeholder='--:--' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="500" data-aos-duration="400" />
-                                        <input type='number' placeholder='#of People' className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="600" data-aos-duration="400" />
-                                   </div>
-                                   <textarea placeholder='Your Message' rows="6" className='book-a-table__form-field' data-aos='fade-up' data-aos-delay="700" data-aos-duration="400"></textarea>
-                                   <button className='btn-accent-primary book-a-table__form-btn' data-aos="fade-up" >Book a Table</button>
-                              </div>
+                              <TableBookingForm />
                          </div>
-
                     </div>
-
                </section>
+
+               {/* TESTIMONIALS SECTION */}
                <section id="testimonials" className='testimonials'>
                     <div className='container testimonials__container'>
                          <div className="testimonials__title">
@@ -418,18 +363,19 @@ export const MainPage = () => {
                     </div>
                </section>
 
+               {/* GALLERY SECTION */}
                <section id="gallery" className='gallery'>
                     <div className='gallery__container container'>
                          <div className="gallery__title">
                               <h2>GALLERY</h2>
                               <p>Some photos from Our Restauranty</p>
                          </div>
-                         <div className='gallery__content'>
-
-                         </div>
+                         <div className='gallery__content'></div>
                     </div>
                     <MyLightbox images={lightboxImages} />
                </section>
+
+               {/* OUR TEAM SECTION */}
                <section id='our-team' className='our-team'>
                     <div className='container our-team__container'>
                          <div className="our-team__title">
@@ -441,13 +387,15 @@ export const MainPage = () => {
                          </div>
                     </div>
                </section>
+
+               {/* CONTACT SECTION */}
                <section id="contact" className='contact'>
                     <div className='container contact__container'>
                          <div className="contact__title">
                               <h2>CONTACT</h2>
                               <p>Get in Touch</p>
                          </div>
-                         <div className='contact__map'>
+                         <div>
                               <iframe
                                    style={{ border: 0, width: "100%", height: "400px" }}
                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-0.1365!3d53.7676!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b207957e1b087%3A0xa9839c8d05f31a29!2sHull%2C%20UK!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus&zoom=14"
@@ -457,8 +405,6 @@ export const MainPage = () => {
                                    referrerPolicy="no-referrer-when-downgrade"
                               ></iframe>
                          </div>
-
-
                          <div className='contact__content'>
                               <div className='contact__info'>
                                    {contactIcons.map((icon, index) => (
@@ -478,21 +424,9 @@ export const MainPage = () => {
                                         </div>
                                    ))}
                               </div>
-                              <div className='contact__form'>
-                                   <div className='contact__form-group'>
-                                        <input type='text' placeholder='Your Name' className='contact__form-field' data-aos="fade-up" data-aos-dutation="400" />
-                                        <input type='text' placeholder='Your Email' className='contact__form-field' data-aos="fade-up" data-aos-delay="100" data-aos-dutation="400" />
-                                   </div>
-                                   <div className='contact__form-group'>
-                                        <input type='text' placeholder='Subject' className='contact__form-field' data-aos="fade-up" data-aos-delay="200" data-aos-dutation="400" />
-                                   </div>
-                                   <textarea placeholder='Your Message' rows="6" className='contact__form-field' data-aos="fade-up" data-aos-delay="300" data-aos-dutation="400"></textarea>
-                                   <button className='btn-accent-primary contact__form-btn' data-aos="fade-up" data-aos-delay="400" data-aos-dutation="400">Send Message</button>
-                              </div>
+                              <ContactForm/>
                          </div>
-
                     </div>
-
                </section>
           </>
      );

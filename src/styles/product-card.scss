@@ -3,80 +3,99 @@
      flex-direction: column;
      justify-content: start;
      align-items: center;
+     gap: 15px;
      background-color: white;
-     min-height: 70vh;
+     width: 100%;
+     height: 100%;
+     padding: 20px;
+     ;
+     //min-height: 70vh;
      z-index: 12;
+     color: black;
 
-     &__overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          z-index: 10;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+     // &__overlay {
+     //      position: fixed;
+     //      top: 0;
+     //      left: 0;
+     //      width: 100vw;
+     //      height: 100vh;
+     //      z-index: 10;
+     //      display: flex;
+     //      justify-content: center;
+     //      align-items: center;
 
-          &::before {
-               content: '';
-               position: absolute;
-               top: 0;
-               left: 0;
-               width: 100%;
-               height: 100%;
-               background-color: black;
-               opacity: 0.8;
-          }
-     }
+     //      &::before {
+     //           content: '';
+     //           position: absolute;
+     //           top: 0;
+     //           left: 0;
+     //           width: 100%;
+     //           height: 100%;
+     //           background-color: black;
+     //           opacity: 0.8;
+     //      }
+     // }
 
-     & form {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          gap: 10px;
-          width: 100%;
-     }
-
-     & div {
-          height: 50px;
-     }
 
      &__img {
           width: 350px;
           height: 100px;
           object-fit: cover;
           object-position: center center;
-          filter: contrast(50%);
           flex: 5;
      }
 
      &__name {
-          //flex: 2;
+          font-size: 1.2rem;
      }
 
      &__desc {
-          //flex: 2;
+          font-size: 0.8rem;
      }
 
      &__quantity {
           display: flex;
+          align-items: center;
           gap: 10px;
 
           & span {
                padding: 7px;
                font-size: 20px;
                cursor: pointer;
+               transition: all ease 0.3s;
+          }
+
+          :hover {
+               background-color: rgba(228, 228, 228, 0.486);
           }
 
           &__minus {
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               border: 1px solid silver;
+               border-radius: 3px;
+               height: 30px;
+               line-height: 1.5;
           }
 
           &__number {
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               border: 1px solid silver;
+               border-radius: 3px;
+               min-width: 40px;
           }
 
           &__plus {
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               border: 1px solid silver;
+               border-radius: 3px;
+               height: 30px;
+               line-height: 1.5;
           }
      }
 
@@ -84,13 +103,16 @@
           display: flex;
           gap: 10px;
           user-select: none;
+          font-size: 0.8rem;
+          ;
 
           &__back {
-               padding: 14px 25px;
+               flex: 1;
+               padding: 10px 0px;
                border: 0;
                //width: 150px;
                background-color: white;
-               border: solid 1px silver;
+               border: solid 1px #cda45e;
                transition: background-color 0.3s ease;
                align-self: flex-end;
 
@@ -100,10 +122,13 @@
           }
 
           &__submit {
-               padding: 14px 25px;
+               flex: 1;
+               padding: 10px 0px;
                border: 0;
                width: 250px;
-               background-color: #e9e9e9;
+               color: white;
+               background-color: #cda45e;
+               border: solid 1px #cda45e;
                transition: background-color 0.3s ease;
                align-self: flex-end;
 

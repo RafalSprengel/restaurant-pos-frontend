@@ -25,9 +25,8 @@
           url('../fonts/Cuprum-Regular.ttf') format('truetype');
      font-weight: normal;
 }
-
-* {
-     //outline: 1px solid red;
+html{
+    scroll-behavior: smooth; 
 }
 
 /* RESET CSS */
@@ -60,7 +59,7 @@ button {
 
 a {
      text-decoration: none;
-     //color: inherit;
+     color: white;
 }
 
 body {
@@ -105,6 +104,9 @@ input[type='textarea'] {
 }
 
 .container {
+     display: flex;
+     flex-direction: column;
+     gap: 60px;
      width: 100%;
      padding: 0 15px;
      margin-left: auto;
@@ -114,7 +116,8 @@ input[type='textarea'] {
 
 section {
      scroll-margin-top: 60px;
-}
+     padding: 50px 0 !important;
+};
 
 @media (min-width: $sm) {
      .container {
@@ -192,6 +195,7 @@ section {
      border-radius: 50px;
      transition: all 0.4s;
      padding: 6px 24px;
+     backdrop-filter: blur(2px);
 
      &:hover {
           background-color: $accent-color;
