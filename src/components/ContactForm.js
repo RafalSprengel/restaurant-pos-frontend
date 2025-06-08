@@ -81,6 +81,11 @@ export default function ContactForm() {
                                 value={form.values.name}
                                 onChange={(e) => form.setFieldValue("name", e.target.value)}
                                 error={form.errors.name}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -94,6 +99,11 @@ export default function ContactForm() {
                                 value={form.values.email}
                                 onChange={(e) => form.setFieldValue("email", e.target.value)}
                                 error={form.errors.email}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -106,6 +116,11 @@ export default function ContactForm() {
                                 value={form.values.subject}
                                 onChange={(e) => form.setFieldValue("subject", e.target.value)}
                                 error={form.errors.subject}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -118,6 +133,11 @@ export default function ContactForm() {
                                 rows={5}
                                 value={form.values.message}
                                 onChange={(e) => form.setFieldValue("message", e.target.value)}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>

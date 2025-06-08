@@ -1,8 +1,8 @@
 @import 'variables';
 
-.imageSlider{
+.imageSlider {
 
-    &__wrap{
+    &__wrap {
         overflow: hidden;
         width: 100%;
         display: flex;
@@ -10,7 +10,7 @@
         gap: 30px;
     }
 
-    &__track{
+    &__track {
         display: flex;
         flex-direction: row;
         width: 300%;
@@ -19,34 +19,36 @@
         transition: transform 0.8s ease-in-out;
     }
 
-    &__slide{
+    &__slide {
         display: flex;
         gap: 30px;
         flex-shrink: 0;
     }
 
-    &__slide-image-container{
+    &__slide-image-container {
         flex: 1 1 auto;
     }
-    
-    &__slide-image{ 
+
+    &__slide-image {
         width: 100%;
         object-fit: cover;
     }
 
-    &__slide-header{
+    &__slide-header {
         font-size: 1.6rem;
     }
 
-    &__slide-price{
+    &__slide-price {
         font-weight: 700;
-        font-size: 1.5rem;;
+        font-size: 1.5rem;
+        ;
         text-decoration: underline;
-        text-underline-offset: 4px;;
+        text-underline-offset: 4px;
+        ;
         text-decoration-color: $accent-color;
     }
 
-    &__slide-content{
+    &__slide-content {
         flex: 1 1 auto;
         flex-direction: column;
         display: flex;
@@ -55,13 +57,14 @@
         line-height: 1.5;
     }
 
-    &__pagination{
+    &__pagination {
         display: flex;
         justify-content: center;
-        gap: 10px;;
+        gap: 10px;
+        ;
     }
-    
-    &__pagination-bullet{
+
+    &__pagination-bullet {
         cursor: pointer;
         width: 10px;
         height: 10px;
@@ -69,16 +72,19 @@
         border-radius: 50%;
         transition: all 0.3s ease-in;
 
-        &--active{
+        &--active {
             background-color: $accent-color
         }
     }
 }
 
 @media only screen and (max-width: $lg) {
-    .imageSlider{
+    .hero__container {
+        flex-direction: row;
+    }
 
-        &__slide{
+    .imageSlider {
+        &__slide {
             flex-direction: column;
         }
     }

@@ -73,7 +73,7 @@ export default function TableBookingForm() {
                 },
                 message: values.message,
             });
-            
+
             if (response.status === 201) {
                 form.reset();
                 setSuccessfulDetails(response.data)
@@ -108,6 +108,11 @@ export default function TableBookingForm() {
                                 value={form.values.name}
                                 onChange={(e) => form.setFieldValue("name", e.target.value)}
                                 error={form.errors.name}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -120,6 +125,11 @@ export default function TableBookingForm() {
                                 value={form.values.email}
                                 onChange={(e) => form.setFieldValue("email", e.target.value)}
                                 error={form.errors.email}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -132,6 +142,11 @@ export default function TableBookingForm() {
                                 value={form.values.phone}
                                 onChange={(e) => form.setFieldValue("phone", e.target.value)}
                                 error={form.errors.phone}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -146,6 +161,11 @@ export default function TableBookingForm() {
                                 value={form.values.table}
                                 onChange={(value) => { form.setFieldValue("table", value); form.setFieldValue('time', '') }}
                                 error={form.errors.table}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -162,6 +182,11 @@ export default function TableBookingForm() {
                                 value={form.values.date}
                                 onChange={(date) => { form.setFieldValue("date", date); form.setFieldValue('time', '') }}
                                 error={form.errors.date}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -182,6 +207,11 @@ export default function TableBookingForm() {
                                 onChange={(value) => form.setFieldValue("time", value)}
                                 disabled={!form.values.date || !form.values.table}
                                 error={form.errors.time}
+                                styles={{
+                                    input: {
+                                        border: form.errors.name ? '1px solid red' : undefined,
+                                    }
+                                }}
                             />
                         </div>
                     </Grid.Col>
@@ -197,7 +227,7 @@ export default function TableBookingForm() {
                     />
                 </div>
 
-                <div data-aos="fade-up" data-aos-delay="350" data-aos-duration="400" style={{display:'flex', justifyContent:'center'}}>
+                <div data-aos="fade-up" data-aos-delay="350" data-aos-duration="400" style={{ display: 'flex', justifyContent: 'center' }}>
                     <Button type="submit" className="btn-accent-primary table-booking-form__btn">
                         Book a Table
                     </Button>
