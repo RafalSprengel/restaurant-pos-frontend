@@ -13,35 +13,33 @@
 @keyframes fadeInBGcolor {
      from {
           background-color: rgba(0, 0, 0, 0);
-          /* Kolor tła w pełni przezroczysty */
      }
 
      to {
           background-color: rgba(0, 0, 0, 0.73);
-          /* Kolor tła z 73% przezroczystości */
      }
 }
 
 .custom-modal {
-     &__overlay{
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100vw;
-     height: 100vh;
-     background-color: rgb(0 0 0 / 73%); //background-color: #000000d4;
-     z-index: 20;
-     animation: fadeInBGcolor 0.3s;
-     user-select: none;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-    backdrop-filter: blur(3px)
+     &__overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: rgb(0 0 0 / 73%);
+          z-index: 20;
+          animation: fadeInBGcolor 0.3s;
+          user-select: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          backdrop-filter: blur(3px)
      }
 
      &__main {
           position: absolute;
-          z-index: 999;;
+          z-index: 999;
           display: flex;
           flex: 0 1 650px;
           flex-direction: column;
@@ -50,7 +48,8 @@
           border-radius: 7px;
           background-color: white;
           animation: slideDown ease-out .3s;
-        border-radius: 30px;
+          border-radius: 30px;
+          margin: 20px;
      }
 }
 
