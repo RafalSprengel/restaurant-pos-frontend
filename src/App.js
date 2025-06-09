@@ -34,6 +34,7 @@ import MgmtsList from './components/managementPanel/mgmtMembers/MgmtsList.js';
 import UpdateCustomer from './components/managementPanel/customers/UpdateCustomer.js';
 import UpdateMgmt from './components/managementPanel/mgmtMembers/UpdateMgmt.js';
 import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
+import MessagesList from './components/managementPanel/messages/MessagesList.js';
 
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
@@ -80,6 +81,7 @@ function App() {
                          <Route path="mgnts" element={<MgmtsList />} />
                          <Route path="mgnts/:id" element={<UpdateMgmt />} />
                          <Route path="add-mgmt" element={<AddMgmt />} />
+                         <Route path="messages" element={<MessagesList/>}/>
                     </Route>
 
                     <Route path="*" element={<NotFound />} />
