@@ -161,6 +161,30 @@ export const Management = () => {
                                              </>
                                         )}
                                    </NavLink>
+                                   <NavLink
+                                        className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
+                                        to="/management/reservations">
+                                        {({ isActive }) => (
+                                             <>
+                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
+                                                       &#10004;
+                                                  </span>
+                                                  <span className="admin__menuText">Table Reservations</span>
+                                             </>
+                                        )}
+                                   </NavLink>
+                                    <NavLink
+                                        className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
+                                        to="/management/options">
+                                        {({ isActive }) => (
+                                             <>
+                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
+                                                       &#10004;
+                                                  </span>
+                                                  <span className="admin__menuText">Options</span>
+                                             </>
+                                        )}
+                                   </NavLink>
                               </div>
                               <div className="admin__right">
                                    <main className="admin-layout">

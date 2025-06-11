@@ -18,7 +18,7 @@ export default function TableBookingForm() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sucessFullDetails, setSuccessfulDetails] = useState()
     const [errorDetails, setErrorDetails] = useState()
-    const { data: tablesData } = useFetch("/tables");
+    const { data: tablesData } = useFetch("/tables/type-of-tables");
 
     const form = useForm({
         initialValues: {
@@ -62,7 +62,7 @@ export default function TableBookingForm() {
 
     const handleSubmit = async (values) => {
         try {
-            const response = await api.post("/tables/reservation", {
+            const response = await api.post("/tables/reservations", {
                 tableNumber: values.table,
                 reservedTime: values.time,
                 reservedDate: values.date,

@@ -17,6 +17,9 @@ import PaymentCanceled from './pages/PaymentCanceled';
 import PaymentSuccess from './pages/PaymentSuccess';
 import RegisterCustomer from './pages/RegisterCustomer.js';
 import { AuthProvider } from './context/authContext.js';
+import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 
 import Dashboard from './components/managementPanel/Dashboard.js';
@@ -35,6 +38,8 @@ import UpdateCustomer from './components/managementPanel/customers/UpdateCustome
 import UpdateMgmt from './components/managementPanel/mgmtMembers/UpdateMgmt.js';
 import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
 import MessagesList from './components/managementPanel/messages/MessagesList.js';
+import TableReservationsList from './components/managementPanel/tableReservations/TableReservationsList.js';
+import OptionsList from './components/managementPanel/options/OptionsList.js';
 
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
@@ -42,51 +47,58 @@ import PersonalDetails from './components/customerPanel/PersonalDetails.js';
 
 function App() {
      return (
-          <AuthProvider>
-               <Routes>
-                    <Route
-                         element={
-                              <ShoppingCartProvider>
-                                   <MainLayout />
-                              </ShoppingCartProvider>
-                         }>
-                         <Route path="/" element={<HomePage />} />
-                         <Route path="/menu" element={<Menu />} />
-                         <Route path="/order/checkout" element={<Checkout />} />
-                         <Route path="/order/success" element={<PaymentSuccess />} />
-                         <Route path="/order/cancel" element={<PaymentCanceled />} />
-                    </Route>
+          <MantineProvider>
+               <Notifications />
+               <ModalsProvider>
+                    <AuthProvider>
+                         <Routes>
+                              <Route
+                                   element={
+                                        <ShoppingCartProvider>
+                                             <MainLayout />
+                                        </ShoppingCartProvider>
+                                   }>
+                                   <Route path="/" element={<HomePage />} />
+                                   <Route path="/menu" element={<Menu />} />
+                                   <Route path="/order/checkout" element={<Checkout />} />
+                                   <Route path="/order/success" element={<PaymentSuccess />} />
+                                   <Route path="/order/cancel" element={<PaymentCanceled />} />
+                              </Route>
 
-                    <Route path="/customer" element={<CustomerPanel />}>
-                         <Route index element={<RecentOrdersList />} />
-                         <Route path="personal-details" element={<PersonalDetails />} />
-                    </Route>
-                    <Route path="/customer/login" element={<LoginCustomer />} />
-                    <Route path="/customer/register" element={<RegisterCustomer />} />
+                              <Route path="/customer" element={<CustomerPanel />}>
+                                   <Route index element={<RecentOrdersList />} />
+                                   <Route path="personal-details" element={<PersonalDetails />} />
+                              </Route>
+                              <Route path="/customer/login" element={<LoginCustomer />} />
+                              <Route path="/customer/register" element={<RegisterCustomer />} />
 
-                    <Route path="/management/login" element={<LoginManagement />} />
-                    <Route path="/management/" element={<ManagementPanel />}>
-                         <Route index element={<Dashboard />} />
-                         <Route path="products" element={<ProductsList />} />
-                         <Route path="products/:id" element={<UpdateProduct />} />
-                         <Route path="add-product" element={<AddProduct />} />
-                         <Route path="categories" element={<CategoriesList />} />
-                         <Route path="categories/:id" element={<UpdateCategory />} />
-                         <Route path="add-category" element={<AddCategory />} />
-                         <Route path="customers" element={<CustomersList />} />
-                         <Route path="customers/:id" element={<UpdateCustomer />} />
-                         <Route path="add-customer" element={<AddCustomer />} />
-                         <Route path="orders" element={<OrdersList />} />
-                         <Route path="orders/:id" element={<UpdateOrder />} />
-                         <Route path="mgnts" element={<MgmtsList />} />
-                         <Route path="mgnts/:id" element={<UpdateMgmt />} />
-                         <Route path="add-mgmt" element={<AddMgmt />} />
-                         <Route path="messages" element={<MessagesList/>}/>
-                    </Route>
+                              <Route path="/management/login" element={<LoginManagement />} />
+                              <Route path="/management/" element={<ManagementPanel />}>
+                                   <Route index element={<Dashboard />} />
+                                   <Route path="products" element={<ProductsList />} />
+                                   <Route path="products/:id" element={<UpdateProduct />} />
+                                   <Route path="add-product" element={<AddProduct />} />
+                                   <Route path="categories" element={<CategoriesList />} />
+                                   <Route path="categories/:id" element={<UpdateCategory />} />
+                                   <Route path="add-category" element={<AddCategory />} />
+                                   <Route path="customers" element={<CustomersList />} />
+                                   <Route path="customers/:id" element={<UpdateCustomer />} />
+                                   <Route path="add-customer" element={<AddCustomer />} />
+                                   <Route path="orders" element={<OrdersList />} />
+                                   <Route path="orders/:id" element={<UpdateOrder />} />
+                                   <Route path="mgnts" element={<MgmtsList />} />
+                                   <Route path="mgnts/:id" element={<UpdateMgmt />} />
+                                   <Route path="add-mgmt" element={<AddMgmt />} />
+                                   <Route path="messages" element={<MessagesList />} />
+                                   <Route path="reservations" element={<TableReservationsList />} />
+                                   <Route path="options" element={<OptionsList />} />
+                              </Route>
 
-                    <Route path="*" element={<NotFound />} />
-               </Routes>
-          </AuthProvider>
+                              <Route path="*" element={<NotFound />} />
+                         </Routes>
+                    </AuthProvider>
+               </ModalsProvider>
+          </MantineProvider>
      );
 }
 
