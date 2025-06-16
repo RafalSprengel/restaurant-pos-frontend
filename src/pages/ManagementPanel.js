@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext.js';
 import '../styles/management.scss';
 import api from '../utils/axios.js';
@@ -8,12 +8,11 @@ export const Management = () => {
      const navigate = useNavigate();
      const [errorLogout, setErrorLogout] = useState(null);
      const { isAuthenticated, logout, user, isLoading, error } = useAuth();
+     const [open, setOpen] = useState(false);
 
-     const handleLogout = () => {
+     const handleLogout = async () => {
           try {
-               api.post('/auth/logout', {
-                    withCredentials: true,
-               });
+               await api.post('/auth/logout', {}, { withCredentials: true });
                logout();
                navigate('login', { replace: true });
           } catch (error) {
@@ -22,14 +21,17 @@ export const Management = () => {
           }
      };
 
+
      useEffect(() => {
-          if (user && !['member', 'moderator', 'admin'].includes(user.role)) {
-               navigate('/customer/', { replace: true });
-          }
-          if (!isLoading && !isAuthenticated) {
-               navigate('login', { replace: true });
+          if (!isLoading) {
+               if (!isAuthenticated) {
+                    navigate('login', { replace: true });
+               } else if (user && !['member', 'moderator', 'admin'].includes(user.role)) {
+                    navigate('/customer/', { replace: true });
+               }
           }
      }, [isAuthenticated, isLoading, navigate, user]);
+
 
      return (
           <>
@@ -77,114 +79,79 @@ export const Management = () => {
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management"
                                         end>
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#8283;
-                                                  </span>
-                                                  Dashboard
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Dashboard</span>}
                                    </NavLink>
 
                                    <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/products">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#8283;
-                                                  </span>
-                                                  Products
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Products</span>}
                                    </NavLink>
+
                                    <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/categories">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#10025;
-                                                  </span>
-                                                  Categories
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Categories</span>}
                                    </NavLink>
+
                                    <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/customers">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#9823;
-                                                  </span>
-                                                  Customers
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Customers</span>}
                                    </NavLink>
+
                                    <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/orders">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#10004;
-                                                  </span>
-                                                  <span className="admin__menuText">Orders</span>
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Orders</span>}
                                    </NavLink>
+
                                    {user?.role === 'admin' && (
                                         <NavLink
                                              className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                              to="/management/mgnts">
-                                             {({ isActive }) => (
-                                                  <>
-                                                       <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                            &#10004;
-                                                       </span>
-                                                       <span className="admin__menuText">Managements</span>
-                                                  </>
-                                             )}
+                                             {<span className="admin__menuText">Users</span>}
                                         </NavLink>
                                    )}
-                                    <NavLink
+
+                                   <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/messages">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#10004;
-                                                  </span>
-                                                  <span className="admin__menuText">Messages</span>
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Messages</span>}
                                    </NavLink>
+
                                    <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/reservations">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#10004;
-                                                  </span>
-                                                  <span className="admin__menuText">Table Reservations</span>
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Table Reservations</span>}
                                    </NavLink>
-                                    <NavLink
+
+                                   <NavLink
                                         className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
                                         to="/management/options">
-                                        {({ isActive }) => (
-                                             <>
-                                                  <span className={isActive ? 'admin__menuSymbol admin__menuSymbol--active' : 'admin__menuSymbol'}>
-                                                       &#10004;
-                                                  </span>
-                                                  <span className="admin__menuText">Options</span>
-                                             </>
-                                        )}
+                                        {<span className="admin__menuText">Options</span>}
                                    </NavLink>
+
+                                   <NavLink
+                                        className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
+                                        to="/management/test">
+                                        {<span className="admin__menuText">Test</span>}
+                                   </NavLink>
+                                   <div>
+                                        <span onClick={() => setOpen((prev) => !prev)} style={{cursor:'pointer'}}>Options {open ? '▲' : '▼'} </span>
+                                        <ul style={{
+                                             height: open ? '50px' : '0px',
+                                             overflow: 'hidden',
+                                             transition: 'height 0.3s ease',
+                                             paddingLeft: '1rem'
+                                        }}
+                                        >
+                                             <li >podopcja 1</li>
+                                             <li>podopcja 2</li>
+                                             <li>podopcja 3</li>
+                                        </ul>
+                                   </div>
+
                               </div>
                               <div className="admin__right">
                                    <main className="admin-layout">
@@ -192,12 +159,12 @@ export const Management = () => {
                                    </main>
                               </div>
                          </div>
-                    </div>
+                    </div >
                ) : isLoading ? (
                     <>loading</>
-               ) : error && false ? (
+               ) : error ? (
                     <>{error}</>
-               ) : errorLogout & false ? (
+               ) : errorLogout ? (
                     <>{errorLogout}</>
                ) : (
                     <>Access denied</>

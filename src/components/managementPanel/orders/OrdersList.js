@@ -3,6 +3,22 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import dayjs from 'dayjs';
+import {
+     Container,
+     Table,
+     Button,
+     TextInput,
+     Modal,
+     Notification,
+     Group,
+     Stack,
+     Title,
+     Pagination,
+     ScrollArea,
+     Loader,
+     Center,
+} from '@mantine/core';
+import { IconSearch, IconX } from '@tabler/icons-react';
 
 const OrdersList = () => {
      const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +46,6 @@ const OrdersList = () => {
 
      const getOrders = async () => {
           const queryString = location.search;
-
           try {
                setErrorMessage(null);
                const response = await api.get(`/orders${queryString}`);
@@ -43,7 +58,6 @@ const OrdersList = () => {
                     setErrorMessage(`Server error: ${response.data.error}`);
                }
           } catch (error) {
-               console.error('Error fetching orders:', error);
                setErrorMessage(error.response ? error.response.data.error : error.message);
           } finally {
                setIsLoading(false);
@@ -86,7 +100,6 @@ const OrdersList = () => {
           setIsLoading(true);
           try {
                const response = await api.delete(`/orders/${orderToDelete}`);
-
                if (response.status === 200) {
                     setErrorMessage(null);
                     getOrders();
@@ -95,24 +108,18 @@ const OrdersList = () => {
                }
           } catch (error) {
                setErrorMessage('Failed to delete the order. Please try again.');
-               console.error('Error deleting order:', error);
           } finally {
                setIsLoading(false);
                setOrderToDelete(null);
           }
      };
 
-     const OrderRow = ({ order }) => {
-          return (
-               <tr onClick={() => navigate(`${order._id}`)}>
-                    <td>{order.orderNumber}</td>
-                    <td>{order.purchaserDetails.firstName + ' ' + order.purchaserDetails.surname}</td>
-                    <td>{dayjs(order.createdAt).format('HH:mm DD/MM/YY')}</td>
-                    <td>&pound;{order.totalPrice}</td>
-                    <td>{order.status}</td>
-                    <td>{isVisible.deleteOrderButt && <button onClick={(e) => handleDeleteClick(e, order._id)}>Delete</button>}</td>
-               </tr>
-          );
+     const SortArrow = ({ criteria }) => {
+          const arrow = () => {
+               if (criteria === sortCriteria) return sortOrder === 'desc' ? '▼' : '▲';
+               else return '•';
+          };
+          return <>{arrow()}</>;
      };
 
      useEffect(() => {
@@ -129,95 +136,101 @@ const OrdersList = () => {
           getOrders();
      }, [searchString, sortCriteria, sortOrder]);
 
-     const SortArrow = ({ criteria }) => {
-          const arrow = () => {
-               if (criteria === sortCriteria) return sortOrder === 'desc' ? '▼' : '▲';
-               else return '•';
-          };
-          return <>{arrow()}</>;
-     };
-
      return (
-          <div>
-               {!isLoading && !errorMessage && (
-                    <>
-                         <h3>Orders</h3>
-                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                              <div>Find order:</div>
-                              <input type="search" placeholder="Search..." onChange={handleSearchChange} value={searchString} style={{ marginLeft: '10px' }} />
-                         </div>
-                    </>
-               )}
+          <Container size="xl" mt="md">
+               <Stack>
+                    <Title order={2}>Orders</Title>
+                    <Group position="apart">
+                         <TextInput
+                              icon={<IconSearch size={14} />}
+                              placeholder="Search..."
+                              value={searchString}
+                              onChange={handleSearchChange}
+                              w={300}
+                         />
+                    </Group>
 
-               {ordersList?.length > 0 ? (
-                    <>
-                         <table>
-                              <thead>
-                                   <tr>
-                                        <th data-name="orderNumber" onClick={handleSort}>
-                                             Order No. <SortArrow criteria="orderNumber" />
-                                        </th>
-                                        <th data-name="customerName" onClick={handleSort}>
-                                             Customer <SortArrow criteria="customerName" />
-                                        </th>
-                                        <th data-name="createdAt" onClick={handleSort}>
-                                             Date <SortArrow criteria="createdAt" />
-                                        </th>
-                                        <th data-name="totalPrice" onClick={handleSort}>
-                                             Total Price <SortArrow criteria="totalPrice" />
-                                        </th>
-                                        <th data-name="status" onClick={handleSort}>
-                                             Status <SortArrow criteria="status" />
-                                        </th>
-                                        <th>Actions</th>
-                                   </tr>
-                              </thead>
-                              <tbody>
-                                   {ordersList.map((order) => (
-                                        <OrderRow key={order._id} order={order} />
-                                   ))}
-                              </tbody>
-                         </table>
-                         <div className="pagination">
-                              <button onClick={() => handlePageChange(1)}>&lt;&lt; First</button>
-                              <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                                   &lt; Prev
-                              </button>
-                              {[...new Array(totalPages)].map((el, index) => (
-                                   <button key={index} onClick={() => handlePageChange(index + 1)} disabled={index + 1 === currentPage}>
-                                        {index + 1}
-                                   </button>
-                              ))}
-                              <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                                   Next &gt;
-                              </button>
-                              <button onClick={() => handlePageChange(totalPages)}>Last &gt;&gt;</button>
-                         </div>
-                    </>
-               ) : isLoading ? (
-                    <h4>Loading data...</h4>
-               ) : errorMessage ? (
-                    <div style={{ color: 'red' }}>{errorMessage}</div>
-               ) : (
-                    <h4>No orders found</h4>
-               )}
+                    {errorMessage && (
+                         <Notification icon={<IconX size={18} />} color="red" title="Error">
+                              {errorMessage}
+                         </Notification>
+                    )}
 
-               {showModal && (
-                    <div className="modal">
-                         <div className="modal-content">
-                              <div className="modal-header">
-                                   <h5>Confirm Deletion</h5>
-                                   <button onClick={() => setShowModal(false)}>&times;</button>
-                              </div>
-                              <div className="modal-body">Are you sure you want to delete this order?</div>
-                              <div className="modal-footer">
-                                   <button onClick={() => setShowModal(false)}>Cancel</button>
-                                   <button onClick={handleConfirmDelete}>Delete</button>
-                              </div>
-                         </div>
-                    </div>
-               )}
-          </div>
+                    {isLoading ? (
+  <Center style={{ height: '60vh' }}>
+    <Loader size="md" />
+  </Center>
+) : ordersList.length === 0 ? (
+  <Title order={4}>No orders found</Title>
+) : (
+  <ScrollArea>
+    <Table striped highlightOnHover withBorder>
+      <thead>
+        <tr>
+          <th data-name="orderNumber" onClick={handleSort}>
+            Order No. <SortArrow criteria="orderNumber" />
+          </th>
+          <th data-name="customerName" onClick={handleSort}>
+            Customer <SortArrow criteria="customerName" />
+          </th>
+          <th data-name="createdAt" onClick={handleSort}>
+            Date <SortArrow criteria="createdAt" />
+          </th>
+          <th data-name="totalPrice" onClick={handleSort}>
+            Total <SortArrow criteria="totalPrice" />
+          </th>
+          <th data-name="status" onClick={handleSort}>
+            Status <SortArrow criteria="status" />
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {ordersList.map((order) => (
+          <tr key={order._id} onClick={() => navigate(`${order._id}`)}>
+            <td>{order.orderNumber}</td>
+            <td>
+              {order.purchaserDetails.firstName + ' ' + order.purchaserDetails.surname}
+            </td>
+            <td>{dayjs(order.createdAt).format('HH:mm DD/MM/YY')}</td>
+            <td>&pound;{order.totalPrice}</td>
+            <td>{order.status}</td>
+            <td>
+              {isVisible.deleteOrderButt && (
+                <Button
+                  size="xs"
+                  color="red"
+                  onClick={(e) => handleDeleteClick(e, order._id)}
+                >
+                  Delete
+                </Button>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  </ScrollArea>
+)}
+
+                    {totalPages > 1 && (
+                         <Pagination page={currentPage} onChange={handlePageChange} total={totalPages} />
+                    )}
+               </Stack>
+
+               <Modal
+                    opened={showModal}
+                    onClose={() => setShowModal(false)}
+                    title="Confirm Deletion"
+                    centered
+               >
+                    <p>Are you sure you want to delete this order?</p>
+                    <Group position="apart" mt="md">
+                         <Button onClick={() => setShowModal(false)} variant="default">Cancel</Button>
+                         <Button color="red" onClick={handleConfirmDelete}>Delete</Button>
+                    </Group>
+               </Modal>
+          </Container>
      );
 };
 

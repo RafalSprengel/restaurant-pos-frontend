@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/axios';
 
-export function useFetch(initialUrl) {
-     const [data, setData] = useState(null);
+export function useFetch(initialUrl, initialData = null) {
+     const [data, setData] = useState(initialData);
      const [loading, setLoading] = useState(false);
      const [error, setError] = useState(null);
 

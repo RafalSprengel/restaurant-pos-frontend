@@ -1,74 +1,71 @@
-/* ==================== Common Styles ==================== */
-.mantine-TextInput-input,
-.mantine-Select-input,
-.mantine-Textarea-input,
-.mantine-DatePickerInput-input {
+.book-a-table, .contact {
+  .mantine-TextInput-input,
+  .mantine-Select-input,
+  .mantine-Textarea-input,
+  .mantine-DatePickerInput-input {
     background-color: transparent !important;
     border-radius: 0;
     border: 1px solid #3a3a3a;
     color: white;
 
     &::placeholder {
-        color: #6b6b6b
+      color: #6b6b6b;
     }
 
     &:focus {
-        background-color: transparent !important;
-        border: 1px solid #cda45e;
+      background-color: transparent !important;
+      border: 1px solid #cda45e;
     }
 
     &:focus-visible {
-        background-color: transparent !important;
+      background-color: transparent !important;
     }
-}
+  }
 
-
-.mantine-TextInput-input,
-.mantine-Select-input {
+  .mantine-TextInput-input,
+  .mantine-Select-input {
     padding: 30px 15px;
-}
+  }
 
-.mantine-Textarea-input {
+  .mantine-Textarea-input {
     padding: 15px 15px;
-}
+  }
 
-.mantine-DatePickerInput-input {
+  .mantine-DatePickerInput-input {
     padding: 18px 15px;
-}
+  }
 
-/* ==================== DatePickerInput Specific Styles ==================== */
-.mantine-DatePickerInput-day[data-weekend='true'] {
+  .mantine-DatePickerInput-day[data-weekend='true'] {
     color: red !important;
-    /* Weekend days in red */
-}
+  }
 
-.mantine-DatePickerInput-weekday {
+  .mantine-DatePickerInput-weekday {
     color: #ffffff;
     background-color: rgb(173, 173, 173);
     margin: 10px;
     padding-top: 5px;
-}
+  }
 
-.mantine-DatePickerInput-weekday:first-child {
+  .mantine-DatePickerInput-weekday:first-child {
     border-radius: 5px 0 0 5px;
     padding-left: 5px;
-}
+  }
 
-.mantine-DatePickerInput-weekday:last-child {
+  .mantine-DatePickerInput-weekday:last-child {
     border-radius: 0 5px 5px 0;
     padding-right: 5px;
-}
+  }
 
-.mantine-InputPlaceholder-placeholder {
+  .mantine-InputPlaceholder-placeholder {
     color: #6b6b6b;
-}
+  }
 
-/*===================== SelectInput Specyfic Style ======================== */
-.mantine-Select-input {
+  .mantine-Select-input {
     background-color: transparent !important;
-}
+  }
 
-.mantine-InputWrapper-label {
+  .mantine-InputWrapper-label {
     padding: 2px;
-    color: #6b6b6b
+    color: #6b6b6b;
+  }
 }

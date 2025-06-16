@@ -8,7 +8,6 @@
      flex-direction: column;
      background-color: #f5f5f5;
 
-     //max-width: $page-width;
      & h3 {
           margin-top: 10px;
           margin-bottom: 20px;
@@ -68,7 +67,6 @@
           flex: 1;
           display: flex;
           flex-direction: row;
-          //background-color: white;
      }
 
      &__left {
@@ -79,13 +77,6 @@
           user-select: none;
           padding-top: 20px;
           padding-left: 15px;
-     }
-
-     & a {
-          display: flex;
-          align-items: center;
-          color: white;
-          text-decoration: none;
      }
 
      &__right {
@@ -125,7 +116,10 @@
      }
 
      &__menuItem {
-          padding: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          padding: 15px;
           cursor: pointer;
           color: $light-font-color;
           height: 65px;

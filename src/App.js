@@ -39,6 +39,7 @@ import UpdateMgmt from './components/managementPanel/mgmtMembers/UpdateMgmt.js';
 import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
 import MessagesList from './components/managementPanel/messages/MessagesList.js';
 import TableReservationsList from './components/managementPanel/tableReservations/TableReservationsList.js';
+import TableReservationDetails from './components/managementPanel/tableReservations/TableReservationDetails.js';
 import OptionsList from './components/managementPanel/options/OptionsList.js';
 
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
@@ -91,6 +92,7 @@ function App() {
                                    <Route path="add-mgmt" element={<AddMgmt />} />
                                    <Route path="messages" element={<MessagesList />} />
                                    <Route path="reservations" element={<TableReservationsList />} />
+                                   <Route path="reservations/:id" element={<TableReservationDetails />} />
                                    <Route path="options" element={<OptionsList />} />
                               </Route>
 

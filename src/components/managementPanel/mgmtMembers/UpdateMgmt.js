@@ -1,95 +1,130 @@
 import React, { useState, useEffect } from 'react';
-import '../../../styles/add-user.scss';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '../../../hooks/useFetch';
 import api from '../../../utils/axios';
+import {
+  Container,
+  Stack,
+  Title,
+  Notification,
+  TextInput,
+  Select,
+  PasswordInput,
+  Button,
+} from '@mantine/core';
 
 export default function UpdateMgmt() {
-     const { id } = useParams();
-     const navigate = useNavigate();
-     const [errorMessage, setErrorMessage] = useState(null);
-     const { data: roles = [] } = useFetch('http://localhost:3001/api/staff/roles');
-     const [userData, setUserData] = useState({
-          name: '',
-          surname: '',
-          email: '',
-          role: '',
-          password: '',
-     });
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorNotification, setShowErrorNotification] = useState(false);
+  const { data: roles = [] } = useFetch('http://localhost:3001/api/staff/roles');
+  const [userData, setUserData] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    role: '',
+    password: '',
+  });
 
-     useEffect(() => {
-          const fetchUserData = async () => {
-               try {
-                    const response = await api.get(`http://localhost:3001/api/staff/${id}`);
-                    setUserData(response.data);
-               } catch (error) {
-                    setErrorMessage('Error fetching user data: ' + (error.response ? error.response.data.error : error.message));
-               }
-          };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get(`http://localhost:3001/api/staff/${id}`);
+        setUserData(response.data);
+      } catch (error) {
+        setErrorMessage('Error fetching user data: ' + (error.response ? error.response.data.error : error.message));
+        setShowErrorNotification(true);
+      }
+    };
 
-          fetchUserData();
-     }, [id]);
+    fetchUserData();
+  }, [id]);
 
-     const handleChange = (e) => {
-          const { name, value } = e.target;
-          setUserData({
-               ...userData,
-               [name]: value,
-          });
-     };
+  const handleChange = (field) => (value) => {
+    setUserData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-     const handleSubmit = async (e) => {
-          e.preventDefault();
-          setErrorMessage(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setShowErrorNotification(false);
 
-          try {
-               const response = await api.put(`http://localhost:3001/api/staff/${id}`, userData);
+    try {
+      const response = await api.put(`http://localhost:3001/api/staff/${id}`, userData);
+      if (response.status === 200) {
+        navigate('/management/mgnts/');
+      } else {
+        setErrorMessage(response.data.error || 'Unknown error');
+        setShowErrorNotification(true);
+      }
+    } catch (error) {
+      setErrorMessage('Error updating user: ' + (error.response ? error.response.data.error : error.message));
+      setShowErrorNotification(true);
+    }
+  };
 
-               if (response.status === 200) {
-                    navigate('/management/mgnts/');
-               } else {
-                    setErrorMessage(response.data.error);
-               }
-          } catch (error) {
-               setErrorMessage('Error updating user: ' + (error.response ? error.response.data.error : error.message));
-          }
-     };
+  return (
+    <Container size="sm" my="xl">
+      <form onSubmit={handleSubmit}>
+        <Stack spacing="md">
+          <Title order={2}>Update User</Title>
 
-     return (
-          <div>
-               <h4>Update User</h4>
-               {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-               <form className="add-user" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                         <label>Name</label>
-                         <input type="text" name="name" value={userData.name || ''} onChange={handleChange} placeholder="Name" required />
-                    </div>
-                    <div className="form-group">
-                         <label>Surname</label>
-                         <input type="text" name="surname" value={userData.surname || ''} onChange={handleChange} placeholder="Surname" required />
-                    </div>
-                    <div className="form-group">
-                         <label>Email</label>
-                         <input type="email" name="email" value={userData.email || ''} onChange={handleChange} placeholder="Email" />
-                    </div>
-                    <div className="form-group">
-                         <label>Role</label>
-                         <select name="role" value={userData.role} onChange={handleChange}>
-                              {roles?.map((role, index) => (
-                                   <option value={role} key={index}>
-                                        {role}
-                                   </option>
-                              ))}
-                         </select>
-                    </div>
-                    <div className="form-group">
-                         <label>Password</label>
-                         <input type="password" name="password" value={userData.password || ''} onChange={handleChange} placeholder="Password" />
-                    </div>
-                    <button className="btn-update" type="submit">
-                         Update User
-                    </button>
-               </form>
-          </div>
-     );
+          {showErrorNotification && (
+            <Notification color="red" onClose={() => setShowErrorNotification(false)}>
+              {errorMessage}
+            </Notification>
+          )}
+
+          <TextInput
+            label="Name"
+            placeholder="Name"
+            required
+            value={userData.name}
+            onChange={(event) => handleChange('name')(event.currentTarget.value)}
+          />
+
+          <TextInput
+            label="Surname"
+            placeholder="Surname"
+            required
+            value={userData.surname}
+            onChange={(event) => handleChange('surname')(event.currentTarget.value)}
+          />
+
+          <TextInput
+            label="Email"
+            placeholder="Email"
+            type="email"
+            value={userData.email}
+            onChange={(event) => handleChange('email')(event.currentTarget.value)}
+          />
+
+          <Select
+            label="Role"
+            placeholder="Select role"
+            data={roles}
+            value={userData.role}
+            onChange={handleChange('role')}
+            searchable
+            clearable
+            nothingFound="No roles found"
+            required
+          />
+
+          <PasswordInput
+            label="Password"
+            placeholder="Password"
+            value={userData.password}
+            onChange={(event) => handleChange('password')(event.currentTarget.value)}
+          />
+
+          <Button type="submit">Update User</Button>
+        </Stack>
+      </form>
+    </Container>
+  );
 }

@@ -1,0 +1,68 @@
+$reservation-bg: #fff;
+$reservation-shadow: rgba(0, 0, 0, 0.1);
+$reservation-border-color: #eee;
+$reservation-text-primary: #333;
+$reservation-text-secondary: #555;
+$reservation-title-color: #2c3e50;
+
+.reservation-card {
+  max-width: 480px;
+  margin: 1rem auto;
+  padding: 1rem 1.5rem;
+  background: $reservation-bg;
+  box-shadow: 0 2px 8px $reservation-shadow;
+  border-radius: 8px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: $reservation-text-primary;
+
+  &__title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: $reservation-title-color;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+    border-bottom: 1px solid $reservation-border-color;
+    padding-bottom: 0.4rem;
+  }
+
+  &__label {
+    font-weight: 600;
+    color: $reservation-text-secondary;
+    flex-basis: 45%;
+    word-wrap: break-word;
+  }
+
+  &__value {
+    flex-basis: 50%;
+    text-align: right;
+    color: darken($reservation-text-primary, 5%);
+    word-wrap: break-word;
+  }
+}
+
+@media (max-width: 400px) {
+  .reservation-card {
+    &__row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__label,
+    &__value {
+      flex-basis: 100%;
+      text-align: left;
+    }
+
+    &__value {
+      margin-top: 0.2rem;
+      font-weight: 500;
+      color: darken($reservation-text-primary, 15%);
+    }
+  }
+}

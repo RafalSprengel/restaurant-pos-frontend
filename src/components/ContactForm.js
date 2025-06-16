@@ -50,7 +50,7 @@ export default function ContactForm() {
                 name: values.name,
                 email: values.email,
                 subject: values.subject,
-                message: values.message,
+                body: values.message,
             });
 
             if (response.status === 201) {

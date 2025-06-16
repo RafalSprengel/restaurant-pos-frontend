@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
-import '../../../styles/form-styles.scss';
+import {
+     TextInput,
+     NumberInput,
+     FileInput,
+     Button,
+     Stack,
+     Title,
+     Notification,
+} from '@mantine/core';
+import { IconX } from '@tabler/icons-react';
 
 const UpdateCategory = () => {
      const { id } = useParams();
@@ -21,33 +30,40 @@ const UpdateCategory = () => {
 
      const getCategory = async () => {
           try {
+               setIsLoading(true);
                const response = await api.get(`/product-categories/${id}`);
                if (response.status === 200) {
-                    setFormData(response.data);
+                    setFormData({
+                         name: response.data.name || '',
+                         index: response.data.index || '',
+                         image: null,
+                    });
                } else {
                     throw new Error('Failed to fetch category');
                }
           } catch (error) {
                console.error('Error: ' + (error.response ? error.response.data.error : error.message));
+          } finally {
+               setIsLoading(false);
           }
      };
 
-     const handleChange = (e) => {
-          const { name, value, type, files } = e.target;
+     const handleChange = (field) => (value) => {
           setShowErrorAlert(false);
           setErrorMessage('');
+          setFormData((prev) => ({
+               ...prev,
+               [field]: value,
+          }));
+     };
 
-          if (type === 'file') {
-               setFormData({
-                    ...formData,
-                    image: files[0],
-               });
-          } else {
-               setFormData({
-                    ...formData,
-                    [name]: value,
-               });
-          }
+     const handleFileChange = (file) => {
+          setShowErrorAlert(false);
+          setErrorMessage('');
+          setFormData((prev) => ({
+               ...prev,
+               image: file,
+          }));
      };
 
      const handleSubmit = async (e) => {
@@ -55,12 +71,14 @@ const UpdateCategory = () => {
           const formDataToSend = new FormData();
           formDataToSend.append('name', formData.name);
           formDataToSend.append('index', formData.index);
-          formDataToSend.append('image', formData.image);
+          if (formData.image) {
+               formDataToSend.append('image', formData.image);
+          }
 
           try {
+               setIsLoading(true);
                const response = await api.put(`/product-categories/${id}`, formDataToSend);
                if (response.status === 200) {
-                    alert('Category updated successfully!');
                     navigate('/management/categories');
                } else {
                     setShowErrorAlert(true);
@@ -69,6 +87,8 @@ const UpdateCategory = () => {
           } catch (error) {
                setShowErrorAlert(true);
                setErrorMessage(error.response ? error.response.data.error : error.message || 'Failed to save the category.');
+          } finally {
+               setIsLoading(false);
           }
      };
 
@@ -77,23 +97,59 @@ const UpdateCategory = () => {
      }, []);
 
      return (
-          <>
-               <form className="form-container" onSubmit={handleSubmit}>
-                    <h2>Update existing category</h2>
-                    {showErrorAlert && <div className="alert alert-danger">{errorMessage}</div>}
+          <form onSubmit={handleSubmit} style={{ width:'100%', margin: '0 auto' }}>
+               <Stack spacing="md" >
+                    <Title order={2}>Update existing category</Title>
 
-                    <label>Name:</label>
-                    <input name="name" type="text" value={formData.name} onChange={handleChange} disabled={!isEditable} />
+                    {showErrorAlert && (
+                         <Notification
+                              icon={<IconX size={18} />}
+                              color="red"
+                              onClose={() => setShowErrorAlert(false)}
+                              title="Error"
+                         >
+                              {errorMessage}
+                         </Notification>
+                    )}
 
-                    <label>Index:</label>
-                    <input name="index" type="number" value={formData.index} onChange={handleChange} disabled={!isEditable} />
+                    <TextInput
+                         label="Name"
+                         name="name"
+                         value={formData.name}
+                         onChange={(event) => handleChange('name')(event.currentTarget.value)}
+                         disabled={!isEditable || isLoading}
+                         required
+                         fullWidth
+                    />
 
-                    <label>Image:</label>
-                    <input name="image" type="file" onChange={handleChange} disabled={!isEditable} />
+                    <NumberInput
+                         label="Index"
+                         name="index"
+                         value={formData.index}
+                         onChange={handleChange('index')}
+                         disabled={!isEditable || isLoading}
+                         required
+                         fullWidth
+                    />
 
-                    {isEditable && <button type="submit">Save Category</button>}
-               </form>
-          </>
+                    <FileInput
+                         label="Image"
+                         name="image"
+                         onChange={handleFileChange}
+                         disabled={!isEditable || isLoading}
+                         accept="image/*"
+                         placeholder="Upload category image"
+                         clearable
+                         fullWidth
+                    />
+
+                    {isEditable && (
+                         <Button type="submit" loading={isLoading} disabled={isLoading}>
+                              Save Category
+                         </Button>
+                    )}
+               </Stack>
+          </form>
      );
 };
 

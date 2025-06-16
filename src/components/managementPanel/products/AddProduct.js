@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../utils/axios.js';
-import '../../../styles/add-product.scss';
+import {
+     Button,
+     Checkbox,
+     Group,
+     Input,
+     LoadingOverlay,
+     Select,
+     Stack,
+     Textarea,
+     Title,
+     Text,
+     Notification
+} from '@mantine/core';
 
 const AddProduct = () => {
      const [categories, setCategories] = useState([]);
@@ -24,8 +36,8 @@ const AddProduct = () => {
 
      const handleChange = (e) => {
           const { name, value, type, checked } = e.target;
-          setFormData((prevFormData) => ({
-               ...prevFormData,
+          setFormData((prev) => ({
+               ...prev,
                [name]: type === 'checkbox' ? checked : value,
           }));
      };
@@ -48,7 +60,6 @@ const AddProduct = () => {
                     setErrorMessage(`Failed to save the product (${response.data.error})`);
                }
           } catch (e) {
-               console.error(e.response?.data?.error || e.message);
                setErrorMessage(`Error while saving... (${e.response?.data?.error || e.message})`);
           }
      };
@@ -57,14 +68,12 @@ const AddProduct = () => {
           try {
                setErrorMessage(null);
                const response = await api.get('/product-categories');
-
                if (response.status === 200) {
                     setCategories(response.data);
                } else {
-                    setErrorMessage(`Failed to load categories. Please try again later (${response.data.error})`);
+                    setErrorMessage(`Failed to load categories. (${response.data.error})`);
                }
           } catch (error) {
-               console.error(error);
                setErrorMessage(`Connection error (${error.response?.data?.error || error.message})`);
           } finally {
                setIsLoading(false);
@@ -76,61 +85,73 @@ const AddProduct = () => {
      }, []);
 
      return (
-          <>
-               {isLoading && <div>Loading...</div>}
+          <div style={{ position: 'relative' }}>
+               <LoadingOverlay visible={isLoading} overlayBlur={1} />
                {!isLoading && (
-                    <form className="menu-item-form" onSubmit={handleSubmit}>
-                         <h2>Add a New Product</h2>
-                         {errorMessage && <p className="error">{errorMessage}</p>}
-                         <label>Name:</label>
-                         <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                    <form onSubmit={handleSubmit}>
+                         <Stack spacing="md">
+                              <Title order={2}>Add a New Product</Title>
+                              {errorMessage && <Notification color="red">{errorMessage}</Notification>}
 
-                         <label>Description:</label>
-                         <textarea name="desc" value={formData.desc} onChange={handleChange} />
+                              <Input.Wrapper label="Name" required>
+                                   <Input name="name" value={formData.name} onChange={handleChange} required />
+                              </Input.Wrapper>
 
-                         <label>Price:</label>
-                         <input type="number" name="price" step="0.01" value={formData.price} onChange={handleChange} required />
+                              <Textarea label="Description" name="desc" value={formData.desc} onChange={handleChange} />
 
-                         <label>Image URL:</label>
-                         <input type="text" name="image" value={formData.image} onChange={handleChange} />
+                              <Input.Wrapper label="Price" required>
+                                   <Input type="number" name="price" step="0.01" value={formData.price} onChange={handleChange} required />
+                              </Input.Wrapper>
 
-                         <label>Category:</label>
-                         <select name="category" value={formData.category} onChange={handleChange} required>
-                              <option value="">Select a category</option>
-                              {categories.map((category) => (
-                                   <option key={category._id} value={category._id}>
-                                        {category.name}
-                                   </option>
-                              ))}
-                         </select>
+                              <Input.Wrapper label="Image URL">
+                                   <Input name="image" value={formData.image} onChange={handleChange} />
+                              </Input.Wrapper>
 
-                         <label>
-                              <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleChange} />
-                              Is Featured
-                         </label>
+                              <Select
+                                   label="Category"
+                                   data={categories.map((c) => ({ value: c._id, label: c.name }))}
+                                   name="category"
+                                   value={formData.category}
+                                   onChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
+                                   required
+                              />
 
-                         <label>Ingredients (comma-separated):</label>
-                         <input type="text" name="ingredients" value={formData.ingredients} onChange={handleChange} />
+                              <Input.Wrapper label="Ingredients (comma-separated)">
+                                   <Input name="ingredients" value={formData.ingredients} onChange={handleChange} />
+                              </Input.Wrapper>
 
-                         <label>
-                              <input type="checkbox" name="isVegetarian" checked={formData.isVegetarian} onChange={handleChange} />
-                              Is Vegetarian
-                         </label>
+                              <Group>
+                                   <Checkbox
+                                        label="Is Featured"
+                                        name="isFeatured"
+                                        checked={formData.isFeatured}
+                                        onChange={handleChange}
+                                   />
+                                   <Checkbox
+                                        label="Is Vegetarian"
+                                        name="isVegetarian"
+                                        checked={formData.isVegetarian}
+                                        onChange={handleChange}
+                                   />
+                                   <Checkbox
+                                        label="Is Gluten-Free"
+                                        name="isGlutenFree"
+                                        checked={formData.isGlutenFree}
+                                        onChange={handleChange}
+                                   />
+                                   <Checkbox
+                                        label="Is Available"
+                                        name="isAvailable"
+                                        checked={formData.isAvailable}
+                                        onChange={handleChange}
+                                   />
+                              </Group>
 
-                         <label>
-                              <input type="checkbox" name="isGlutenFree" checked={formData.isGlutenFree} onChange={handleChange} />
-                              Is Gluten-Free
-                         </label>
-
-                         <label>
-                              <input type="checkbox" name="isAvailable" checked={formData.isAvailable} onChange={handleChange} />
-                              Is Available
-                         </label>
-
-                         <button type="submit">Save Product</button>
+                              <Button type="submit">Save Product</Button>
+                         </Stack>
                     </form>
                )}
-          </>
+          </div>
      );
 };
 

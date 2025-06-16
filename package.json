@@ -33,6 +33,7 @@
           "react-flatpickr": "^4.0.10",
           "react-scripts": "^5.0.1",
           "react-select": "^5.10.1",
+          "recharts": "^2.15.3",
           "sass": "^1.72.0",
           "scss": "^0.2.4",
           "web-vitals": "^2.1.4"
@@ -43,7 +44,8 @@
           "start": "react-scripts start",
           "build": "react-scripts build",
           "test": "react-scripts test && jest",
-          "eject": "react-scripts eject"
+          "eject": "react-scripts eject",
+          "send": "npm run build && send.bat"
      },
      "eslintConfig": {
           "extends": [
