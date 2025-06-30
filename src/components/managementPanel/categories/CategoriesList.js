@@ -64,36 +64,41 @@ const CategoriesList = () => {
     }
   };
 
-  const rows = categoryList?.map((el) => (
-    <tr key={el._id} style={{ cursor: 'pointer' }} onClick={() => handleRowClick(el._id)}>
-      <td>{el.name}</td>
-      <td>
-        <Image
-          src={el.image || 'https://via.placeholder.com/60'}
-          width={60}
-          height={60}
-          fit="contain"
-          alt="Category"
-        />
-      </td>
-      <td>{el.index}</td>
-      <td>
-        {isVisible.deleteButt && (
-          <Button
-            color="red"
-            size="xs"
-            leftSection={<IconTrash size={14} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              setConfirmDeleteId(el._id);
-            }}
-          >
-            Delete
-          </Button>
-        )}
-      </td>
-    </tr>
-  ));
+
+
+  const rows = categoryList?.map((el) => {
+    const randomUrl = `https://picsum.photos/200/200?random=${Math.random()}`;
+    return (
+      <tr key={el._id} style={{ cursor: 'pointer' }} onClick={() => handleRowClick(el._id)}>
+        <td>{el.name}</td>
+        <td>
+          <Image
+            src={el.image || randomUrl}
+            width={60}
+            height={60}
+            fit="contain"
+            alt="Category"
+          />
+        </td>
+        <td>{el.index}</td>
+        <td>
+          {isVisible.deleteButt && (
+            <Button
+              color="red"
+              size="xs"
+              leftSection={<IconTrash size={14} />}
+              onClick={(e) => {
+                e.stopPropagation();
+                setConfirmDeleteId(el._id);
+              }}
+            >
+              Delete
+            </Button>
+          )}
+        </td>
+      </tr>
+    )
+  });
 
   return (
     <Stack gap="md" w="100%">

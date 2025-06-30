@@ -6,19 +6,17 @@ import {
   Container,
   Stack,
   Title,
-  Notification,
   TextInput,
   Select,
   PasswordInput,
   Button,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 
 export default function UpdateMgmt() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorNotification, setShowErrorNotification] = useState(false);
-  const { data: roles = [] } = useFetch('http://localhost:3001/api/staff/roles');
+  const { data: roles = [] } = useFetch('staff/roles');
   const [userData, setUserData] = useState({
     name: '',
     surname: '',
@@ -26,20 +24,6 @@ export default function UpdateMgmt() {
     role: '',
     password: '',
   });
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await api.get(`http://localhost:3001/api/staff/${id}`);
-        setUserData(response.data);
-      } catch (error) {
-        setErrorMessage('Error fetching user data: ' + (error.response ? error.response.data.error : error.message));
-        setShowErrorNotification(true);
-      }
-    };
-
-    fetchUserData();
-  }, [id]);
 
   const handleChange = (field) => (value) => {
     setUserData((prev) => ({
@@ -50,34 +34,54 @@ export default function UpdateMgmt() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
-    setShowErrorNotification(false);
 
     try {
-      const response = await api.put(`http://localhost:3001/api/staff/${id}`, userData);
+      const response = await api.put(`/staff/${id}`, userData);
       if (response.status === 200) {
+        notifications.show({
+          title: 'Success',
+          message: 'User updated successfully.',
+          color: 'green',
+        });
         navigate('/management/mgnts/');
       } else {
-        setErrorMessage(response.data.error || 'Unknown error');
-        setShowErrorNotification(true);
+        notifications.show({
+          title: 'Error',
+          message: response.data.error || 'Unknown error',
+          color: 'red',
+        });
       }
     } catch (error) {
-      setErrorMessage('Error updating user: ' + (error.response ? error.response.data.error : error.message));
-      setShowErrorNotification(true);
+      notifications.show({
+        title: 'Error updating user',
+        message: error.response ? error.response.data.error : error.message,
+        color: 'red',
+      });
     }
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get(`/staff/${id}`);
+        setUserData(response.data);
+      } catch (error) {
+        notifications.show({
+          title: 'Error fetching user',
+          message: error.response ? error.response.data.error : error.message,
+          color: 'red',
+        });
+      }
+    };
+
+    fetchUserData();
+  }, [id]);
 
   return (
     <Container size="sm" my="xl">
       <form onSubmit={handleSubmit}>
         <Stack spacing="md">
           <Title order={2}>Update User</Title>
-
-          {showErrorNotification && (
-            <Notification color="red" onClose={() => setShowErrorNotification(false)}>
-              {errorMessage}
-            </Notification>
-          )}
 
           <TextInput
             label="Name"

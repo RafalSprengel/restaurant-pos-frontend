@@ -24,6 +24,12 @@ const UpdateCustomer = () => {
     email: '',
     phone: '',
     isRegistered: false,
+    address: {
+      city: '',
+      street: '',
+      houseNo: '',
+      flatNo: '',
+    },
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -38,7 +44,15 @@ const UpdateCustomer = () => {
     try {
       const response = await api.get(`/customers/${id}`);
       if (response.status === 200) {
-        setFormData(response.data);
+        setFormData({
+          ...response.data,
+          address: {
+            city: response.data.address?.city || '',
+            street: response.data.address?.street || '',
+            houseNo: response.data.address?.houseNo || '',
+            flatNo: response.data.address?.flatNo || '',
+          },
+        });
       } else {
         throw new Error('Failed to fetch customer');
       }
@@ -52,10 +66,22 @@ const UpdateCustomer = () => {
     const { name, value, type, checked } = e.target;
     setShowErrorAlert(false);
     setErrorMessage('');
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+
+    if (name.startsWith('address.')) {
+      const field = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [field]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
   };
 
   const handleCloseSuccessModal = () => {
@@ -86,10 +112,10 @@ const UpdateCustomer = () => {
   }, []);
 
   return (
-    <Container size="md" mt="xl" w='100%'>
+    <Container size="md" mt="xl" w="100%">
       <form onSubmit={handleSubmit}>
         <Stack>
-          <Title order={3}>Update Customer</Title>
+          <Title order={3}>Update Customer (No. {formData.customerNumber})</Title>
 
           {showErrorAlert && (
             <Alert icon={<IconAlertCircle size={16} />} color="red">
@@ -136,10 +162,36 @@ const UpdateCustomer = () => {
             required
           />
 
-          <Checkbox
-            label="Registered"
-            name="isRegistered"
-            checked={formData.isRegistered}
+          <Title order={5}>Address</Title>
+
+          <TextInput
+            label="City"
+            name="address.city"
+            value={formData.address.city}
+            onChange={handleChange}
+            disabled={!isEditable}
+          />
+
+          <TextInput
+            label="Street"
+            name="address.street"
+            value={formData.address.street}
+            onChange={handleChange}
+            disabled={!isEditable}
+          />
+
+          <TextInput
+            label="House No"
+            name="address.houseNo"
+            value={formData.address.houseNo}
+            onChange={handleChange}
+            disabled={!isEditable}
+          />
+
+          <TextInput
+            label="Flat No"
+            name="address.flatNo"
+            value={formData.address.flatNo}
             onChange={handleChange}
             disabled={!isEditable}
           />

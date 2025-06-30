@@ -164,7 +164,7 @@ const OrdersList = () => {
   <Title order={4}>No orders found</Title>
 ) : (
   <ScrollArea>
-    <Table striped highlightOnHover withBorder>
+    <Table striped highlightOnHover>
       <thead>
         <tr>
           <th data-name="orderNumber" onClick={handleSort}>

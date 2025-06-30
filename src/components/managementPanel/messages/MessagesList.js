@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../../utils/axios';
+import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
 import {
     Button,
     Group,
@@ -26,13 +27,14 @@ const MessagesList = () => {
     const [searchString, setSearchString] = useState('');
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortOrder, setSortOrder] = useState('');
-    const [typeFilter, setTypeFilter] = useState('all');
+    const [typeFilter, setTypeFilter] = useState('received');
     const [selectedMessages, setSelectedMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
+    const { refetchUnreadCount } = useUnreadMessages();
 
     const getMessages = async () => {
         const params = new URLSearchParams(location.search);
@@ -49,7 +51,7 @@ const MessagesList = () => {
             setIsLoading(false);
         }
     };
-
+    
     const handleSearchChange = (e) => {
         const { value } = e.currentTarget;
         setSearchString(value);
@@ -85,7 +87,7 @@ const MessagesList = () => {
         }
     };
 
-    const openDeleteMOdal = (selectedMessages) => {
+    const openDeleteModal = (selectedMessages) => {
         modals.openConfirmModal({
             title: 'Please confirm your action',
             size: 'sm',
@@ -113,6 +115,15 @@ const MessagesList = () => {
         }
     };
 
+    const handleRowClick = (_id) => {
+        navigate(`${_id}`);
+    };
+
+    const SortArrow = ({ criteria }) => {
+        if (criteria !== sortCriteria) return <>•</>;
+        return sortOrder === 'desc' ? <>▼</> : <>▲</>;
+    };
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         setSearchString(params.get('search') || '');
@@ -122,10 +133,9 @@ const MessagesList = () => {
         getMessages();
     }, [location.search]);
 
-    const SortArrow = ({ criteria }) => {
-        if (criteria !== sortCriteria) return <>•</>;
-        return sortOrder === 'desc' ? <>▼</> : <>▲</>;
-    };
+    useEffect(() => {
+    refetchUnreadCount();
+  }, []);
 
     return (
         <Container fluid>
@@ -142,12 +152,11 @@ const MessagesList = () => {
                             value={typeFilter}
                             onChange={handleTypeFilter}
                             data={[
-                                { value: 'all', label: 'All' },
-                                { value: 'received', label: 'Only received' },
-                                { value: 'sent', label: 'Only sent' },
+                                { value: 'received', label: 'Received' },
+                                { value: 'sent', label: 'Sent' },
                             ]}
                         />
-                        <Button color="red" disabled={!selectedMessages.length} onClick={() => openDeleteMOdal(selectedMessages)}>Delete selected</Button>
+                        <Button color="red" disabled={!selectedMessages.length} onClick={() => openDeleteModal(selectedMessages)}>Delete selected</Button>
                     </Flex>
                 </Flex>
             </Stack>
@@ -173,11 +182,13 @@ const MessagesList = () => {
                         </thead>
                         <tbody>
                             {messages.map((msg) => (
-                                <tr key={msg._id}>
+                                <tr key={msg._id} onClick={() => handleRowClick(msg._id)} style={{ cursor: 'pointer' , fontWeight: msg.isRead ? 'normal' : 'bold'  }}>
                                     <td>
                                         <Checkbox
                                             checked={selectedMessages.includes(msg._id)}
+                                            onClick={e => e.stopPropagation()}
                                             onChange={(e) => handleCheckboxChange(msg._id, e.currentTarget.checked)}
+                                            
                                         />
                                     </td>
                                     <td>{msg.name}</td>

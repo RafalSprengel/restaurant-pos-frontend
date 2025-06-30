@@ -1,85 +1,132 @@
 import React, { useState } from 'react';
-import '../../../styles/add-user.scss';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../../hooks/useFetch';
 import api from '../../../utils/axios';
+import {
+  Container,
+  Stack,
+  Title,
+  TextInput,
+  PasswordInput,
+  Select,
+  Button,
+  Modal,
+  Text,
+} from '@mantine/core';
 
 export default function AddUser() {
-     const navigate = useNavigate();
-     const [errorMessage, setErrorMessage] = useState(null);
-     const { data: roles = [] } = useFetch('http://localhost:3001/api/staff/roles');
+  const navigate = useNavigate();
+  const { data: roles = [] } = useFetch('/staff/roles');
 
-     const [userData, setUserData] = useState({
-          name: 'Rafal',
-          surname: 'Sprengel',
-          email: 'test@wp.pl',
-          password: '12345',
-     });
+  const [userData, setUserData] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    role: '',
+    password: '',
+  });
 
-     const handleChange = (e) => {
-          const { name, value } = e.target;
-          setUserData({
-               ...userData,
-               [name]: value,
-          });
-     };
-     const handleChangeRole = (e) => {
-          const { name, value } = e.target;
-          setUserData({
-               ...userData,
-               [name]: value,
-          });
-     };
+  const [modalOpened, setModalOpened] = useState(false);
+  const [modalContent, setModalContent] = useState({ message: '', isError: false });
 
-     const handleSubmit = async (e) => {
-          e.preventDefault();
-          setErrorMessage(null);
+  const handleChange = (field) => (value) => {
+    setUserData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-          try {
-               const response = await api.post('auth/register/mgmt', userData);
-               console.log('## response: ', response);
-               if (response.status === 201) {
-                    setUserData({
-                         name: '',
-                         surname: '',
-                         email: '',
-                         password: '',
-                    });
-                    navigate('/management/mgnts');
-               } else {
-                    setErrorMessage(response.data.error);
-               }
-          } catch (error) {
-               console.error('Error adding user:', error);
-               setErrorMessage('Error adding user: ' + (error.response ? error.response.data.error : error.message));
-          }
-     };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-     return (
-          <div>
-               <h4>Add User</h4>
-               {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-               <form className="add-user" onSubmit={handleSubmit}>
-                    <label>Name</label>
-                    <input type="text" name="name" value={userData.name} onChange={handleChange} placeholder="Name" required />
-                    <label>Surname</label>
-                    <input type="text" name="surname" value={userData.surname} onChange={handleChange} placeholder="Surname" required />
-                    <label>Email</label>
-                    <input type="email" name="email" value={userData.email} onChange={handleChange} placeholder="Email" />
-                    <label>Role</label>
-                    <select name="role" onChange={handleChangeRole}>
-                         {roles?.map((role, index) => (
-                              <option value={role} key={index}>
-                                   {role}
-                              </option>
-                         ))}
-                    </select>
-                    <label>Password</label>
-                    <input type="password" name="password" value={userData.password} onChange={handleChange} placeholder="Password" required />
-                    <button className="btn m-3" type="submit">
-                         Add User
-                    </button>
-               </form>
-          </div>
-     );
+    try {
+      const response = await api.post('auth/register/mgmt', userData);
+      if (response.status === 201) {
+        setModalContent({ message: 'User created successfully!', isError: false });
+        setModalOpened(true);
+        setUserData({ name: '', surname: '', email: '', role: '', password: '' });
+      } else {
+        setModalContent({ message: response.data.error || 'Unknown error', isError: true });
+        setModalOpened(true);
+      }
+    } catch (error) {
+      setModalContent({
+        message: error.response?.data?.error || error.message,
+        isError: true,
+      });
+      setModalOpened(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalOpened(false);
+    if (!modalContent.isError) {
+      navigate('/management/mgnts');
+    }
+  };
+
+  return (
+    <Container size="sm" my="xl">
+      <form onSubmit={handleSubmit}>
+        <Stack spacing="md">
+          <Title order={2}>Add User</Title>
+
+          <TextInput
+            label="Name"
+            placeholder="Name"
+            required
+            value={userData.name}
+            onChange={(e) => handleChange('name')(e.currentTarget.value)}
+          />
+
+          <TextInput
+            label="Surname"
+            placeholder="Surname"
+            required
+            value={userData.surname}
+            onChange={(e) => handleChange('surname')(e.currentTarget.value)}
+          />
+
+          <TextInput
+            label="Email"
+            placeholder="Email"
+            type="email"
+            value={userData.email}
+            onChange={(e) => handleChange('email')(e.currentTarget.value)}
+          />
+
+          <Select
+            label="Role"
+            placeholder="Select role"
+            data={roles?.map((r) => ({ label: r, value: r }))}
+            value={userData.role}
+            onChange={handleChange('role')}
+            required
+          />
+
+          <PasswordInput
+            label="Password"
+            placeholder="Password"
+            required
+            value={userData.password}
+            onChange={(e) => handleChange('password')(e.currentTarget.value)}
+          />
+
+          <Button type="submit">Add User</Button>
+        </Stack>
+      </form>
+
+      <Modal
+        opened={modalOpened}
+        onClose={handleModalClose}
+        title={modalContent.isError ? 'Error' : 'Success'}
+        centered
+      >
+        <Text color={modalContent.isError ? 'red' : 'green'}>{modalContent.message}</Text>
+        <Button mt="md" fullWidth onClick={handleModalClose}>
+          OK
+        </Button>
+      </Modal>
+    </Container>
+  );
 }

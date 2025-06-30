@@ -21,6 +21,7 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
+import { UnreadMessagesProvider } from './context/UnreadMessagesProvider.js';
 
 import Dashboard from './components/managementPanel/Dashboard.js';
 import AddCategory from './components/managementPanel/categories/AddCategory.js';
@@ -38,12 +39,13 @@ import UpdateCustomer from './components/managementPanel/customers/UpdateCustome
 import UpdateMgmt from './components/managementPanel/mgmtMembers/UpdateMgmt.js';
 import AddMgmt from './components/managementPanel/mgmtMembers/AddMgmt.js';
 import MessagesList from './components/managementPanel/messages/MessagesList.js';
+import SingleMessage from './components/managementPanel/messages/SingleMessage.js';
 import TableReservationsList from './components/managementPanel/tableReservations/TableReservationsList.js';
-import TableReservationDetails from './components/managementPanel/tableReservations/TableReservationDetails.js';
-import OptionsList from './components/managementPanel/options/OptionsList.js';
-
+import SingleTableReservation from './components/managementPanel/tableReservations/SingleTableReservation.js';
+import Settings from './components/managementPanel/settings/Settings.js';
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
+import NoConnection from './pages/NoConnection.js';
 
 
 function App() {
@@ -74,7 +76,11 @@ function App() {
                               <Route path="/customer/register" element={<RegisterCustomer />} />
 
                               <Route path="/management/login" element={<LoginManagement />} />
-                              <Route path="/management/" element={<ManagementPanel />}>
+                              <Route path="/management/" element={
+                                   <UnreadMessagesProvider>
+                                        <ManagementPanel />
+                                   </UnreadMessagesProvider>
+                              }>
                                    <Route index element={<Dashboard />} />
                                    <Route path="products" element={<ProductsList />} />
                                    <Route path="products/:id" element={<UpdateProduct />} />
@@ -91,16 +97,17 @@ function App() {
                                    <Route path="mgnts/:id" element={<UpdateMgmt />} />
                                    <Route path="add-mgmt" element={<AddMgmt />} />
                                    <Route path="messages" element={<MessagesList />} />
+                                   <Route path="messages/:id" element={<SingleMessage />} />
                                    <Route path="reservations" element={<TableReservationsList />} />
-                                   <Route path="reservations/:id" element={<TableReservationDetails />} />
-                                   <Route path="options" element={<OptionsList />} />
+                                   <Route path="reservations/:id" element={<SingleTableReservation />} />
+                                   <Route path="settings" element={<Settings />} />
                               </Route>
-
+                              <Route path='no-connection' element={<NoConnection />}></Route>
                               <Route path="*" element={<NotFound />} />
                          </Routes>
                     </AuthProvider>
-               </ModalsProvider>
-          </MantineProvider>
+               </ModalsProvider >
+          </MantineProvider >
      );
 }
 

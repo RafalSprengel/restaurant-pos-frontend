@@ -1,0 +1,37 @@
+.single-message {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+
+  &__title {
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  &__row {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: center;
+
+    &.single-message__body {
+      align-items: flex-start;
+    }
+  }
+
+  &__label {
+    flex: 0 0 100px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  &__value {
+    flex: 1;
+    color: #333;
+    white-space: pre-wrap;
+  }
+}

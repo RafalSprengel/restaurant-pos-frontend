@@ -3,6 +3,14 @@ import api from '../utils/axios.js';
 
 const AuthContext = createContext();
 
+export function useAuthContext() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error(`useAuthContext must be used within an AuthProvider`);
+  }
+  return context;
+}
+
 export function useAuth() {
      const context = useContext(AuthContext);
      if (!context) {
@@ -70,7 +78,8 @@ export const AuthProvider = ({ children }) => {
      };
 
      useEffect(() => {
-          checkAuthStatus();
+          if (localStorage.getItem('isLogged') === '1' && localStorage.getItem('isBackendDown') === '0') checkAuthStatus();
+
           api.setIsAuthenticated = setAuthStatus;
           api.logout = logout;
      }, []);

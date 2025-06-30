@@ -1,14 +1,12 @@
-import React from "react";
-import dayjs from "dayjs";
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Group, Text} from "@mantine/core";
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { useFetch } from "../../../hooks/useFetch.js";
-import api from '../../../utils/axios';
-import "../../../styles/table-reservation-details.scss";
+import api from '../../../utils/axios.js';
+import "../../../styles/single-table-reservation.scss";
 
-const TableReservationDetails = () => {
+const SingleTableReservation = () => {
   const { id } = useParams();
 
   const { data, loading, error, refetch } = useFetch(`/tables/reservations/${id}`);
@@ -68,44 +66,44 @@ const TableReservationDetails = () => {
   };
 
   return (
-    <div className="reservation-card">
+    <div className="single-table-reservation">
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
       {data &&
         <>
-          <h2 className="reservation-card__title">Reservation Details</h2>
+          <h2 className="single-table-reservation__title">Reservation Details</h2>
 
-          <div className="reservation-card__row">
-            <span className="reservation-card__label">Table Number:</span>
-            <span className="reservation-card__value">{data.tableNumber}</span>
+          <div className="single-table-reservation__row">
+            <span className="single-table-reservation__label">Table Number:</span>
+            <span className="single-table-reservation__value">{data.tableNumber}</span>
           </div>
 
-          <div className="reservation-card__row">
-            <span className="reservation-card__label">Reservation Time:</span>
-            <span className="reservation-card__value">
+          <div className="single-table-reservation__row">
+            <span className="single-table-reservation__label">Reservation Time:</span>
+            <span className="single-table-reservation__value">
               {data.timeSlot.start} - {data.timeSlot.end}
             </span>
           </div>
 
-          <div className="reservation-card__row">
-            <span className="reservation-card__label">Customer Name:</span>
-            <span className="reservation-card__value">{data.customerDetails.name}</span>
+          <div className="single-table-reservation__row">
+            <span className="single-table-reservation__label">Customer Name:</span>
+            <span className="single-table-reservation__value">{data.customerDetails.name}</span>
           </div>
 
-          <div className="reservation-card__row">
-            <span className="reservation-card__label">Email:</span>
-            <span className="reservation-card__value">{data.customerDetails.email}</span>
+          <div className="single-table-reservation__row">
+            <span className="single-table-reservation__label">Email:</span>
+            <span className="single-table-reservation__value">{data.customerDetails.email}</span>
           </div>
 
-          <div className="reservation-card__row">
-            <span className="reservation-card__label">Phone:</span>
-            <span className="reservation-card__value">{data.customerDetails.phone}</span>
+          <div className="single-table-reservation__row">
+            <span className="single-table-reservation__label">Phone:</span>
+            <span className="single-table-reservation__value">{data.customerDetails.phone}</span>
           </div>
 
           {data.message && (
-            <div className="reservation-card__row">
-              <span className="reservation-card__label">Message:</span>
-              <span className="reservation-card__value">{data.message}</span>
+            <div className="single-table-reservation__row">
+              <span className="single-table-reservation__label">Message:</span>
+              <span className="single-table-reservation__value">{data.message}</span>
             </div>
           )}
 
@@ -123,4 +121,4 @@ const TableReservationDetails = () => {
   );
 };
 
-export default TableReservationDetails;
+export default SingleTableReservation;
