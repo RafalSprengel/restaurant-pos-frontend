@@ -13,6 +13,9 @@ import TeamMembersCards from '../components/TeamMembersCards.js';
 import FoodMenu from '../components/FoodMenu.js';
 import TableBookingForm from '../components/TableBookingForm.js'
 import ContactForm from '../components/ContactForm.js'
+import FloatingCartButton from '../components/FloatingCartButton.jsx';
+
+import { useShoppingCart } from '../context/ShoppingCartContext.js';
 
 // AOS Animations
 import AOS from 'aos';
@@ -20,7 +23,7 @@ import 'aos/dist/aos.css';
 
 export const MainPage = () => {
      const [specialsActiveTab, setSpecialsActiveTab] = useState(0);
-
+     const { openCart, cartQuantity } = useShoppingCart();
      // Tabs for Specials Section
      const specialsTabs = [
           {
@@ -424,10 +427,12 @@ export const MainPage = () => {
                                         </div>
                                    ))}
                               </div>
-                              <ContactForm/>
+                              <ContactForm />
                          </div>
+                          
                     </div>
                </section>
+               <FloatingCartButton count={cartQuantity} onClick={openCart} />
           </>
      );
 };

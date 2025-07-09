@@ -6,6 +6,7 @@ import { useFetch } from "../../../hooks/useFetch.js";
 import api from '../../../utils/axios.js';
 import { useEffect, useState } from 'react';
 import "../../../styles/single-message.scss";
+import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
 
 
 const SingleMessage = () => {
@@ -14,6 +15,7 @@ const SingleMessage = () => {
   const [showReply, setShowReply] = useState(false);
   const [replySubject, setReplySubject] = useState('');
   const [replyBody, setReplyBody] = useState('');
+  const { unreadMessageCount, refetchUnreadCount } = useUnreadMessages();
 
   const handleBack = () => {
     window.history.back();
@@ -88,6 +90,10 @@ const SingleMessage = () => {
       openErrorNotification('Failed to send reply.');
     }
   };
+
+  useEffect(() => {
+    refetchUnreadCount();
+  }, []);
 
 return (
   <div className="single-message">

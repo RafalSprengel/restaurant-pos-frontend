@@ -11,7 +11,6 @@ import LoginCustomer from './pages/LoginCustomer.js';
 import LoginManagement from './pages/LoginManagement.js';
 import MainLayout from './layouts/MainLayout';
 import ManagementPanel from './pages/ManagementPanel.js';
-import Menu from './pages/Menu';
 import NotFound from './pages/NotFound';
 import PaymentCanceled from './pages/PaymentCanceled';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -54,57 +53,54 @@ function App() {
                <Notifications />
                <ModalsProvider>
                     <AuthProvider>
-                         <Routes>
-                              <Route
-                                   element={
-                                        <ShoppingCartProvider>
-                                             <MainLayout />
-                                        </ShoppingCartProvider>
+                         <ShoppingCartProvider>
+                              <Routes>
+                                   <Route
+                                        element={<MainLayout />}>
+                                        <Route path="/" element={<HomePage />} />
+                                   </Route>
+
+                                   <Route path="/customer" element={<CustomerPanel />}>
+                                        <Route index element={<RecentOrdersList />} />
+                                        <Route path="personal-details" element={<PersonalDetails />} />
+                                   </Route>
+                                   <Route path="/customer/login" element={<LoginCustomer />} />
+                                   <Route path="/customer/register" element={<RegisterCustomer />} />
+
+                                   <Route path="/management/login" element={<LoginManagement />} />
+                                   <Route path="/management/" element={
+                                        <UnreadMessagesProvider>
+                                             <ManagementPanel />
+                                        </UnreadMessagesProvider>
                                    }>
-                                   <Route path="/" element={<HomePage />} />
-                                   <Route path="/menu" element={<Menu />} />
+                                        <Route index element={<Dashboard />} />
+                                        <Route path="products" element={<ProductsList />} />
+                                        <Route path="products/:id" element={<UpdateProduct />} />
+                                        <Route path="add-product" element={<AddProduct />} />
+                                        <Route path="categories" element={<CategoriesList />} />
+                                        <Route path="categories/:id" element={<UpdateCategory />} />
+                                        <Route path="add-category" element={<AddCategory />} />
+                                        <Route path="customers" element={<CustomersList />} />
+                                        <Route path="customers/:id" element={<UpdateCustomer />} />
+                                        <Route path="add-customer" element={<AddCustomer />} />
+                                        <Route path="orders" element={<OrdersList />} />
+                                        <Route path="orders/:id" element={<UpdateOrder />} />
+                                        <Route path="mgnts" element={<MgmtsList />} />
+                                        <Route path="mgnts/:id" element={<UpdateMgmt />} />
+                                        <Route path="add-mgmt" element={<AddMgmt />} />
+                                        <Route path="messages" element={<MessagesList />} />
+                                        <Route path="messages/:id" element={<SingleMessage />} />
+                                        <Route path="reservations" element={<TableReservationsList />} />
+                                        <Route path="reservations/:id" element={<SingleTableReservation />} />
+                                        <Route path="settings" element={<Settings />} />
+                                   </Route>
                                    <Route path="/order/checkout" element={<Checkout />} />
                                    <Route path="/order/success" element={<PaymentSuccess />} />
                                    <Route path="/order/cancel" element={<PaymentCanceled />} />
-                              </Route>
-
-                              <Route path="/customer" element={<CustomerPanel />}>
-                                   <Route index element={<RecentOrdersList />} />
-                                   <Route path="personal-details" element={<PersonalDetails />} />
-                              </Route>
-                              <Route path="/customer/login" element={<LoginCustomer />} />
-                              <Route path="/customer/register" element={<RegisterCustomer />} />
-
-                              <Route path="/management/login" element={<LoginManagement />} />
-                              <Route path="/management/" element={
-                                   <UnreadMessagesProvider>
-                                        <ManagementPanel />
-                                   </UnreadMessagesProvider>
-                              }>
-                                   <Route index element={<Dashboard />} />
-                                   <Route path="products" element={<ProductsList />} />
-                                   <Route path="products/:id" element={<UpdateProduct />} />
-                                   <Route path="add-product" element={<AddProduct />} />
-                                   <Route path="categories" element={<CategoriesList />} />
-                                   <Route path="categories/:id" element={<UpdateCategory />} />
-                                   <Route path="add-category" element={<AddCategory />} />
-                                   <Route path="customers" element={<CustomersList />} />
-                                   <Route path="customers/:id" element={<UpdateCustomer />} />
-                                   <Route path="add-customer" element={<AddCustomer />} />
-                                   <Route path="orders" element={<OrdersList />} />
-                                   <Route path="orders/:id" element={<UpdateOrder />} />
-                                   <Route path="mgnts" element={<MgmtsList />} />
-                                   <Route path="mgnts/:id" element={<UpdateMgmt />} />
-                                   <Route path="add-mgmt" element={<AddMgmt />} />
-                                   <Route path="messages" element={<MessagesList />} />
-                                   <Route path="messages/:id" element={<SingleMessage />} />
-                                   <Route path="reservations" element={<TableReservationsList />} />
-                                   <Route path="reservations/:id" element={<SingleTableReservation />} />
-                                   <Route path="settings" element={<Settings />} />
-                              </Route>
-                              <Route path='no-connection' element={<NoConnection />}></Route>
-                              <Route path="*" element={<NotFound />} />
-                         </Routes>
+                                   <Route path='no-connection' element={<NoConnection />}></Route>
+                                   <Route path="*" element={<NotFound />} />
+                              </Routes>
+                         </ShoppingCartProvider>
                     </AuthProvider>
                </ModalsProvider >
           </MantineProvider >

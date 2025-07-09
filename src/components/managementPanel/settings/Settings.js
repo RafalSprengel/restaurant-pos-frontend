@@ -1,5 +1,20 @@
 import { useEffect, useState } from "react";
-import { TextInput, NumberInput, Button, Box, Divider, Stack, Title, Container } from "@mantine/core";
+import {
+  TextInput,
+  NumberInput,
+  Button,
+  Divider,
+  Stack,
+  Title,
+  Container,
+  Checkbox,
+  PasswordInput,
+  Group,
+  Tooltip,
+  Box,
+} from "@mantine/core";
+
+import { showNotification } from '@mantine/notifications';
 import api from "../../../utils/axios";
 
 export default function Settings() {
@@ -11,18 +26,20 @@ export default function Settings() {
     maxDaysInAdvance: 21,
   });
 
-  const [messageSettings, setMessageSettings] = useState({
-    adminEmail: '',
-    gmailUser: '',
-    gmailPass: '',
+  const [smtpSettings, setSmtpSettings] = useState({
+    host: '',
+    port: 587,
+    secure: false,
+    user: '',
+    pass: '',
   });
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const res = await api.get("/settings");
-        setReservationSettings(res.data.reservationSettings);
-        setMessageSettings(res.data.messageSettings);
+        setReservationSettings(res.data.reservationSettings || reservationSettings);
+        setSmtpSettings(res.data.smtpSettings || smtpSettings);
       } catch (err) {
         console.error("Error fetching settings:", err);
       }
@@ -34,37 +51,147 @@ export default function Settings() {
     try {
       await api.put("/settings", {
         reservationSettings,
-        messageSettings,
+        smtpSettings,
+      });
+      showNotification({
+        title: 'Success',
+        message: 'Settings saved successfully',
+        color: 'green',
+        autoClose: 3000,
+        disallowClose: true,
       });
     } catch (err) {
+      showNotification({
+        title: 'Error',
+        message: 'Failed to save settings',
+        color: 'red',
+        autoClose: 5000,
+        disallowClose: true,
+      });
       console.error("Error saving settings:", err);
     }
   };
 
   return (
-    <Container style={{width: '100%'}}>
-      <Title order={2} mb="md">Settings</Title>
+    <Container style={{ width: "100%" }}>
+      <Group position="apart" mb="md">
+        <Title align="center" order={2}>
+          Settings
+        </Title>
+      </Group>
 
-      <Stack spacing="sm">
+      <Stack spacing="sm" mb="xl">
         <Title order={4}>Table Reservations</Title>
-        <NumberInput label="Start tables reservation hours" min={0} max={23} value={reservationSettings?.startHour} onChange={(val) => setReservationSettings((s) => ({ ...s, startHour: val }))} />
-        <NumberInput label="End tables reservation hours" min={0} max={23} value={reservationSettings?.endHour} onChange={(val) => setReservationSettings((s) => ({ ...s, endHour: val }))} />
-        <NumberInput label="Start Hour Offset" min={0} max={12} value={reservationSettings?.startHourOffset} onChange={(val) => setReservationSettings((s) => ({ ...s, startHourOffset: val }))} />
-        <NumberInput label="Reservation Duration (hours)" min={1} max={12} value={reservationSettings?.reservationDurationHours} onChange={(val) => setReservationSettings((s) => ({ ...s, reservationDurationHours: val }))} />
-        <NumberInput label="Max Days In Advance" min={1} max={60} value={reservationSettings?.maxDaysInAdvance} onChange={(val) => setReservationSettings((s) => ({ ...s, maxDaysInAdvance: val }))} />
+        <Group spacing="md">
+          <Box sx={{ flex: 1 }}>
+            <NumberInput
+              label="Start hour"
+              min={0}
+              max={23}
+              value={reservationSettings?.startHour}
+              onChange={(val) =>
+                setReservationSettings((s) => ({ ...s, startHour: val ?? 0 }))
+              }
+            />
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            <NumberInput
+              label="End hour"
+              min={0}
+              max={23}
+              value={reservationSettings?.endHour}
+              onChange={(val) =>
+                setReservationSettings((s) => ({ ...s, endHour: val ?? 0 }))
+              }
+            />
+          </Box>
+        </Group>
+        <NumberInput
+          label="Start Hour Offset"
+          min={0}
+          max={12}
+          value={reservationSettings?.startHourOffset}
+          onChange={(val) =>
+            setReservationSettings((s) => ({ ...s, startHourOffset: val ?? 0 }))
+          }
+        />
+        <NumberInput
+          label="Reservation Duration (hours)"
+          min={1}
+          max={12}
+          value={reservationSettings?.reservationDurationHours}
+          onChange={(val) =>
+            setReservationSettings((s) => ({ ...s, reservationDurationHours: val ?? 1 }))
+          }
+        />
+        <NumberInput
+          label="Max Days In Advance"
+          min={1}
+          max={60}
+          value={reservationSettings?.maxDaysInAdvance}
+          onChange={(val) =>
+            setReservationSettings((s) => ({ ...s, maxDaysInAdvance: val ?? 1 }))
+          }
+        />
       </Stack>
 
       <Divider my="xl" />
 
-      <Stack spacing="sm">
-        <Title order={4}>Messages</Title>
-        <TextInput label="Admin Email" value={messageSettings?.adminEmail} onChange={(e) => setMessageSettings((s) => ({ ...s, adminEmail: e.target.value }))} />
-        <TextInput label="Gmail User" value={messageSettings?.gmailUser} onChange={(e) => setMessageSettings((s) => ({ ...s, gmailUser: e.target.value }))} />
-        <TextInput label="Gmail App Password" type="password" value={messageSettings?.gmailPass} onChange={(e) => setMessageSettings((s) => ({ ...s, gmailPass: e.target.value }))} />
+      <Stack spacing="sm" mb="xl">
+        <Title order={4}>SMTP Settings</Title>
+        <Tooltip label="Adres serwera SMTP, np. smtp.gmail.com" withArrow>
+          <TextInput
+            label="SMTP Host"
+            value={smtpSettings.host}
+            onChange={(e) =>
+              setSmtpSettings((s) => ({ ...s, host: e.target.value }))
+            }
+          />
+        </Tooltip>
+        <Tooltip label="Port serwera SMTP, zwykle 587 lub 465" withArrow>
+          <NumberInput
+            label="SMTP Port"
+            min={1}
+            max={65535}
+            value={smtpSettings.port}
+            onChange={(val) =>
+              setSmtpSettings((s) => ({ ...s, port: val ?? 0 }))
+            }
+          />
+        </Tooltip>
+        <Checkbox
+          label="Use Secure (SSL/TLS)"
+          checked={smtpSettings.secure}
+          onChange={(e) =>
+            setSmtpSettings((s) => ({ ...s, secure: e.currentTarget.checked }))
+          }
+        />
+        <Tooltip label="Nazwa użytkownika do logowania do SMTP" withArrow>
+          <TextInput
+            label="SMTP User"
+            value={smtpSettings.user}
+            onChange={(e) =>
+              setSmtpSettings((s) => ({ ...s, user: e.target.value }))
+            }
+          />
+        </Tooltip>
+        <Tooltip label="Hasło do SMTP" withArrow>
+          <PasswordInput
+            label="SMTP Password"
+            value={smtpSettings.pass}
+            onChange={(e) =>
+              setSmtpSettings((s) => ({ ...s, pass: e.target.value }))
+            }
+          />
+        </Tooltip>
       </Stack>
+
 
       <Button fullWidth mt="xl" onClick={saveSettings}>
         Save Settings
+      </Button>
+      <Button variant="outline"  fullWidth mt="xl" onClick={() => window.history.back()}>
+        Back
       </Button>
     </Container>
   );

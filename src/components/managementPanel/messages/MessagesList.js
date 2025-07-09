@@ -34,7 +34,7 @@ const MessagesList = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
-    const { refetchUnreadCount } = useUnreadMessages();
+    const { unreadMessageCount, refetchUnreadCount } = useUnreadMessages();
 
     const getMessages = async () => {
         const params = new URLSearchParams(location.search);
@@ -134,8 +134,8 @@ const MessagesList = () => {
     }, [location.search]);
 
     useEffect(() => {
-    refetchUnreadCount();
-  }, []);
+        refetchUnreadCount();
+    },[unreadMessageCount]);
 
     return (
         <Container fluid>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import dayjs from 'dayjs';
@@ -33,7 +33,6 @@ const OrdersList = () => {
      const [orderToDelete, setOrderToDelete] = useState(null);
      const navigate = useNavigate();
      const location = useLocation();
-     const [searchParams] = useSearchParams();
      const { user } = useAuth('management');
 
      const rolePermissions = {
@@ -179,8 +178,8 @@ const OrdersList = () => {
           <th data-name="totalPrice" onClick={handleSort}>
             Total <SortArrow criteria="totalPrice" />
           </th>
-          <th data-name="status" onClick={handleSort}>
-            Status <SortArrow criteria="status" />
+          <th data-name="isPaid" onClick={handleSort}>
+            Is Paid <SortArrow criteria="isPaid" />
           </th>
           <th>Actions</th>
         </tr>
@@ -194,7 +193,7 @@ const OrdersList = () => {
             </td>
             <td>{dayjs(order.createdAt).format('HH:mm DD/MM/YY')}</td>
             <td>&pound;{order.totalPrice}</td>
-            <td>{order.status}</td>
+            <td>{order.isPaid ? 'Paid' : 'Unpaid'}</td>
             <td>
               {isVisible.deleteOrderButt && (
                 <Button

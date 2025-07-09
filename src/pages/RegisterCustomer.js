@@ -3,93 +3,159 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/register.scss';
 import api from '../utils/axios';
 
-const Register = () => {
-     const [name, setName] = useState('');
-     const [surname, setSurname] = useState('');
-     const [email, setEmail] = useState('');
-     const [phone, setPhone] = useState('');
-     const [password, setPassword] = useState('');
-     const [error, setError] = useState(null);
-     const [loading, setLoading] = useState(false);
-     const navigate = useNavigate();
+const RegisterCustomer = () => {
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const navigate = useNavigate();
 
-     const handleRegister = async (e) => {
-          e.preventDefault();
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError(null);
 
-          setLoading(true);
-          setError(null);
+    if (password !== confirmPassword) {
+      setPasswordsMatch(false);
+      setError('Passwords do not match');
+      return;
+    }
 
-          try {
-               const response = await api.post('/auth/register/customer', JSON.stringify({ name, surname, email, phone, password }), {
-                    headers: {
-                         'Content-Type': 'application/json',
-                    },
-               });
+    setPasswordsMatch(true);
+    setLoading(true);
 
-               const { token } = response.data;
-               localStorage.setItem('jwtToken', token);
-               alert('Registration successful!, please login to continue');
-               navigate('/customer/login');
-          } catch (e) {
-               if (e.response) {
-                    setError(e.response.data.error);
-               } else {
-                    setError('Something went wrong :(');
-               }
-          } finally {
-               setLoading(false);
-          }
-     };
+    try {
+      const response = await api.post(
+        '/auth/register/customer',
+        JSON.stringify({ name, surname, email, phone, password }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-     const handleGoogleRegister = () => {
-          window.location.href = 'http://localhost:3001/auth/google';
-     };
+      const { token } = response.data;
+      localStorage.setItem('jwtToken', token);
+      alert('Registration successful! Please login to continue.');
+      navigate('/customer/login');
+    } catch (e) {
+      if (e.response) {
+        setError(e.response.data.error);
+      } else {
+        setError('Something went wrong :(');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-     return (
-          <div className="register-container">
-               <h1 className="register-title">Register</h1>
-               {error && <p className="register-error">{error}</p>}
-               <form onSubmit={handleRegister} className="register-form">
-                    <div className="register-inputGroup">
-                         <label htmlFor="name">Name:</label>
-                         <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required className="register-input" />
-                    </div>
-                    <div className="register-inputGroup">
-                         <label htmlFor="surname">Surname:</label>
-                         <input type="text" id="surname" value={surname} onChange={(e) => setSurname(e.target.value)} required className="register-input" />
-                    </div>
-                    <div className="register-inputGroup">
-                         <label htmlFor="phone">Phone:</label>
-                         <input type="text" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="register-input" />
-                    </div>
-                    <div className="register-inputGroup">
-                         <label htmlFor="email">Email:</label>
-                         <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="register-input" />
-                    </div>
-                    <div className="register-inputGroup">
-                         <label htmlFor="password">Password:</label>
-                         <input
-                              type="password"
-                              id="password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              required
-                              className="register-input"
-                         />
-                    </div>
-                    <button type="submit" className="register-button" disabled={loading}>
-                         {loading ? 'Loading...' : 'Register'}
-                    </button>
-               </form>
-               <div className="register-alternative">
-                    <p>Or register with:</p>
-                    <button onClick={handleGoogleRegister} className="register-googleButton">
-                         <span className="register-icon google-icon" />
-                         Register with Google
-                    </button>
-               </div>
-          </div>
-     );
+  const handleGoogleRegister = () => {
+    window.location.href = 'http://localhost:3001/auth/google';
+  };
+
+  return (
+    <div className="register">
+      <h1 className="register__title">Register</h1>
+      {error && <p className="register__error">{error}</p>}
+      <form onSubmit={handleRegister} className="register__form">
+        <div className="register__input-group">
+          <label htmlFor="name" className="register__label">Name:</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="register__input"
+          />
+        </div>
+
+        <div className="register__input-group">
+          <label htmlFor="surname" className="register__label">Surname:</label>
+          <input
+            type="text"
+            id="surname"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            required
+            className="register__input"
+          />
+        </div>
+
+        <div className="register__input-group">
+          <label htmlFor="phone" className="register__label">Phone:</label>
+          <input
+            type="text"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="register__input"
+          />
+        </div>
+
+        <div className="register__input-group">
+          <label htmlFor="email" className="register__label">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="register__input"
+          />
+        </div>
+
+        <div className="register__input-group">
+          <label htmlFor="password" className="register__label">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className={`register__input ${!passwordsMatch ? 'register__input--error' : ''}`}
+          />
+        </div>
+
+        <div className="register__input-group">
+          <label htmlFor="confirmPassword" className="register__label">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className={`register__input ${!passwordsMatch ? 'register__input--error' : ''}`}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="register__button"
+          disabled={loading}
+        >
+          {loading ? 'Loading...' : 'Register'}
+        </button>
+      </form>
+
+      <div className="register__alternative">
+        <p>Or register with:</p>
+        <button
+          onClick={handleGoogleRegister}
+          className="register__google-button"
+          type="button"
+        >
+          <span className="register__icon register__icon--google" />
+          Register with Google
+        </button>
+      </div>
+    </div>
+  );
 };
 
-export default Register;
+export default RegisterCustomer;

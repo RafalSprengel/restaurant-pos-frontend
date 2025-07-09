@@ -18,7 +18,6 @@ api.interceptors.response.use(
 
     if (isNetworkError || isBadGateway) {
       window.location.href = '/no-connection';
-      localStorage.setItem('isBackendDown', '1');
       return;
     }
 
@@ -34,16 +33,12 @@ api.interceptors.response.use(
         );
 
         if (refreshResponse.status === 200) {
-          localStorage.setItem('isBackendDown', '0');
           return api.request(error.config);
         } else {
           api.setIsAuthenticated(false);
-          localStorage.setItem('isBackendDown', '0');
-          localStorage.setItem('isLogged', '0');
         }
       } catch {
         api.setIsAuthenticated(false);
-        localStorage.setItem('isLogged', '0');
       }
     }
 

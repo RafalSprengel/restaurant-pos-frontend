@@ -4,16 +4,13 @@ import { useAuth } from '../context/authContext.js';
 import { Badge } from '@mantine/core';
 import '../styles/management.scss';
 import api from '../utils/axios.js';
-import { useFetch } from '../hooks/useFetch.js';
-import { useUnreadMessages} from '../context/UnreadMessagesProvider';
+import { useUnreadMessages } from '../context/UnreadMessagesProvider';
 
 export const Management = () => {
      const navigate = useNavigate();
      const [errorLogout, setErrorLogout] = useState(null);
      const { isAuthenticated, logout, user, isLoading, error } = useAuth();
-     const [open, setOpen] = useState(false);
      const { unreadMessageCount } = useUnreadMessages();
-
      const handleLogout = async () => {
           try {
                await api.post('/auth/logout', {}, { withCredentials: true });
@@ -137,31 +134,10 @@ export const Management = () => {
                                         to="/management/settings">
                                         {<span className="admin__menuText">Settings</span>}
                                    </NavLink>
-
-                                   <NavLink
-                                        className={({ isActive }) => (isActive ? 'admin__menuItem--active admin__menuItem' : 'admin__menuItem')}
-                                        to="/management/test">
-                                        {<span className="admin__menuText">Test</span>}
-                                   </NavLink>
-                                   <div>
-                                        <span onClick={() => setOpen((prev) => !prev)} style={{ cursor: 'pointer' }}>Options {open ? '▲' : '▼'} </span>
-                                        <ul style={{
-                                             height: open ? '50px' : '0px',
-                                             overflow: 'hidden',
-                                             transition: 'height 0.3s ease',
-                                             paddingLeft: '1rem'
-                                        }}
-                                        >
-                                             <li >podopcja 1</li>
-                                             <li>podopcja 2</li>
-                                             <li>podopcja 3</li>
-                                        </ul>
-                                   </div>
-
                               </div>
                               <div className="admin__right">
                                    <main className="admin-layout">
-                                        <Outlet/>
+                                        <Outlet />
                                    </main>
                               </div>
                          </div>

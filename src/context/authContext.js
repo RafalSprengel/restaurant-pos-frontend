@@ -4,11 +4,11 @@ import api from '../utils/axios.js';
 const AuthContext = createContext();
 
 export function useAuthContext() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error(`useAuthContext must be used within an AuthProvider`);
-  }
-  return context;
+     const context = useContext(AuthContext);
+     if (!context) {
+          throw new Error(`useAuthContext must be used within an AuthProvider`);
+     }
+     return context;
 }
 
 export function useAuth() {
@@ -16,13 +16,6 @@ export function useAuth() {
      if (!context) {
           throw new Error(`useAuth must be used within an AuthProvider`);
      }
-
-     useEffect(() => {
-          const isLogged = localStorage.getItem('isLogged') == '1' ? true : false;
-          if (!context.user && isLogged) {
-               context.checkAuthStatus();
-          }
-     }, []);
 
      return {
           ...context,
@@ -58,10 +51,10 @@ export const AuthProvider = ({ children }) => {
      const login = (userData) => {
           setIsAuthenticated(true);
           setUser(userData);
-          localStorage.setItem('isLogged', '1');
      };
 
      const logout = async () => {
+          console.log('wykonuje logout w authcontext.js');
           try {
                await api.post('/auth/logout');
           } catch (err) {
@@ -69,7 +62,6 @@ export const AuthProvider = ({ children }) => {
           } finally {
                setIsAuthenticated(false);
                setUser(null);
-               localStorage.setItem('isLogged', '0');
           }
      };
 
@@ -78,7 +70,7 @@ export const AuthProvider = ({ children }) => {
      };
 
      useEffect(() => {
-          if (localStorage.getItem('isLogged') === '1' && localStorage.getItem('isBackendDown') === '0') checkAuthStatus();
+          checkAuthStatus(); // sprawdzaj sesję za każdym razem przy załadowaniu aplikacji
 
           api.setIsAuthenticated = setAuthStatus;
           api.logout = logout;
