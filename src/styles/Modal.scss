@@ -1,3 +1,4 @@
+@import 'variables';
 @keyframes slideDown {
      from {
           transform: rotateY(90deg);
@@ -34,21 +35,26 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          backdrop-filter: blur(3px)
+          backdrop-filter: blur(3px);
      }
 
      &__main {
           position: absolute;
           z-index: 999;
           display: flex;
+          max-height: 80vh;
+          overflow: auto;
           flex: 0 1 650px;
           flex-direction: column;
-          justify-content: center;
           align-items: center;
-          border-radius: 7px;
+          border-radius: 5px;
           background-color: white;
           animation: slideDown ease-out .3s;
-          padding: 40px 30px;
+          max-width: 95%;
+          
+          @media (max-width: $md) {
+               margin-bottom: 50px;
+          }
      }
 }
 

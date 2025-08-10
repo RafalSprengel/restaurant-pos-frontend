@@ -4,6 +4,7 @@ import { useFetch } from "../hooks/useFetch";
 import "../styles/food-menu.scss";
 import pizza from '../img/pizza.png';
 import ProductCard from '../components/ProductCard.js';
+import { useShoppingCart } from "../context/ShoppingCartContext.js";
 
 
 export default function FoodMenu({ }) {
@@ -15,6 +16,7 @@ export default function FoodMenu({ }) {
     const [isProductModalOpen, setIsProductModalOpen] = useState(false)
     const [currProdInModalObj, setCurrProdInModalObj] = useState({});
     const contentRef = useRef()
+    const { cartItems } = useShoppingCart();
 
     const { data: categories, loading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
     const queryString = location.search;
@@ -59,7 +61,6 @@ export default function FoodMenu({ }) {
         setIsProductModalOpen(false);
     };
 
-
     return (
         <>
             <div className="food-menu__content" ref={contentRef} >
@@ -74,7 +75,9 @@ export default function FoodMenu({ }) {
 
                 <div className='food-menu__items'>
                     {products?.length > 0 ? (
-                        products.map((product, index) => (
+                        products.map((product, index) => {
+                            const inCartQuantity = cartItems.find((el)=>el._id == product._id)?.quantity
+                            return(
                             <div
                                 key={index}
                                 className="food-menu__item"
@@ -86,6 +89,7 @@ export default function FoodMenu({ }) {
                                 onClick={() => handleOpenProductModal(product)}
                             >
                                 <div className='food-menu__item-image-container'>
+                                    <div className="food-menu__item-quantity-in-cart">{inCartQuantity}</div>
                                     <img src={pizza} alt={product.name} className="food-menu__item-image" />
                                 </div>
                                 <div className='food-menu__item-content'>
@@ -97,7 +101,7 @@ export default function FoodMenu({ }) {
                                     <p className='food-menu__item-description font-italic-style'>{product.desc}</p>
                                 </div>
                             </div>
-                        ))
+                        )})
                     ) : productsLoading ? (
                         <p>Loading...</p>
                     ) : (

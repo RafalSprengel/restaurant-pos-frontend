@@ -3,6 +3,41 @@
      justify-content: center;
      width: 100%;
 
+     & .mantine-Radio-body {
+          align-items: center;
+     }
+
+     &__top-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: #1a1a1ab3;
+           font-size: 16px;
+          font-weight: bold;
+     }
+
+     &__user-name {
+          color: #1a1a1ab3;
+          text-align: end;
+          font-size: 16px;
+
+     }
+
+     &__back-link {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          text-decoration: none;
+
+          &:hover {
+               text-decoration: underline;
+          }
+     }
+
+     &__title {
+          color: #1a1a1ae6
+     }
+
      &__form {
           display: flex;
           flex-direction: column;
@@ -12,12 +47,45 @@
           width: 100%;
      }
 
-     &__form__field {
+     &__user-details,
+     &__delivery-address {
           display: flex;
           flex-direction: column;
-          gap: 5px;
+          gap: 20px;
+     }
 
-          input,
+     &__radio-group {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+     }
+
+     &__radio-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          label {
+               display: flex;
+               align-items: center;
+               gap: 5px;
+          }
+
+          input[type='radio'] {
+               accent-color: #cda45e;
+          }
+     }
+
+     &__order-time {
+          input[type='time'] {
+               width: 100px;
+               padding: 7px;
+               border-radius: 4px;
+               border: 1px solid #ccc;
+          }
+     }
+
+     &__note {
           textarea {
                padding: 10px;
                font-size: 16px;
@@ -26,47 +94,30 @@
           }
      }
 
-     &__form__note,
-     &__form__total,
-     &__form__submit {
+     &__total {
           display: flex;
-          flex-direction: column;
-     }
-
-     &__form__total {
+          justify-content: space-between;
           font-size: 1.2rem;
           font-weight: 600;
-     }
-}
-
-.formFieldWrap {
-     display: flex;
-     align-items: center;
-     gap: 10px;
-     padding: 10px;
-     border: 1px solid #ccc;
-     border-radius: 5px;
-     cursor: pointer;
-
-     input[type='radio'] {
-          accent-color: #cda45e;
+          color: #1a1a1ae6;
      }
 
-     input[type='time'] {
-          margin-left: 10px;
-          padding: 5px;
+     &__actions {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+
+          .mantine-Button-root {
+               width: 100%;
+          }
      }
-}
 
-.error-message {
-     background-color: rgb(248, 152, 152);
-     color: white;
-     padding: 10px;
-     border-radius: 5px;
-     font-size: 0.9rem;
-}
+     .mantine-TextInput-input {
+          padding: 22px;
+          border-radius: 6px;
+     }
 
-.error {
-     color: red;
-     font-size: 0.8rem;
+     .mantine-InputWrapper-label {
+          color: #1a1a1ab3;
+     }
 }

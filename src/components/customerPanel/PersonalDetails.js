@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/authContext.js';
+import { Text, Divider, Space } from '@mantine/core';
+import '@mantine/notifications/styles.css';
+import { notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
+import { modals } from '@mantine/modals';
 import api from '../../utils/axios';
 import '../../styles/personal-details.scss';
 import { useFetch } from '../../hooks/useFetch.js';
+import { Alert } from '@mantine/core';
+import { IconXboxX } from '@tabler/icons-react';
+import axios from 'axios';
+
 
 const PersonalDetails = () => {
-     //const { user, refetchUser } = useAuth();
+     const navigate = useNavigate();
      const { data: customer, loading: loadingFetchingCustomer, error: errorFetchingCustomer, refetch: refetchCustomerData } = useFetch('/customers/customer');
      const [details, setDetails] = useState({
-          name: '',
+          firstName: '',
           surname: '',
           email: '',
           phone: '',
@@ -22,30 +32,42 @@ const PersonalDetails = () => {
      });
      const [isEditing, setIsEditing] = useState(false);
      const [isEditingPassword, setIsEditingPassword] = useState(false);
+     const [errorPassword, setErrorPassword] = useState('');
      const [error, setError] = useState('');
-     const [success, setSuccess] = useState('');
      const [isLoading, setIsLoading] = useState(false);
+     const { logout } = useAuth();
 
      const handleInputChange = (e) => {
           const { name, value } = e.target;
+          let newValue = value;
+
+          if (name === 'phone') {
+               newValue = value.replace(/[^\d+]/g, '');
+               if (newValue.startsWith('+')) {
+                    newValue = '+' + newValue.slice(1).replace(/\+/g, '');
+               } else {
+                    newValue = newValue.replace(/\+/g, '');
+               }
+          }
+
           setDetails((prevDetails) => ({
                ...prevDetails,
-               [name]: value,
+               [name]: newValue,
           }));
      };
 
-     const handleSave = async () => {
+     const handleUpdateProfile = async () => {
           if (details.newPassword && details.newPassword !== details.confirmPassword) {
-               setError('Passwords do not match.');
+               setErrorPassword('`New Password` and `Confirm Password` do not match.');
                return;
           }
 
           setIsLoading(true);
           setError('');
-          setSuccess('');
+          setErrorPassword('');
 
           const dataToSent = {
-               name: details.name,
+               firstName: details.firstName,
                surname: details.surname,
                email: details.email,
                phone: details.phone,
@@ -62,7 +84,11 @@ const PersonalDetails = () => {
                const response = await api.put(`/customers/customer`, dataToSent);
 
                if (response.status === 200) {
-                    setSuccess('Details updated successfully!');
+                    notifications.show({
+                         title: 'Success',
+                         message: 'Profile updated successfully!',
+                         color: 'green',
+                    });
                     setIsEditing(false);
                     refetchCustomerData();
                } else {
@@ -75,10 +101,76 @@ const PersonalDetails = () => {
           }
      };
 
+     const handleUpdatePassword = async () => {
+          if (details.newPassword && details.newPassword !== details.confirmPassword) {
+               setErrorPassword('`New Password` and `Confirm Password` do not match.');
+               return;
+          }
+
+          setIsLoading(true);
+          setError('');
+          setErrorPassword('')
+
+          const dataToSent = {
+               oldPassword: details.oldPassword,
+               newPassword: details.newPassword,
+          };
+
+          try {
+               const response = await api.put(`/customers/customer/update-password`, dataToSent);
+
+               if (response.status === 200) {
+                    notifications.show({
+                         title: 'Success',
+                         message: 'Password updated successfully!',
+                         color: 'green',
+                    });
+                    setIsEditingPassword(false);
+               } else {
+                    throw new Error(response.data.error || 'Failed to update password.');
+               }
+          } catch (error) {
+               setErrorPassword(error.response?.data?.error || error.message);
+          } finally {
+               setIsLoading(false);
+          }
+     };
+
+     const deleteUserAccount = async () => {
+          try {
+               const response = await api.delete('/customers/customer/');
+               if (response) handleLogout()
+          } catch (err) {
+               setError(err.response?.data.message || err.message)
+          }
+     }
+
+     const openDeletingAccountConfirmModal = () => modals.openConfirmModal({
+          title: 'Do you really want to delete your account?',
+          children: (
+               <Text size="sm">
+                    Once when you delete your accoun there will be no way back ro recover your data.
+               </Text>
+          ),
+          labels: { confirm: 'Delete my account', cancel: 'Cancel' },
+          onCancel: () => console.log('Cancel'),
+          onConfirm: deleteUserAccount,
+     });
+
+     const handleLogout = async () => {
+          try {
+               // await api.post('/auth/logout');
+               logout();
+               navigate('/customer/login', { replace: true });
+          } catch (error) {
+               console.error('Logout failed:', error.message);
+          }
+     };
+
      useEffect(() => {
           if (customer) {
                setDetails({
-                    name: customer.name || '',
+                    firstName: customer.firstName || '',
                     surname: customer.surname || '',
                     email: customer.email || '',
                     phone: customer.phone || '',
@@ -95,93 +187,79 @@ const PersonalDetails = () => {
 
      return (
           <div className="personal-details">
-               <h4>Profile</h4>
-               <form onSubmit={(e) => e.preventDefault()}>
-                    {error && <p className="error">{error}</p>}
-                    {success && <p className="success">{success}</p>}
-
-                    <div className="form-group">
-                         <label htmlFor="name">Name:</label>
-                         {isEditing ? <input type="text" id="name" name="name" value={details.name} onChange={handleInputChange} /> : <p>{details.name}</p>}
-                    </div>
-                    <div className="form-group">
-                         <label htmlFor="surname">Surname:</label>
-                         {isEditing ? (
-                              <input type="text" id="surname" name="surname" value={details.surname} onChange={handleInputChange} />
-                         ) : (
-                              <p>{details.surname}</p>
-                         )}
-                    </div>
-                    <div className="form-group">
-                         <label htmlFor="email">Email:</label>
-                         {isEditing ? (
-                              <input type="email" id="email" name="email" value={details.email} onChange={handleInputChange} />
-                         ) : (
-                              <p>{details.email}</p>
-                         )}
-                    </div>
-                    <div className="form-group">
-                         <label htmlFor="phone">Phone:</label>
-                         {isEditing ? <input type="text" id="phone" name="phone" value={details.phone} onChange={handleInputChange} /> : <p>{details.phone}</p>}
-                    </div>
-
-                    {isEditing && !isEditingPassword && <a onClick={() => setIsEditingPassword(!isEditingPassword)}>Change password</a>}
-                    {isEditing && isEditingPassword && (
-                         <>
-                              <div className="form-group">
-                                   <label htmlFor="oldPassword">Old Password:</label>
-                                   <input type="password" id="oldPassword" name="oldPassword" value={details.oldPassword} onChange={handleInputChange} />
-                              </div>
-                              <div className="form-group">
-                                   <label htmlFor="newPassword">New Password:</label>
-                                   <input type="password" id="newPassword" name="newPassword" value={details.newPassword} onChange={handleInputChange} />
-                              </div>
-                              <div className="form-group">
-                                   <label htmlFor="confirmPassword">Confirm Password:</label>
-                                   <input
-                                        type="password"
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        value={details.confirmPassword}
-                                        onChange={handleInputChange}
-                                   />
-                              </div>
-                         </>
+               <h5 className="personal-details__title">Profile</h5>
+               <form className="personal-details__form" onSubmit={(e) => e.preventDefault()}>
+                    {error && (
+                         <Alert
+                              variant="light"
+                              color="red"
+                              radius="md"
+                              title={error}
+                              icon={<IconXboxX />}
+                              style={{ marginBottom: 16 }}
+                         />
                     )}
-                    <div className="form-group">
-                         <label htmlFor="name">City:</label>
-                         {isEditing ? <input type="text" id="city" name="city" value={details.city} onChange={handleInputChange} /> : <p>{details.city}</p>}
+
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="firstName">First name:</label>
+                         {isEditing ? <input className="personal-details__input" type="text" id="firstName" name="firstName" value={details.firstName} onChange={handleInputChange} /> : <p className="personal-details__value">{details.firstName}</p>}
                     </div>
-                    <div className="form-group">
-                         <label htmlFor="street">Street:</label>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="surname">Surname:</label>
                          {isEditing ? (
-                              <input type="text" id="street" name="street" value={details.street} onChange={handleInputChange} />
+                              <input className="personal-details__input" type="text" id="surname" name="surname" value={details.surname} onChange={handleInputChange} />
                          ) : (
-                              <p>{details.street}</p>
+                              <p className="personal-details__value">{details.surname}</p>
                          )}
                     </div>
-                    <div className="form-group">
-                         <label htmlFor="houseNo">House number:</label>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="email">Email:</label>
                          {isEditing ? (
-                              <input type="houseNo" id="houseNo" name="houseNo" value={details.houseNo} onChange={handleInputChange} />
+                              <input className="personal-details__input" type="email" id="email" name="email" value={details.email} onChange={handleInputChange} />
                          ) : (
-                              <p>{details.houseNo}</p>
+                              <p className="personal-details__value">{details.email}</p>
                          )}
                     </div>
-                    <div className="form-group">
-                         <label htmlFor="flatNo">FlatNo:</label>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="phone">Phone:</label>
+                         {isEditing ? <input className="personal-details__input" type="text" id="phone" name="phone" value={details.phone} onChange={handleInputChange} /> : <p className="personal-details__value">{details.phone}</p>}
+                    </div>
+
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="city">City:</label>
+                         {isEditing ? <input className="personal-details__input" type="text" id="city" name="city" value={details.city} onChange={handleInputChange} /> : <p className="personal-details__value">{details.city}</p>}
+                    </div>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="street">Street:</label>
                          {isEditing ? (
-                              <input type="text" id="flatNo" name="flatNo" value={details.flatNo} onChange={handleInputChange} />
+                              <input className="personal-details__input" type="text" id="street" name="street" value={details.street} onChange={handleInputChange} />
                          ) : (
-                              <p>{details.flatNo}</p>
+                              <p className="personal-details__value">{details.street}</p>
+                         )}
+                    </div>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="houseNo">House number:</label>
+                         {isEditing ? (
+                              <input className="personal-details__input" type="houseNo" id="houseNo" name="houseNo" value={details.houseNo} onChange={handleInputChange} />
+                         ) : (
+                              <p className="personal-details__value">{details.houseNo}</p>
+                         )}
+                    </div>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="flatNo">FlatNo:</label>
+                         {isEditing ? (
+                              <input className="personal-details__input" type="text" id="flatNo" name="flatNo" value={details.flatNo} onChange={handleInputChange} />
+                         ) : (
+                              <p className="personal-details__value">{details.flatNo}</p>
                          )}
                     </div>
                     {isEditing ? (
-                         <div className="actions">
-                              <button type="button" onClick={handleSave} disabled={isLoading}>
+                         <div className="personal-details__actions">
+                              <button className="personal-details__actions-btn" type="button" onClick={handleUpdateProfile} disabled={isLoading}>
                                    {isLoading ? 'Saving...' : 'Save'}
                               </button>
                               <button
+                                   className="personal-details__actions-btn"
                                    type="button"
                                    onClick={() => {
                                         setIsEditing(false);
@@ -191,6 +269,7 @@ const PersonalDetails = () => {
                          </div>
                     ) : (
                          <button
+                              className="personal-details__edit-btn"
                               type="button"
                               onClick={() => {
                                    setIsEditing(true);
@@ -199,7 +278,66 @@ const PersonalDetails = () => {
                          </button>
                     )}
                </form>
-          </div>
+
+
+
+               <div className={`personal-details__password-update ${isEditingPassword ? 'personal-details__password-update--open' : ''}`}>
+                    <div>{errorPassword && <Alert variant="light" color="red" radius="md" title={errorPassword} icon={<IconXboxX />}></Alert>}</div>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="oldPassword">Old Password:</label>
+                         <input className="personal-details__input" type="password" id="oldPassword" name="oldPassword" value={details.oldPassword} onChange={handleInputChange} />
+                    </div>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="newPassword">New Password:</label>
+                         <input className="personal-details__input" type="password" id="newPassword" name="newPassword" value={details.newPassword} onChange={handleInputChange} />
+                    </div>
+                    <div className="personal-details__group">
+                         <label className="personal-details__label" htmlFor="confirmPassword">Confirm Password:</label>
+                         <input
+                              className="personal-details__input"
+                              type="password"
+                              id="confirmPassword"
+                              name="confirmPassword"
+                              value={details.confirmPassword}
+                              onChange={handleInputChange}
+                         />
+                    </div>
+                    <span className="personal-details__actions">
+                         <button className="personal-details__actions-btn" type="button" onClick={handleUpdatePassword} disabled={isLoading}>
+                              {isLoading ? 'Saving...' : 'Update'}
+                         </button>
+                         <button
+                              className="personal-details__actions-btn"
+                              type="button"
+                              onClick={() => {
+                                   setIsEditingPassword(false);
+                              }}>
+                              Cancel
+                         </button>
+
+                    </span>
+               </div>
+               <Divider my="lg" />
+               {!isEditingPassword && (
+                    <div
+                         className="personal-details__change-password personal-details__link"
+                         onClick={() => {
+                              setIsEditingPassword(!isEditingPassword);
+                              setTimeout(() => {
+                                   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                              }, 300);
+                         }}>
+                         Change Password
+                    </div>
+               )}
+
+               <div
+                    className="personal-details__delete-account personal-details__link"
+                    onClick={openDeletingAccountConfirmModal}
+               >
+                    Delete account
+               </div>
+          </div >
      );
 };
 

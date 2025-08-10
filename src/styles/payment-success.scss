@@ -1,9 +1,38 @@
 .payment-success {
-     width: 100%;
-     height: 100vh;
      display: flex;
      flex-direction: column;
-     justify-content: center;
+     gap: 5px;
      align-items: center;
-     background-color: rgba(247, 216, 160, 0.507);
+     justify-content: center;
+     height: 100vh;
+     color: #5b5b5b;
+
+     &__back {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          text-decoration: none;
+          color: white;
+          background-color: #5caf4c;
+          padding: 10px 20px;
+          border-radius: 4px;
+          margin-top: 30px;
+
+          &:hover {
+               text-decoration: underline;
+          }
+     }
+
+     &__icon {
+          color: #5caf4c;
+     }
+
+     &__thank-you {
+          font-size: 28px;
+          font-weight: bold;
+     }
+
+     &__message {
+          font-size: 18px;
+     }
 }

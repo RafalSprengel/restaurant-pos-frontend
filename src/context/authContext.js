@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../utils/axios.js';
 
 const AuthContext = createContext();
@@ -8,6 +9,7 @@ export function useAuthContext() {
      if (!context) {
           throw new Error(`useAuthContext must be used within an AuthProvider`);
      }
+
      return context;
 }
 
@@ -27,8 +29,14 @@ export const AuthProvider = ({ children }) => {
      const [isAuthenticated, setIsAuthenticated] = useState(false);
      const [isLoading, setLoading] = useState(true);
      const [error, setError] = useState(null);
+     const location = useLocation();
 
      const checkAuthStatus = async () => {
+          if (location.pathname === '/no-connection') {
+               setLoading(false);
+               return;
+          }
+     
           try {
                setLoading(true);
                const response = await api.get('/auth/session');
@@ -54,8 +62,8 @@ export const AuthProvider = ({ children }) => {
      };
 
      const logout = async () => {
-          console.log('wykonuje logout w authcontext.js');
           try {
+               console.log('wykonuje logout w authcontext.js');
                await api.post('/auth/logout');
           } catch (err) {
                console.error('Error during logout:', err.message);
@@ -70,8 +78,7 @@ export const AuthProvider = ({ children }) => {
      };
 
      useEffect(() => {
-          checkAuthStatus(); // sprawdzaj sesję za każdym razem przy załadowaniu aplikacji
-
+          checkAuthStatus();
           api.setIsAuthenticated = setAuthStatus;
           api.logout = logout;
      }, []);

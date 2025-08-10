@@ -1,25 +1,48 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDisclosure } from '@mantine/hooks';
+import { Modal, Button } from '@mantine/core';
 import '../styles/register.scss';
 import api from '../utils/axios';
 
 const RegisterCustomer = () => {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formData, setFormData] = useState({
+    firstName: '',
+    surname: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const navigate = useNavigate();
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let newValue = value;
+
+    if (name === 'phone') {
+      newValue = newValue.replace(/[^\d+]/g, '');
+      if (newValue.startsWith('+')) {
+        newValue = '+' + newValue.slice(1).replace(/\+/g, '');
+      } else {
+        newValue = newValue.replace(/\+/g, '');
+      }
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: newValue,
+    }));
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       setPasswordsMatch(false);
       setError('Passwords do not match');
       return;
@@ -31,7 +54,13 @@ const RegisterCustomer = () => {
     try {
       const response = await api.post(
         '/auth/register/customer',
-        JSON.stringify({ name, surname, email, phone, password }),
+        JSON.stringify({
+          firstName: formData.firstName,
+          surname: formData.surname,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }),
         {
           headers: {
             'Content-Type': 'application/json',
@@ -40,7 +69,6 @@ const RegisterCustomer = () => {
       );
 
       const { token } = response.data;
-      localStorage.setItem('jwtToken', token);
       alert('Registration successful! Please login to continue.');
       navigate('/customer/login');
     } catch (e) {
@@ -64,12 +92,13 @@ const RegisterCustomer = () => {
       {error && <p className="register__error">{error}</p>}
       <form onSubmit={handleRegister} className="register__form">
         <div className="register__input-group">
-          <label htmlFor="name" className="register__label">Name:</label>
+          <label htmlFor="firstName" className="register__label">First name:</label>
           <input
             type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            id="firstName"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleInputChange}
             required
             className="register__input"
           />
@@ -80,8 +109,9 @@ const RegisterCustomer = () => {
           <input
             type="text"
             id="surname"
-            value={surname}
-            onChange={(e) => setSurname(e.target.value)}
+            name="surname"
+            value={formData.surname}
+            onChange={handleInputChange}
             required
             className="register__input"
           />
@@ -92,8 +122,9 @@ const RegisterCustomer = () => {
           <input
             type="text"
             id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
             className="register__input"
           />
         </div>
@@ -103,8 +134,9 @@ const RegisterCustomer = () => {
           <input
             type="email"
             id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
             required
             className="register__input"
           />
@@ -115,8 +147,9 @@ const RegisterCustomer = () => {
           <input
             type="password"
             id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
             required
             className={`register__input ${!passwordsMatch ? 'register__input--error' : ''}`}
           />
@@ -127,8 +160,9 @@ const RegisterCustomer = () => {
           <input
             type="password"
             id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
             required
             className={`register__input ${!passwordsMatch ? 'register__input--error' : ''}`}
           />

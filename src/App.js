@@ -62,6 +62,7 @@ function App() {
 
                                    <Route path="/customer" element={<CustomerPanel />}>
                                         <Route index element={<RecentOrdersList />} />
+                                        <Route path='recent-orders' element={<RecentOrdersList />} />
                                         <Route path="personal-details" element={<PersonalDetails />} />
                                    </Route>
                                    <Route path="/customer/login" element={<LoginCustomer />} />

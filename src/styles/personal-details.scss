@@ -1,6 +1,7 @@
 .personal-details {
+     display: flex;
+     flex-direction: column;
      width: 100%;
-     max-width: 600px;
      margin: 0 auto;
      padding: 20px;
      background-color: #f9f9f9;
@@ -13,9 +14,9 @@
      }
 
      .personal-details__title {
-          font-size: 24px;
-          margin-bottom: 20px;
-          text-align: center;
+          font-size: 28px;
+          margin-bottom: 30px;
+          text-align: start;
           color: #333;
      }
 
@@ -25,48 +26,57 @@
           gap: 15px;
      }
 
-     .form-group {
+     &__group {
           display: flex;
-          flex-direction: column;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #ddd;
+          &:last-of-type {
+               border: none;
+          }
      }
 
-     label {
+     &__label {
           font-weight: bold;
           margin-bottom: 5px;
           color: #555;
+          width: 150px;
+          margin-right: 10px;
+          ;
      }
 
-     input[type='text'],
-     input[type='email'],
-     input[type='password'] {
+     &__input {
           padding: 10px;
           font-size: 16px;
           border: 1px solid #ddd;
           border-radius: 4px;
           outline: none;
           transition: border 0.3s ease;
+          border: none;
+          width: 100%;
+         
      }
 
-     input[type='text']:focus,
-     input[type='email']:focus,
-     input[type='password']:focus {
+     &__input:focus {
           border-color: #4d90fe;
      }
 
-     p {
+     &__value {
           font-size: 16px;
-          color: #333;
+          font-weight: normal;
+          color: #747474;
           margin: 0;
      }
 
-     .actions {
+     &__actions {
           display: flex;
           gap: 10px;
           justify-content: center;
      }
 
-     button {
+     &__actions-btn,
+     &__edit-btn {
           padding: 10px 20px;
+          margin: 0 auto;
           font-size: 16px;
           color: #fff;
           background-color: #007bff;
@@ -74,37 +84,72 @@
           border-radius: 4px;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          width: 150px;
+          text-align: center;
+           @media (max-width: 500px) {
+               width: 100%;
+               margin: 0 auto;
+          }
+
      }
 
-     button:hover {
+     &__actions-btn:hover,
+     &__edit-btn:hover {
           background-color: #0056b3;
      }
 
-     button:disabled {
+     &__actions-btn:disabled,
+     &__edit-btn:disabled {
           background-color: #b0b0b0;
           cursor: not-allowed;
      }
 
-     .error {
-          color: #e74c3c;
-          font-size: 14px;
-          text-align: center;
-     }
 
-     .success {
+     &__success {
           color: #2ecc71;
           font-size: 14px;
           text-align: center;
      }
 
-     a {
+     &__link {
           color: #007bff;
           font-size: 16px;
-          text-decoration: none;
+          text-decoration: underline;
           cursor: pointer;
+          margin: 10px 0;
+          display: inline-block;
      }
 
-     a:hover {
+     &__link:hover {
           text-decoration: underline;
+          color: #0056b3;
      }
+
+     &__delete-account {
+          color: #e74c3c;
+     }
+
+     &__change-password {
+          color: #007bff;
+     }
+
+     &__password-update {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          height:0px;
+          margin-top: 20px;
+          overflow: hidden;
+          transition: all 0.4s ease;
+     }
+
+     &__password-update--open {
+          height: 430px;
+          padding: 15px;
+     }
+
+     & .mantine-Alert-label {
+          line-height: 1.5;
+     }
+
 }

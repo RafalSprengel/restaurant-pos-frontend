@@ -6,8 +6,10 @@ import '../styles/header.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUtensils } from '@fortawesome/free-solid-svg-icons';
+import { IoPersonSharp } from 'react-icons/io5';
 
 import { IconPhone, IconMail, IconMapPin } from '@tabler/icons-react';
+import { useAuth } from '../context/authContext.js';
 
 export default function Header() {
      const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +17,9 @@ export default function Header() {
      const { cartQuantity, openCart } = useShoppingCart();
      const infoBarRef = useRef(null);
      const navigate = useNavigate();
+
+     const { isAuthenticated, user, login } = useAuth();
+
 
      const handleToggleMobileMenu = () => {
           document.querySelector('body').style.overflow = showMobNav ? 'visible' : 'hidden';
@@ -53,12 +58,15 @@ export default function Header() {
                                    </NavLink>
                               </div>
                               <Navi showMobNav={showMobNav} toggleMobNav={handleToggleMobileMenu} />
-                              <NavLink to="#booka-a-table" className="btn-accent-primary header__btn-book-a-table">
-                                   BOOK A TABLE
-                              </NavLink>
-                              <div className={'header__hamburger-icon ' + (showMobNav ? 'header__ico-habmurger--hidden' : '')} onClick={handleToggleMobileMenu}>
-                                   ☰
+                              <div className='header__icons'>
+                                   <NavLink to="/customer/login" className="btn-accent-primary header__btn-login" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        {isAuthenticated ? 'Hi, ' + user.firstName : 'Login'}<IoPersonSharp size={18} />
+                                   </NavLink>
+                                   <div className={'header__hamburger-icon ' + (showMobNav ? 'header__ico-habmurger--hidden' : '')} onClick={handleToggleMobileMenu}>
+                                        ☰
+                                   </div>
                               </div>
+
                          </div>
 
                          {/* <Navi showMobNav={showMobNav} handleToggleMobileMenu={handleToggleMobileMenu} /> */}

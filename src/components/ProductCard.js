@@ -16,31 +16,40 @@ export default function ProductCard({ currentProduct: product, isOpen, close }) 
 
      return (
           <Modal isOpen={isOpen} close={close}>
-               <div className="product">
-                    {/* <img src={process.env.PUBLIC_URL + product.img} alt={product.name} className="product__img" /> */}
-                    <img src='/img/products/roma.jpg' alt={product.name} className="product__img" />
-                    <div className="product__name">{product.name}</div>
-                    {product.desc && <div className="product__desc">{product.desc}</div>}
-                    <div className="price"> &pound;{product.price}</div>
-                    <div className="product__quantity">
-                         <span className="product__quantity__minus" onClick={() => decreaseCartQuantity(product)}>
+               <div className="product-card">
+                    <img src='/img/products/roma.jpg' alt={product.name} className="product-card__image" />
+                    <div className="product-card__name">{product.name}</div>
+                    {product.desc && <div className="product-card__description">{product.desc}</div>}
+                    <div className="product-card__price">£{product.price}</div>
+
+                    <div className='product-card__counter'>
+                         <span className="product-card__counter--minus"
+                              onClick={() => decreaseCartQuantity(product)}
+                         >
                               -
                          </span>
-                         <span className="product__quantity__number">{getItemQuantity(product._id)}</span>
-                         <span className="product__quantity__plus" onClick={() => increaseCartQuantity(product)}>
+                         <span className='product-card__counter--quantity'>
+                              {getItemQuantity(product._id)}
+                         </span>
+                         <span className='product-card__counter--plus'
+                              onClick={() => increaseCartQuantity(product)}
+                         >
                               +
                          </span>
+
                     </div>
-                    
-                    <div className="product__buttons">
-                         <button type="button"
-                              className="product__buttons__back"
-                              onClick={close}>
+
+                    <div className="product-card__actions">
+                         <button
+                              type="button"
+                              className="product-card__button product-card__button--back"
+                              onClick={close}
+                         >
                               Back
                          </button>
-
-                         <button type="submit"
-                              className="product__buttons__submit"
+                         <button
+                              type="button"
+                              className="product-card__button product-card__button--submit"
                               onClick={handleSubmit}
                          >
                               Go to cart

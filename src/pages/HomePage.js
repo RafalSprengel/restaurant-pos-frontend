@@ -23,7 +23,7 @@ import 'aos/dist/aos.css';
 
 export const MainPage = () => {
      const [specialsActiveTab, setSpecialsActiveTab] = useState(0);
-     const { openCart, cartQuantity } = useShoppingCart();
+     const { openCart, cartQuantity, isCartOpen } = useShoppingCart();
      // Tabs for Specials Section
      const specialsTabs = [
           {
@@ -429,10 +429,12 @@ export const MainPage = () => {
                               </div>
                               <ContactForm />
                          </div>
-                          
+
                     </div>
-               </section>
-               <FloatingCartButton count={cartQuantity} onClick={openCart} />
+               </section>{(cartQuantity > 0) && !isCartOpen &&
+                    <FloatingCartButton count={cartQuantity} onClick={openCart} />
+               }
+
           </>
      );
 };

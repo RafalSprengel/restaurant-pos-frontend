@@ -51,6 +51,7 @@ body {
     // color: $white-font-color;
      -webkit-font-smoothing: antialiased;
      -moz-osx-font-smoothing: grayscale;
+     background-color: #f5f5f5;
 }
 
 button {
@@ -142,8 +143,8 @@ section {
 }
 
 .button-contained {
-     padding: 15px 20px;
-     min-width: 150px;
+     padding-top: 10px;
+     padding-bottom: 10px;
      border: none;
      font-family: 'Cuprum', sans-serif;
      font-weight: 100;
@@ -155,8 +156,8 @@ section {
 }
 
 .button-outlined {
-     padding: 15px 30px;
-     min-width: 150px;
+     padding-top: 10px;
+     padding-bottom: 10px;
      border: 1px solid $primary-color;
      font-family: 'Cuprum', sans-serif;
      font-weight: 100;

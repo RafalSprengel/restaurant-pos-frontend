@@ -17,8 +17,8 @@ api.interceptors.response.use(
     const isBadGateway = status === 502 || status === 503 || status === 504;
 
     if (isNetworkError || isBadGateway) {
-      window.location.href = '/no-connection';
-      return;
+      window.location.href = '/no-connection'; 
+      return Promise.reject(error);
     }
 
     if (status === 401) {
@@ -36,9 +36,11 @@ api.interceptors.response.use(
           return api.request(error.config);
         } else {
           api.setIsAuthenticated(false);
+          return Promise.reject(error);
         }
       } catch {
         api.setIsAuthenticated(false);
+        return Promise.reject(error);
       }
     }
 

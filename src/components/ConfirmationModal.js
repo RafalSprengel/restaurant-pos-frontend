@@ -3,19 +3,19 @@ import Modal from './Modal.js';
 import '../styles/confirmation-modal.scss';
 
 export default function ConfirmationModal({ isOpen, close, onConfirm, message }) {
-     function handleOnConfirm() {
-          onConfirm();
-          close();
-     }
-     return (
-          <Modal isOpen={isOpen} close={close}>
-               <div className="confirmationModal">
-                    <h2>{message}</h2>
-                    <div className="confirmationModal__buttons">
-                         <button onClick={handleOnConfirm}>Yes</button>
-                         <button onClick={close}>No</button>
-                    </div>
-               </div>
-          </Modal>
-     );
+    function handleOnConfirm() {
+        onConfirm();
+        close();
+    }
+    return (
+        <Modal isOpen={isOpen} close={close}>
+            <div className="confirmation-modal">
+                <h5 className='confirmation-modal__header'>{message}</h5>
+                <div className="confirmation-modal__buttons">
+                    <button onClick={handleOnConfirm}>Tak</button>
+                    <button onClick={close}>Nie</button>
+                </div>
+            </div>
+        </Modal>
+    );
 }

@@ -7,11 +7,11 @@ import api from '../utils/axios';
 
 const LoginCustomer = () => {
      const navigate = useNavigate();
-     const [email, setEmail] = useState('kowalski.zenek@gmail.com');
-     const [password, setPassword] = useState('zenek');
+     const [email, setEmail] = useState('sprengel.rafal5@gmail.com');
+     const [password, setPassword] = useState('1');
      const [error, setError] = useState(null);
      const [loading, setLoading] = useState(false);
-     const { isAuthenticated, isLoading, login } = useAuth();
+     const { isAuthenticated, login } = useAuth();
 
      const handleLogin = async (e) => {
           e.preventDefault();
@@ -20,9 +20,8 @@ const LoginCustomer = () => {
 
           try {
                const response = await api.post('/auth/login/customer', { email, password });
-               const { customer } = response.data;
-               login(customer);
-               navigate('/customer', { replace: true });
+               const { data } = response;
+               login(data);
           } catch (err) {
                if (err.message && err.message.includes('Network Error')) {
                     setError('Unable to connect to the server. Please try again later.');
@@ -57,17 +56,17 @@ const LoginCustomer = () => {
 
      const handleGoogleLogin = () => {
           //window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
-          window.location.href = `http://localhost:3001/v1/auth/google`;
+          window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/google`;
      };
 
      const handleFacebookLogin = () => {
           //window.location.href = `${process.env.REACT_APP_API_URL}/v1/auth/google`;
-          window.location.href = `http://localhost:3001/v1/auth/facebook`;
+          window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/facebook`;
      };
 
      useEffect(() => {
           if (isAuthenticated) navigate('/customer', { replace: true });
-     }, [isLoading, isAuthenticated]);
+     }, [isAuthenticated, navigate]);
 
      return (
           <div className="login-container">
