@@ -2,18 +2,18 @@ import React from 'react';
 import Modal from './Modal.js';
 import '../styles/confirmation-modal.scss';
 
-export default function ConfirmationModal({ isOpen, close, onConfirm, message }) {
+export default function ConfirmationModal({ isOpen, onClose, onConfirm, message }) {
     function handleOnConfirm() {
         onConfirm();
-        close();
+        onClose();
     }
     return (
-        <Modal isOpen={isOpen} close={close}>
+        <Modal isOpen={isOpen} onClose={onClose}>
             <div className="confirmation-modal">
                 <h5 className='confirmation-modal__header'>{message}</h5>
                 <div className="confirmation-modal__buttons">
                     <button onClick={handleOnConfirm}>Tak</button>
-                    <button onClick={close}>Nie</button>
+                    <button onClick={onClose}>Nie</button>
                 </div>
             </div>
         </Modal>

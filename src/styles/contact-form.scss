@@ -1,8 +1,36 @@
-.contact-form{
-      &__btn {
-        width: 215px;
-        margin-top: 10px;
-        align-self: center;
-        background-color: transparent;
-    }
+.contact-form {
+  color: #6b6b6b;
+  text-align: center;
+
+  &__btn {
+    width: 215px;
+    margin-top: 10px;
+    align-self: center;
+    background-color: transparent;
+  }
+
+  &__btn:hover {
+    background-color: #0056b3;
+  }
+
+  &__btn:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__subtitle {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  &__text {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
 }

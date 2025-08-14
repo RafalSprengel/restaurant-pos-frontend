@@ -17,9 +17,10 @@
           padding: 10px 20px;
           border-radius: 4px;
           margin-top: 30px;
+          transition: background-color 0.3s ease;
 
           &:hover {
-               text-decoration: underline;
+               background-color: #84be78;
           }
      }
 

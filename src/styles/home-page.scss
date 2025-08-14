@@ -422,6 +422,34 @@
      background: linear-gradient(rgba(0, 0, 0, 0.603), rgba(0, 0, 0, 0.89)), url('../img/homePage/events-bg.jpg');
      color: $light-font-color;
 
+     &__title {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          justify-content: center;
+
+          & h2 {
+               font-size: 1rem;
+               color: rgba(166, 166, 166, 0.7);
+
+               &::after {
+                    content: "";
+                    width: 120px;
+                    height: 1px;
+                    display: inline-block;
+                    background: $accent-color;
+                    margin: 4px 10px;
+               }
+          }
+
+          & p {
+               color: $accent-color;
+               font-family: $heading-font;
+               font-size: 1.7rem;
+               ;
+          }
+     }
+
      &__slider-wrapper {
           display: flex;
           flex-direction: row;
@@ -785,74 +813,76 @@
      }
 }
 
-.book-a-table, .contact {
-  .mantine-TextInput-input,
-  .mantine-Select-input,
-  .mantine-Textarea-input,
-  .mantine-DatePickerInput-input {
-    background-color: transparent !important;
-    border-radius: 0;
-    border: 1px solid #3a3a3a;
-    color: white;
+.book-a-table,
+.contact {
 
-    &::placeholder {
-      color: #6b6b6b;
-    }
+     .mantine-TextInput-input,
+     .mantine-Select-input,
+     .mantine-Textarea-input,
+     .mantine-DatePickerInput-input {
+          background-color: transparent !important;
+          border-radius: 0;
+          border: 1px solid #3a3a3a;
+          color: white;
 
-    &:focus {
-      background-color: transparent !important;
-      border: 1px solid #cda45e;
-    }
+          &::placeholder {
+               color: #6b6b6b;
+          }
 
-    &:focus-visible {
-      background-color: transparent !important;
-    }
-  }
+          &:focus {
+               background-color: transparent !important;
+               border: 1px solid #cda45e;
+          }
 
-  .mantine-TextInput-input,
-  .mantine-Select-input {
-    padding: 30px 15px;
-  }
+          &:focus-visible {
+               background-color: transparent !important;
+          }
+     }
 
-  .mantine-Textarea-input {
-    padding: 15px 15px;
-  }
+     .mantine-TextInput-input,
+     .mantine-Select-input {
+          padding: 30px 15px;
+     }
 
-  .mantine-DatePickerInput-input {
-    padding: 18px 15px;
-  }
+     .mantine-Textarea-input {
+          padding: 15px 15px;
+     }
 
-  .mantine-DatePickerInput-day[data-weekend='true'] {
-    color: red !important;
-  }
+     .mantine-DatePickerInput-input {
+          padding: 18px 15px;
+     }
 
-  .mantine-DatePickerInput-weekday {
-    color: #ffffff;
-    background-color: rgb(173, 173, 173);
-    margin: 10px;
-    padding-top: 5px;
-  }
+     .mantine-DatePickerInput-day[data-weekend='true'] {
+          color: red !important;
+     }
 
-  .mantine-DatePickerInput-weekday:first-child {
-    border-radius: 5px 0 0 5px;
-    padding-left: 5px;
-  }
+     .mantine-DatePickerInput-weekday {
+          color: #ffffff;
+          background-color: rgb(173, 173, 173);
+          margin: 10px;
+          padding-top: 5px;
+     }
 
-  .mantine-DatePickerInput-weekday:last-child {
-    border-radius: 0 5px 5px 0;
-    padding-right: 5px;
-  }
+     .mantine-DatePickerInput-weekday:first-child {
+          border-radius: 5px 0 0 5px;
+          padding-left: 5px;
+     }
 
-  .mantine-InputPlaceholder-placeholder {
-    color: #6b6b6b;
-  }
+     .mantine-DatePickerInput-weekday:last-child {
+          border-radius: 0 5px 5px 0;
+          padding-right: 5px;
+     }
 
-  .mantine-Select-input {
-    background-color: transparent !important;
-  }
+     .mantine-InputPlaceholder-placeholder {
+          color: #6b6b6b;
+     }
 
-  .mantine-InputWrapper-label {
-    padding: 2px;
-    color: #6b6b6b;
-  }
+     .mantine-Select-input {
+          background-color: transparent !important;
+     }
+
+     .mantine-InputWrapper-label {
+          padding: 2px;
+          color: #6b6b6b;
+     }
 }

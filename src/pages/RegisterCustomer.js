@@ -1,48 +1,28 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDisclosure } from '@mantine/hooks';
-import { Modal, Button } from '@mantine/core';
-import '../styles/register.scss';
+import { useNavigate, NavLink } from 'react-router-dom';
+import '../styles/register-customer.scss';
 import api from '../utils/axios';
+import Modal from '../components/Modal.js';
+import { IconCircleCheck, IconArrowNarrowLeft } from '@tabler/icons-react';
 
 const RegisterCustomer = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    surname: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [firstName, setFirstName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const navigate = useNavigate();
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    let newValue = value;
-
-    if (name === 'phone') {
-      newValue = newValue.replace(/[^\d+]/g, '');
-      if (newValue.startsWith('+')) {
-        newValue = '+' + newValue.slice(1).replace(/\+/g, '');
-      } else {
-        newValue = newValue.replace(/\+/g, '');
-      }
-    }
-
-    setFormData(prev => ({
-      ...prev,
-      [name]: newValue,
-    }));
-  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       setPasswordsMatch(false);
       setError('Passwords do not match');
       return;
@@ -54,23 +34,14 @@ const RegisterCustomer = () => {
     try {
       const response = await api.post(
         '/auth/register/customer',
-        JSON.stringify({
-          firstName: formData.firstName,
-          surname: formData.surname,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
-        }),
+        JSON.stringify({ firstName, surname, email, phone, password }),
         {
           headers: {
             'Content-Type': 'application/json',
           },
         }
       );
-
-      const { token } = response.data;
-      alert('Registration successful! Please login to continue.');
-      navigate('/customer/login');
+      setIsSuccessModalOpen(true);
     } catch (e) {
       if (e.response) {
         setError(e.response.data.error);
@@ -83,112 +54,129 @@ const RegisterCustomer = () => {
   };
 
   const handleGoogleRegister = () => {
-    window.location.href = 'http://localhost:3001/auth/google';
+    window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/google`;
+  };
+
+  const onCloseSuccessMOdal = () => {
+    setIsSuccessModalOpen(false);
+    navigate('/customer/login');
   };
 
   return (
-    <div className="register">
-      <h1 className="register__title">Register</h1>
-      {error && <p className="register__error">{error}</p>}
-      <form onSubmit={handleRegister} className="register__form">
-        <div className="register__input-group">
-          <label htmlFor="firstName" className="register__label">First name:</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-            className="register__input"
-          />
+    <>
+      <div className="register-customer">
+        <h1 className="register-customer__title">Register</h1>
+        {error && <p className="register-customer__error">{error}</p>}
+        <form onSubmit={handleRegister} className="register-customer__form">
+          <div className="register-customer__input-group">
+            <label htmlFor="firstName" className="register-customer__label">First name:</label>
+            <input
+              type="text"
+              id="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="register-customer__input"
+            />
+          </div>
+
+          <div className="register-customer__input-group">
+            <label htmlFor="surname" className="register-customer__label">Surname:</label>
+            <input
+              type="text"
+              id="surname"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
+              required
+              className="register-customer__input"
+            />
+          </div>
+
+          <div className="register-customer__input-group">
+            <label htmlFor="phone" className="register-customer__label">Phone:</label>
+            <input
+              type="text"
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="register-customer__input"
+            />
+          </div>
+
+          <div className="register-customer__input-group">
+            <label htmlFor="email" className="register-customer__label">Email:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="register-customer__input"
+            />
+          </div>
+
+          <div className="register-customer__input-group">
+            <label htmlFor="password" className="register-customer__label">Password:</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className={`register-customer__input ${!passwordsMatch ? 'register-customer__input--error' : ''}`}
+            />
+          </div>
+
+          <div className="register-customer__input-group">
+            <label htmlFor="confirmPassword" className="register-customer__label">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className={`register-customer__input ${!passwordsMatch ? 'register-customer__input--error' : ''}`}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="register-customer__button"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Register'}
+          </button>
+        </form>
+
+        <div className="register-customer__alternative">
+          <p className="register-customer__alternative-text">Or register with:</p>
+          <button
+            onClick={handleGoogleRegister}
+            className="register-customer__google-button"
+            type="button"
+          >
+            <span className="register-customer__icon register-customer__icon--google" />
+            Register with Google
+          </button>
         </div>
-
-        <div className="register__input-group">
-          <label htmlFor="surname" className="register__label">Surname:</label>
-          <input
-            type="text"
-            id="surname"
-            name="surname"
-            value={formData.surname}
-            onChange={handleInputChange}
-            required
-            className="register__input"
-          />
-        </div>
-
-        <div className="register__input-group">
-          <label htmlFor="phone" className="register__label">Phone:</label>
-          <input
-            type="text"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            className="register__input"
-          />
-        </div>
-
-        <div className="register__input-group">
-          <label htmlFor="email" className="register__label">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-            className="register__input"
-          />
-        </div>
-
-        <div className="register__input-group">
-          <label htmlFor="password" className="register__label">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-            className={`register__input ${!passwordsMatch ? 'register__input--error' : ''}`}
-          />
-        </div>
-
-        <div className="register__input-group">
-          <label htmlFor="confirmPassword" className="register__label">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            required
-            className={`register__input ${!passwordsMatch ? 'register__input--error' : ''}`}
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="register__button"
-          disabled={loading}
-        >
-          {loading ? 'Loading...' : 'Register'}
-        </button>
-      </form>
-
-      <div className="register__alternative">
-        <p>Or register with:</p>
-        <button
-          onClick={handleGoogleRegister}
-          className="register__google-button"
-          type="button"
-        >
-          <span className="register__icon register__icon--google" />
-          Register with Google
-        </button>
+         <NavLink to="/customer/login" className="register-customer__link">
+                                 Already registered yet? Login now.
+                            </NavLink>
+                            <NavLink to="/" className="register-customer__link">
+                                 Back to Homepage.
+                            </NavLink>
       </div>
+     <Modal isOpen={isSuccessModalOpen} onClose={onCloseSuccessMOdal}>
+  <div className='register-customer__modal'>
+    <IconCircleCheck stroke={1} size={70} className='register-customer__modal-icon' />
+    <span className='register-customer__modal-thank-you'>Congratulations!</span>
+    <span className='register-customer__modal-message'>Your account has been successfully created. Please log in to your account.</span>
+    <div className="register-customer__modal-back" onClick={() => navigate('/customer/login')}>
+      <IconArrowNarrowLeft stroke={1} size={25} style={{ paddingTop: '2px' }} /> &nbsp; BACK TO LOGIN PAGE
     </div>
+  </div>
+</Modal>
+    </>
   );
 };
 

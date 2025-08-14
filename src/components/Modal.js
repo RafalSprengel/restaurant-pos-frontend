@@ -1,10 +1,10 @@
 import { useRef } from 'react';
 import '../styles/modal.scss';
 
-export default function Modal({ isOpen, close, children }) {
+export default function Modal({ isOpen, onClose, children }) {
      const overlay = useRef();
      const handleClickOnLayer = (e) => {
-          if (e.target === overlay.current) close();
+          if (e.target === overlay.current) onClose();
      };
 
      return (

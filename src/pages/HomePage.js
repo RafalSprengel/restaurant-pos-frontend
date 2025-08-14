@@ -5,7 +5,6 @@ import pizza from '../img/pizza.png';
 import about from '../img/about.jpg';
 import { Link } from 'react-router-dom';
 
-// Components
 import ImageSlider from '../components/ImageSlider.js';
 import TestimonialsSlider from '../components/TestimonialsSlider.js';
 import MyLightbox from '../components/MyLightbox.js';
@@ -17,7 +16,6 @@ import FloatingCartButton from '../components/FloatingCartButton.jsx';
 
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 
-// AOS Animations
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -181,12 +179,10 @@ export const MainPage = () => {
           }
      ];
 
-     // Handlers
      const handleSpecialsTabClick = (index) => {
           setSpecialsActiveTab(index);
      };
 
-     // Initialize AOS Animation on Mount
      useEffect(() => {
           AOS.init({
                duration: 500,
@@ -337,12 +333,18 @@ export const MainPage = () => {
 
                {/* EVENTS SECTION */}
                <section id="events" className="events">
-                    <div className='events__slider-wrapper container'>
-                         <ImageSlider data={eventsSliderData} />
-                    </div>
+                  <div className='container events__container'>
+                       <div className="events__title">
+                            <h2>EVENTS</h2>
+                            <p>Check Our Events</p>
+                       </div>
+                       <div className="events__content">
+                            <ImageSlider data={eventsSliderData} />
+                       </div>
+                  </div>
                </section>
 
-               {/* BOOK A TABLE SECTION */}
+               {/* RESERVATION SECTION */}
                <section id="book-a-table" className="book-a-table">
                     <div className='container book-a-table__container'>
                          <div className="book-a-table__title">

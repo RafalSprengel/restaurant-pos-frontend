@@ -70,7 +70,11 @@ export default function ContactForm() {
     };
 
     return (
-        <div className='contact__form'>
+        <div className='contact-form'>
+            <h2 className="contact-form__title">Contact Us</h2>
+            <p className="contact-form__subtitle">We would love to hear from you!</p>
+            <p className="contact-form__text">Please fill out the form below and we will get back to you as soon as possible.</p>
+            <p className="contact-form__text">You can also reach us at <a href="mailto:info@example.com">info@example.com</a>.</p>
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <Grid>
                     <Grid.Col span={{ base: 12, sm: 6, md: 6 }} >

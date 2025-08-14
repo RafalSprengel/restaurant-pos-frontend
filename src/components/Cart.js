@@ -16,8 +16,8 @@ export default function Cart({ isOpen, close }) {
           increaseCartQuantity,
           decreaseCartQuantity,
           getItemQuantity,
-          removeProductFromCart, // Odbieramy funkcję z kontekstu
-          clearCart, // Odbieramy funkcję z kontekstu
+          removeProductFromCart,
+          clearCart,
      } = useShoppingCart();
      const navigate = useNavigate();
 
@@ -104,7 +104,7 @@ export default function Cart({ isOpen, close }) {
      };
 
      return (
-          <Modal isOpen={isOpen} close={close}>
+          <Modal isOpen={isOpen} onClose={close}>
                <div className="cart">
                     <div className="cart__header">
                          <div className="cart__header-title">Your cart ({cartQuantity} items)</div>
@@ -137,7 +137,7 @@ export default function Cart({ isOpen, close }) {
                </div>
                <ConfirmationModal
                     isOpen={isConfirmModalOpen}
-                    close={closeConfirmModal}
+                    onClose={closeConfirmModal}
                     message={confirmOptions.message}
                     onConfirm={() => confirmOptions.onConfirm()}
                />

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import '../styles/login-customer.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios';
+import { handleApiError } from '../utils/handleApiError';
+import { Alert } from '@mantine/core';
+import { IconXboxX } from '@tabler/icons-react';
 
 const LoginCustomer = () => {
      const navigate = useNavigate();
@@ -17,50 +19,21 @@ const LoginCustomer = () => {
           e.preventDefault();
           setLoading(true);
           setError(null);
-
           try {
                const response = await api.post('/auth/login/customer', { email, password });
-               const { data } = response;
-               login(data);
+               login(response.data);
           } catch (err) {
-               if (err.message && err.message.includes('Network Error')) {
-                    setError('Unable to connect to the server. Please try again later.');
-               } else {
-                    switch (err.response?.status) {
-                         case 400:
-                              setError('Bad request. Please check your input.');
-                              break;
-                         case 401:
-                              setError('Incorrect email or password.');
-                              break;
-                         case 403:
-                              setError('You do not have permission to access this resource.');
-                              break;
-                         case 404:
-                              setError('Requested resource not found.');
-                              break;
-                         case 500:
-                              setError('Internal server error. Please try again later.');
-                              break;
-                         case 503:
-                              setError('Service unavailable. Please try again later.');
-                              break;
-                         default:
-                              setError(err.response?.data?.message || 'An unexpected error occurred.');
-                    }
-               }
+               setError(handleApiError(err));
           } finally {
                setLoading(false);
           }
      };
 
      const handleGoogleLogin = () => {
-          //window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
           window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/google`;
      };
 
      const handleFacebookLogin = () => {
-          //window.location.href = `${process.env.REACT_APP_API_URL}/v1/auth/google`;
           window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/facebook`;
      };
 
@@ -69,36 +42,76 @@ const LoginCustomer = () => {
      }, [isAuthenticated, navigate]);
 
      return (
-          <div className="login-container">
-               <h1 className="login-title">Sign in</h1>
-               {error && <p className="login-error">{error}</p>}
-               <form onSubmit={handleLogin} className="login-form">
-                    <div className="login-inputGroup">
-                         <label htmlFor="email">Email:</label>
-                         <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="login-input" />
+          <div className="customer-login">
+               <h1 className="customer-login__title">Sign in</h1>
+
+               {error && (
+                    <Alert
+                         variant="light"
+                         color="red"
+                         radius="md"
+                         title={error}
+                         icon={<IconXboxX />}
+                    />
+               )}
+
+               <form onSubmit={handleLogin} className="customer-login__form">
+                    <div className="customer-login__input-group">
+                         <label htmlFor="email" className="customer-login__label">Email:</label>
+                         <input
+                              type="email"
+                              id="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              required
+                              className="customer-login__input"
+                         />
                     </div>
-                    <div className="login-inputGroup">
-                         <label htmlFor="password">Password:</label>
-                         <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="login-input" />
+
+                    <div className="customer-login__input-group">
+                         <label htmlFor="password" className="customer-login__label">Password:</label>
+                         <input
+                              type="password"
+                              id="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              required
+                              className="customer-login__input"
+                         />
                     </div>
-                    <button type="submit" className="login-button" disabled={loading}>
+
+                    <button
+                         type="submit"
+                         className={`customer-login__button ${loading ? 'customer-login__button--loading' : ''}`}
+                         disabled={loading}
+                    >
                          {loading ? 'Loading...' : 'Login'}
                     </button>
                </form>
-               <div className="login-alternative">
+
+               <div className="customer-login__alt-login">
                     <p>Or log in with:</p>
-                    <button onClick={handleGoogleLogin} className="login-googleButton">
-                         <span className="login-icon google-icon" />
+
+                    <button
+                         onClick={handleGoogleLogin}
+                         className="customer-login__social-btn customer-login__social-btn--google"
+                    >
+                         <span className="customer-login__icon customer-login__icon--google" />
                          Login with Google
                     </button>
-                    <button onClick={handleFacebookLogin} className="login-facebookButton">
-                         <span className="login-icon facebook-icon" />
+
+                    <button
+                         onClick={handleFacebookLogin}
+                         className="customer-login__social-btn customer-login__social-btn--facebook"
+                    >
+                         <span className="customer-login__icon customer-login__icon--facebook" />
                          Login with Facebook
                     </button>
-                    <NavLink to="/customer/register" className="login-registerLink">
+
+                    <NavLink to="/customer/register" className="customer-login__link">
                          Not registered yet? Register now.
                     </NavLink>
-                    <NavLink to="/" className="login-registerLink">
+                    <NavLink to="/" className="customer-login__link">
                          Back to Homepage.
                     </NavLink>
                </div>

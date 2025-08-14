@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/login-management.scss';
 import { useAuth } from '../context/authContext';
-import api from '../utils/axios'; // Importowanie instancji axios
+import api from '../utils/axios';
 
 export default function StaffLogin() {
      const navigate = useNavigate();
      const [email, setEmail] = useState('admin@wp.pl');
      const [password, setPassword] = useState('123');
      const [error, setError] = useState(null);
-     const [loading, setLoading] = useState(false); // Dodanie stanu loading
-     const { isAuthenticated, isLoading, login, user } = useAuth();
+     const [loading, setLoading] = useState(false);
+     const { isAuthenticated, isLoading, login } = useAuth();
 
      const handleLogin = async (e) => {
           e.preventDefault();
@@ -26,9 +26,6 @@ export default function StaffLogin() {
                if (err.message && err.message.includes('Network Error')) {
                     setError('Unable to connect to the server. Please try again later.');
                } else {
-                    const errorqq = new Error();
-                    const stack = errorqq.stack.split('\n')[1];
-                    console.log('## err: ', err, ' ', stack);
                     setError(err.response?.data?.error || 'Error during login');
                }
           } finally {
@@ -41,24 +38,46 @@ export default function StaffLogin() {
      }, [isLoading, isAuthenticated, navigate]);
 
      return (
-          <div className="login-container">
-               <h1>Management Login</h1>
-               <form onSubmit={handleLogin} className="login-form">
-                    <label className="login-label">
-                         Email:
-                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="login-input" />
-                    </label>
-                    <label className="login-label">
-                         Password:
-                         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="login-input" />
-                    </label>
-                    <button type="submit" className="login-button" disabled={loading}>
+          <div className="management-login">
+               <h1 className="management-login__title">Management Login</h1>
+
+               <form onSubmit={handleLogin} className="management-login__form">
+                    <div className="management-login__input-group">
+                         <label htmlFor="email" className="management-login__label">Email:</label>
+                         <input
+                              id="email"
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              required
+                              className="management-login__input"
+                         />
+                    </div>
+
+                    <div className="management-login__input-group">
+                         <label htmlFor="password" className="management-login__label">Password:</label>
+                         <input
+                              id="password"
+                              type="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              required
+                              className="management-login__input"
+                         />
+                    </div>
+
+                    <button
+                         type="submit"
+                         className={`management-login__button ${loading ? 'management-login__button--loading' : ''}`}
+                         disabled={loading}
+                    >
                          {loading ? 'Loading...' : 'Login'}
                     </button>
-                    {error && <p className="error-message">{error}</p>}
+
+                    {error && <p className="management-login__error">{error}</p>}
                </form>
-               <br></br>
-               <NavLink to="/" className="login-link">
+
+               <NavLink to="/" className="management-login__link">
                     Back to Homepage
                </NavLink>
           </div>

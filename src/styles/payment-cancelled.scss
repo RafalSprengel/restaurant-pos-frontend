@@ -1,0 +1,42 @@
+.payment-cancelled {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #5b5b5b;
+    text-align: center;
+
+    &__back {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
+        background-color: #f44336;
+        padding: 10px 20px;
+        border-radius: 4px;
+        margin-top: 30px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #e53935;
+        }
+    }
+
+    &__icon {
+        color: #f44336;
+    }
+
+    &__thank-you {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    &__message {
+        font-size: 18px;
+        max-width: 600px;
+        padding: 0 20px;
+    }
+}

@@ -1,21 +1,21 @@
 import { useNavigate } from 'react-router-dom';
+import { IconCircleX, IconArrowNarrowLeft } from '@tabler/icons-react';
+import '../styles/payment-cancelled.scss';
 
-const PaymentCanceled = () => {
-     const navigate = useNavigate();
+const PaymentCancelled = () => {
+    const navigate = useNavigate();
 
-     return (
-          <div className="paymentCanceled">
-               <div className="paymentCanceled__content">
-                    <div className="paymentCanceled__content__title">Payment Canceled</div>
-                    <div className="paymentCanceled__content__message">
-                         <span>Your payment was canceled.</span>
-                    </div>
-                    <div className="paymentCanceled__content__button">
-                         <button onClick={() => navigate('/')}>Back to Home</button>
-                    </div>
-               </div>
-          </div>
-     );
+    return (
+        <div className="payment-cancelled">
+            <IconCircleX stroke={1} size={75} className='payment-cancelled__icon'/>
+            <span className='payment-cancelled__thank-you'>Payment cancelled!</span>
+            <span className='payment-cancelled__message'>Your payment was not successful. You can try again or return to the homepage.</span>
+            
+            <div className="payment-cancelled__back" onClick={() => navigate('/')}>
+                <IconArrowNarrowLeft stroke={1} size={25} style={{paddingTop: '2px'}}/> &nbsp; BACK TO HOMEPAGE
+            </div>
+        </div>
+    );
 };
 
-export default PaymentCanceled;
+export default PaymentCancelled;
