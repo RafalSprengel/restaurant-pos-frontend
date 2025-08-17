@@ -9,7 +9,7 @@ import { IconXboxX } from '@tabler/icons-react';
 
 const LoginCustomer = () => {
      const navigate = useNavigate();
-     const [email, setEmail] = useState('sprengel.rafal5@gmail.com');
+     const [email, setEmail] = useState('test@wp.pl');
      const [password, setPassword] = useState('1');
      const [error, setError] = useState(null);
      const [loading, setLoading] = useState(false);

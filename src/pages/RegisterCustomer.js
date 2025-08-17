@@ -15,7 +15,7 @@ const RegisterCustomer = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(true);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {

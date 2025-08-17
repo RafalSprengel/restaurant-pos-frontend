@@ -1,6 +1,13 @@
 .contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   color: #6b6b6b;
-  text-align: center;
+
+  &__header {
+    text-align: center;
+    font-size: 12px;
+  }
 
   &__btn {
     width: 215px;
@@ -19,18 +26,18 @@
   }
 
   &__title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     margin-bottom: 10px;
   }
 
   &__subtitle {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 5px;
   }
 
   &__text {
-    font-size: 16px;
+    font-size: 12px;
     margin-bottom: 5px;
   }
 }

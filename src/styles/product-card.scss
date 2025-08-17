@@ -13,10 +13,11 @@
 
      &__image {
           width: 350px;
-          height: 100px;
+          height: 300px;
           object-fit: cover;
           object-position: center center;
           flex: 5;
+          border-radius: 3px;
      }
 
      &__name {

@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 .customer-panel {
      display: flex;
      flex-direction: column;
@@ -14,7 +16,7 @@
           display: flex;
           justify-content: space-between;
           padding: 20px 30px;
-          background-color: #191919;
+          background-color: #3c3c3c;
           color: white;
      }
       &__header-left {
@@ -52,11 +54,17 @@
 
      &__breadcrumbs-container {
           padding: 10px 30px;
+          @media (max-width: $sm){
+               font-size: 12px;
+          }
      }
 
      &__content {
           display: flex;
           gap: 20px;
+          @media (max-width: 768pc){
+               gap:0;
+          }
      }
 
      &__sidebar {
@@ -99,79 +107,6 @@
 
      &__right-panel {
           flex: 4;
-     }
-
-     &__orders-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-     }
-
-     &__orders-list {
-          border-radius: 5px;
-          padding: 15px;
-     }
-
-     &__order {
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          margin-bottom: 15px;
-          padding: 15px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: #fff;
-
-          &--awaiting-delivery {
-               border-left: 5px solid orange;
-          }
-
-          &--canceled {
-               border-left: 5px solid red;
-          }
-
-          &-info {
-               p {
-                    margin: 5px 0;
-               }
-          }
-
-          &-actions {
-               text-align: right;
-
-               p {
-                    font-weight: bold;
-                    margin-bottom: 10px;
-               }
-
-               .customer-panel__btn-confirm,
-               .customer-panel__btn-track {
-                    padding: 8px 12px;
-                    margin: 5px 0;
-                    border: none;
-                    cursor: pointer;
-                    border-radius: 3px;
-               }
-
-               .customer-panel__btn-confirm {
-                    background-color: orange;
-                    color: white;
-
-                    &:hover {
-                         background-color: darkorange;
-                    }
-               }
-
-               .customer-panel__btn-track {
-                    background-color: #007bff;
-                    color: white;
-
-                    &:hover {
-                         background-color: #0056b3;
-                    }
-               }
-          }
      }
 
      &__main-content {

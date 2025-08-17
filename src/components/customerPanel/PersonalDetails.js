@@ -187,7 +187,12 @@ const PersonalDetails = () => {
 
      return (
           <div className="personal-details">
-               <h5 className="personal-details__title">Profile</h5>
+               <div className="personal-details__title">
+                    <div className="personal-details__title-text">Personal details</div>
+                    <div className="personal-details__line-wrapper">
+                         <div className="personal-details__line"></div>
+                    </div>
+               </div>
                <form className="personal-details__form" onSubmit={(e) => e.preventDefault()}>
                     {error && (
                          <Alert

@@ -16,7 +16,7 @@
      justify-content: center;
      align-items: center;
      width: 100%;
-     min-height: 100vh;
+     min-height: 100svh;
      position: relative;
      overflow: hidden;
      color: $light-font-color;
@@ -47,29 +47,43 @@
           display: flex;
           gap: 15px;
           margin-top: 15px;
-
      }
 
-     &::before {
-          content: '';
-          background: url('../img/homePage/hero-bg.jpg') no-repeat center center/cover;
+     &__button {
+          padding: 10px 20px;
+     }
+
+     &__bg-wrapper {
           position: absolute;
           top: 0;
           left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: -2;
-     }
-
-     &::after {
-          content: '';
-          background: rgba(0, 0, 0, 0.5);
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
           z-index: -1;
+          height: 100%;
+          width: 100%;
+          background-color: #353434d0;
+          transform: scale(1.1);
+
+          &::before {
+               content: '';
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               background: rgba(0, 0, 0, 0.7);
+               z-index: 1;
+          }
+     }
+
+     &__bg-image {
+          position: relative;
+          object-fit: cover;
+          object-position: center;
+          background-color: #000000d0;
+          height: 100%;
+          width: 100%;
+          //filter: brightness(0.3) contrast(0.8);
+
      }
 
      &__image {
@@ -83,7 +97,6 @@
      &__image-container {
           display: inherit;
           margin-right: 20px;
-          ;
      }
 }
 
@@ -723,10 +736,9 @@
 
 @media only screen and (max-width: $sm) {
      .hero {
-          min-height: 89vh;
 
           &__container {
-               padding-bottom: 0px;
+               margin-bottom: 50px;
           }
      }
 

@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/login-management.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios';
+import { Alert } from '@mantine/core';
+import { IconXboxX } from '@tabler/icons-react';
 
 export default function StaffLogin() {
      const navigate = useNavigate();
@@ -40,7 +42,13 @@ export default function StaffLogin() {
      return (
           <div className="management-login">
                <h1 className="management-login__title">Management Login</h1>
-
+               {error && <Alert
+                    variant="light"
+                    color="red"
+                    radius="md"
+                    title={error}
+                    icon={<IconXboxX />}
+               />}
                <form onSubmit={handleLogin} className="management-login__form">
                     <div className="management-login__input-group">
                          <label htmlFor="email" className="management-login__label">Email:</label>
@@ -73,8 +81,6 @@ export default function StaffLogin() {
                     >
                          {loading ? 'Loading...' : 'Login'}
                     </button>
-
-                    {error && <p className="management-login__error">{error}</p>}
                </form>
 
                <NavLink to="/" className="management-login__link">
