@@ -46,11 +46,11 @@ const AddCustomer = () => {
 
   return (
     <div className="add-customer">
-      <form className="add-customer-form" onSubmit={form.onSubmit(handleSubmit)}>
-        <h2 className="add-customer-form__title">Add Customer</h2>
+      <form className="add-customer__form" onSubmit={form.onSubmit(handleSubmit)}>
+        <h2 className="add-customer__title">Add Customer</h2>
 
         {errorMessage && (
-          <div className="add-customer-form__notification add-customer-form__notification--error">
+          <div className="add-customer__notification add-customer__notification--error">
             <p>{errorMessage}</p>
           </div>
         )}
@@ -61,9 +61,9 @@ const AddCustomer = () => {
           {...form.getInputProps('name')}
           disabled={!isEditable || isLoading}
           classNames={{
-            root: 'add-customer-form__field',
-            input: `add-customer-form__input ${form.errors.name ? 'add-customer-form__input--error' : ''}`,
-            label: 'add-customer-form__label',
+            root: 'add-customer__field',
+            input: `add-customer__input ${form.errors.name ? 'add-customer__input--error' : ''}`,
+            label: 'add-customer__label',
           }}
         />
 
@@ -73,9 +73,9 @@ const AddCustomer = () => {
           {...form.getInputProps('surname')}
           disabled={!isEditable || isLoading}
           classNames={{
-            root: 'add-customer-form__field',
-            input: `add-customer-form__input ${form.errors.surname ? 'add-customer-form__input--error' : ''}`,
-            label: 'add-customer-form__label',
+            root: 'add-customer__field',
+            input: `add-customer__input ${form.errors.surname ? 'add-customer__input--error' : ''}`,
+            label: 'add-customer__label',
           }}
         />
 
@@ -85,9 +85,9 @@ const AddCustomer = () => {
           {...form.getInputProps('email')}
           disabled={!isEditable || isLoading}
           classNames={{
-            root: 'add-customer-form__field',
-            input: `add-customer-form__input ${form.errors.email ? 'add-customer-form__input--error' : ''}`,
-            label: 'add-customer-form__label',
+            root: 'add-customer__field',
+            input: `add-customer__input ${form.errors.email ? 'add-customer__input--error' : ''}`,
+            label: 'add-customer__label',
           }}
         />
 
@@ -97,9 +97,9 @@ const AddCustomer = () => {
           {...form.getInputProps('phone')}
           disabled={!isEditable || isLoading}
           classNames={{
-            root: 'add-customer-form__field',
-            input: `add-customer-form__input ${form.errors.phone ? 'add-customer-form__input--error' : ''}`,
-            label: 'add-customer-form__label',
+            root: 'add-customer__field',
+            input: `add-customer__input ${form.errors.phone ? 'add-customer__input--error' : ''}`,
+            label: 'add-customer__label',
           }}
         />
 
@@ -109,16 +109,16 @@ const AddCustomer = () => {
           {...form.getInputProps('password')}
           disabled={!isEditable || isLoading}
           classNames={{
-            root: 'add-customer-form__field',
-            input: `add-customer-form__input ${form.errors.password ? 'add-customer-form__input--error' : ''}`,
-            label: 'add-customer-form__label',
+            root: 'add-customer__field',
+            input: `add-customer__input ${form.errors.password ? 'add-customer__input--error' : ''}`,
+            label: 'add-customer__label',
           }}
         />
 
         {isEditable && (
           <Button
             type="submit"
-            className="add-customer-form__submit"
+            className="add-customer__submit"
             disabled={isLoading}
           >
             {isLoading ? 'Adding...' : 'Add Customer'}
@@ -126,6 +126,7 @@ const AddCustomer = () => {
         )}
       </form>
     </div>
+
   )
 }
 

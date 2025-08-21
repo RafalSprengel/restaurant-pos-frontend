@@ -91,16 +91,22 @@ const UpdateCategory = () => {
         </div>
       )}
 
-      <form className="update-category-form" onSubmit={form.onSubmit(handleSubmit)}>
+      <form className="update-category__form" onSubmit={form.onSubmit(handleSubmit)}>
+        {showErrorAlert && (
+          <div className="update-category__form-notification">
+            <p>{errorMessage}</p>
+          </div>
+        )}
+
         <TextInput
           label="Name"
           placeholder="Category name"
           {...form.getInputProps('name')}
           disabled={!isEditable || isLoading}
           classNames={{
-            root: 'update-category-form__field',
-            input: `update-category-form__input ${form.errors.name ? 'update-category-form__input--error' : ''}`,
-            label: 'update-category-form__label',
+            root: 'update-category__form-field',
+            input: `update-category__form-input ${form.errors.name ? 'update-category__form-input--error' : ''}`,
+            label: 'update-category__form-label',
           }}
         />
 
@@ -111,14 +117,14 @@ const UpdateCategory = () => {
           disabled={!isEditable || isLoading}
           min={0}
           classNames={{
-            root: 'update-category-form__field',
-            input: `update-category-form__input ${form.errors.index ? 'update-category-form__input--error' : ''}`,
-            label: 'update-category-form__label',
+            root: 'update-category__form-field',
+            input: `update-category__form-input ${form.errors.index ? 'update-category__form-input--error' : ''}`,
+            label: 'update-category__form-label',
           }}
         />
 
-        <div className="update-category-form__field">
-          <label className="update-category-form__label" htmlFor="image">
+        <div className="update-category__form-field">
+          <label className="update-category__form-label" htmlFor="image">
             Image:
           </label>
           <input
@@ -127,14 +133,14 @@ const UpdateCategory = () => {
             accept="image/*"
             onChange={handleFileChange}
             disabled={!isEditable || isLoading}
-            className="update-category-form__input update-category-form__input--file"
+            className="update-category__form-input update-category__form-input--file"
           />
         </div>
 
         {isEditable && (
           <Button
             type="submit"
-            className="update-category-form__submit"
+            className="update-category__form-submit"
             disabled={isLoading}
           >
             {isLoading ? 'Saving...' : 'Save Category'}

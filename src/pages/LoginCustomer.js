@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-import '../styles/login-customer.scss';
+import './login-customer.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios';
 import { handleApiError } from '../utils/handleApiError';
-import { Alert } from '@mantine/core';
-import { IconXboxX } from '@tabler/icons-react';
+import { Alert, TextInput, PasswordInput, Button } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { IconXboxX, IconAt, IconLock } from '@tabler/icons-react';
 
 const LoginCustomer = () => {
      const navigate = useNavigate();
-     const [email, setEmail] = useState('test@wp.pl');
-     const [password, setPassword] = useState('1');
-     const [error, setError] = useState(null);
-     const [loading, setLoading] = useState(false);
      const { isAuthenticated, login } = useAuth();
+     const [error, setError] = React.useState(null);
+     const [loading, setLoading] = React.useState(false);
 
-     const handleLogin = async (e) => {
-          e.preventDefault();
-          setLoading(true);
+     const form = useForm({
+          initialValues: { email: 'test@wp.pl', password: '1' },
+          validate: {
+               email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email'),
+               password: (value) => (value ? null : 'Password is required'),
+          },
+     });
+
+     const handleLogin = async (values) => {
           setError(null);
+          setLoading(true);
           try {
-               const response = await api.post('/auth/login/customer', { email, password });
+               const response = await api.post('/auth/login/customer', values);
                login(response.data);
           } catch (err) {
                setError(handleApiError(err));
@@ -42,76 +48,62 @@ const LoginCustomer = () => {
      }, [isAuthenticated, navigate]);
 
      return (
-          <div className="customer-login">
-               <h1 className="customer-login__title">Sign in</h1>
+          <div className="login-customer">
+               <h1 className="login-customer__title">Sign in</h1>
 
-               {error && (
-                    <Alert
-                         variant="light"
-                         color="red"
-                         radius="md"
-                         title={error}
-                         icon={<IconXboxX />}
+               {error && <Alert variant="light" color="red" radius="md" title={error} icon={<IconXboxX />} />}
+
+               <form onSubmit={form.onSubmit(handleLogin)} className="login-customer__form">
+                    <TextInput
+                         label="Email"
+                         placeholder="Your email"
+                         rightSection={<IconAt size={18} />}
+                         {...form.getInputProps('email')}
+                         classNames={{
+                              root: 'login-customer__input-group',
+                              input: `login-customer__input ${form.errors.email ? 'login-customer__input--error' : ''}`,
+                              label: 'login-customer__label',
+                         }}
                     />
-               )}
 
-               <form onSubmit={handleLogin} className="customer-login__form">
-                    <div className="customer-login__input-group">
-                         <label htmlFor="email" className="customer-login__label">Email:</label>
-                         <input
-                              type="email"
-                              id="email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              required
-                              className="customer-login__input"
-                         />
-                    </div>
+                    <PasswordInput
+                         label="Password"
+                         placeholder="Your password"
+                         icon={<IconLock size={18} />}
+                         {...form.getInputProps('password')}
+                         classNames={{
+                              root: 'login-customer__input-group',
+                              input: `login-customer__input ${form.errors.password ? 'login-customer__input--error' : ''}`,
+                              label: 'login-customer__label',
+                         }}
+                    />
 
-                    <div className="customer-login__input-group">
-                         <label htmlFor="password" className="customer-login__label">Password:</label>
-                         <input
-                              type="password"
-                              id="password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              required
-                              className="customer-login__input"
-                         />
-                    </div>
-
-                    <button
+                    <Button
                          type="submit"
-                         className={`customer-login__button ${loading ? 'customer-login__button--loading' : ''}`}
+                         className={`login-customer__button ${loading ? 'login-customer__button--loading' : ''}`}
                          disabled={loading}
                     >
                          {loading ? 'Loading...' : 'Login'}
-                    </button>
+                    </Button>
                </form>
 
-               <div className="customer-login__alt-login">
+               <div className="login-customer__alt-login">
                     <p>Or log in with:</p>
 
-                    <button
-                         onClick={handleGoogleLogin}
-                         className="customer-login__social-btn customer-login__social-btn--google"
-                    >
-                         <span className="customer-login__icon customer-login__icon--google" />
-                         Login with Google
-                    </button>
+                    <Button onClick={handleGoogleLogin} className="login-customer__social-btn login-customer__social-btn--google">
+                         <span className="login-customer__icon login-customer__icon--google" />
+                         &nbsp; Login with Google
+                    </Button>
 
-                    <button
-                         onClick={handleFacebookLogin}
-                         className="customer-login__social-btn customer-login__social-btn--facebook"
-                    >
-                         <span className="customer-login__icon customer-login__icon--facebook" />
-                         Login with Facebook
-                    </button>
+                    <Button onClick={handleFacebookLogin} className="login-customer__social-btn login-customer__social-btn--facebook">
+                         <span className="login-customer__icon login-customer__icon--facebook" />
+                         &nbsp; Login with Facebook
+                    </Button>
 
-                    <NavLink to="/customer/register" className="customer-login__link">
+                    <NavLink to="/customer/register" className="login-customer__link">
                          Not registered yet? Register now.
                     </NavLink>
-                    <NavLink to="/" className="customer-login__link">
+                    <NavLink to="/" className="login-customer__link">
                          Back to Homepage.
                     </NavLink>
                </div>

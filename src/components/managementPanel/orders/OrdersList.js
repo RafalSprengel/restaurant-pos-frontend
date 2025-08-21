@@ -3,23 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import dayjs from 'dayjs';
-import '../../../styles/order-list.scss';
-import {
-    Container,
-    Table,
-    Button,
-    TextInput,
-    Modal,
-    Notification,
-    Group,
-    Stack,
-    Title,
-    Pagination,
-    ScrollArea,
-    Loader,
-    Center,
-} from '@mantine/core';
-import { IconSearch, IconX } from '@tabler/icons-react';
+import './orderList.scss';
 
 const OrdersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +26,7 @@ const OrdersList = () => {
         member: { deleteOrderButt: false },
     };
 
-    const isVisible = rolePermissions[user.role] || { deleteOrderButt: false };
+    const isVisible = rolePermissions[user?.role] || { deleteOrderButt: false };
 
     const getOrders = async () => {
         const queryString = location.search;
@@ -51,9 +35,9 @@ const OrdersList = () => {
             const response = await api.get(`/orders${queryString}`);
             if (response.status === 200) {
                 const data = response.data;
-                setOrdersList(data.orders);
-                setTotalPages(data.totalPages);
-                setCurrentPage(data.currentPage);
+                setOrdersList(data.orders || []);
+                setTotalPages(data.totalPages || 1);
+                setCurrentPage(data.currentPage || 1);
             } else {
                 setErrorMessage(`Server error: ${response.data.error}`);
             }
@@ -85,7 +69,11 @@ const OrdersList = () => {
         setSearchString(value);
         const params = new URLSearchParams(location.search);
         params.delete('page');
-        value === '' ? params.delete('search') : params.set('search', value);
+        if (value === '') {
+            params.delete('search');
+        } else {
+            params.set('search', value);
+        }
         navigate('?' + params);
     };
 
@@ -134,104 +122,126 @@ const OrdersList = () => {
 
     useEffect(() => {
         getOrders();
-    }, [searchString, sortCriteria, sortOrder]);
+    }, [location.search]);
+
+    const handleRowClick = (orderId) => {
+        navigate(`${orderId}`);
+    };
+
+    const getPageNumbers = () => {
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
 
     return (
-        <Container size="xl" mt="md" className="orders-list">
-            <Stack>
-                <Title order={2} className="orders-list__title">Orders</Title>
-                <Group position="apart" className="orders-list__header">
-                    <TextInput
-                        icon={<IconSearch size={14} />}
+        <div className="orders-list__container">
+            <h1 className="orders-list__title">Orders</h1>
+
+            <div className="orders-list__header">
+                <div className="orders-list__search-wrapper">
+                    <span className="orders-list__search-icon">🔍</span>
+                    <input
+                        type="text"
                         placeholder="Search..."
                         value={searchString}
                         onChange={handleSearchChange}
-                        className="orders-list__search"
+                        className="orders-list__search-input"
                     />
-                </Group>
+                </div>
+            </div>
 
-                {errorMessage && (
-                    <Notification icon={<IconX size={18} />} color="red" title="Error" className="orders-list__error-notification">
-                        {errorMessage}
-                    </Notification>
-                )}
+            {errorMessage && (
+                <div className="orders-list__notification orders-list__notification--error">
+                    <span className="orders-list__notification-icon">❌</span>
+                    {errorMessage}
+                </div>
+            )}
 
-                {isLoading ? (
-                    <Center className="orders-list__loader-wrapper">
-                        <Loader size="md" />
-                    </Center>
-                ) : ordersList.length === 0 ? (
-                    <Title order={4} className="orders-list__no-orders">No orders found</Title>
-                ) : (
-                    <ScrollArea className="orders-list__table-wrapper">
-                        <Table striped highlightOnHover className="orders-list__table">
-                            <thead>
-                                <tr>
-                                    <th data-name="orderNumber" onClick={handleSort} className="orders-list__table-header">
-                                        Order No. <SortArrow criteria="orderNumber" />
-                                    </th>
-                                    <th data-name="customerName" onClick={handleSort} className="orders-list__table-header">
-                                        Customer <SortArrow criteria="customerName" />
-                                    </th>
-                                    <th data-name="createdAt" onClick={handleSort} className="orders-list__table-header">
-                                        Date <SortArrow criteria="createdAt" />
-                                    </th>
-                                    <th data-name="totalPrice" onClick={handleSort} className="orders-list__table-header">
-                                        Total <SortArrow criteria="totalPrice" />
-                                    </th>
-                                    <th data-name="isPaid" onClick={handleSort} className="orders-list__table-header">
-                                        Is Paid <SortArrow criteria="isPaid" />
-                                    </th>
-                                    <th className="orders-list__table-header">Actions</th>
+            {isLoading ? (
+                <div className="orders-list__loader-wrapper">
+                    <div className="orders-list__loader"></div>
+                </div>
+            ) : !ordersList?.length ? (
+                <h4 className="orders-list__no-orders">No data to display</h4>
+            ) : (
+                <div className="orders-list__table-wrapper">
+                    <table className="orders-list__table">
+                        <thead>
+                            <tr>
+                                <th data-name="orderNumber" onClick={handleSort} className="orders-list__table-header">
+                                    Order No. <SortArrow criteria="orderNumber" />
+                                </th>
+                                <th data-name="customerName" onClick={handleSort} className="orders-list__table-header">
+                                    Customer <SortArrow criteria="customerName" />
+                                </th>
+                                <th data-name="createdAt" onClick={handleSort} className="orders-list__table-header">
+                                    Date <SortArrow criteria="createdAt" />
+                                </th>
+                                <th data-name="totalPrice" onClick={handleSort} className="orders-list__table-header">
+                                    Total <SortArrow criteria="totalPrice" />
+                                </th>
+                                <th data-name="isPaid" onClick={handleSort} className="orders-list__table-header">
+                                    Is Paid <SortArrow criteria="isPaid" />
+                                </th>
+                                <th className="orders-list__table-header">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {ordersList.map((order) => (
+                                <tr key={order._id} onClick={() => handleRowClick(order._id)} className="orders-list__table-row">
+                                    <td className="orders-list__table-cell">{order.orderNumber}</td>
+                                    <td className="orders-list__table-cell">
+                                        {order.purchaserDetails?.firstName || ''} {order.purchaserDetails?.surname || ''}
+                                    </td>
+                                    <td className="orders-list__table-cell">{dayjs(order.createdAt).format('HH:mm DD/MM/YY')}</td>
+                                    <td className="orders-list__table-cell">&pound;{order.totalPrice}</td>
+                                    <td className="orders-list__table-cell">{order.isPaid ? 'Paid' : 'Unpaid'}</td>
+                                    <td className="orders-list__table-cell">
+                                        {isVisible.deleteOrderButt && (
+                                            <button
+                                                className="orders-list__button orders-list__button--delete"
+                                                onClick={(e) => handleDeleteClick(e, order._id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {ordersList.map((order) => (
-                                    <tr key={order._id} onClick={() => navigate(`${order._id}`)} className="orders-list__table-row">
-                                        <td className="orders-list__table-cell">{order.orderNumber}</td>
-                                        <td className="orders-list__table-cell">
-                                            {order.purchaserDetails.firstName + ' ' + order.purchaserDetails.surname}
-                                        </td>
-                                        <td className="orders-list__table-cell">{dayjs(order.createdAt).format('HH:mm DD/MM/YY')}</td>
-                                        <td className="orders-list__table-cell">&pound;{order.totalPrice}</td>
-                                        <td className="orders-list__table-cell">{order.isPaid ? 'Paid' : 'Unpaid'}</td>
-                                        <td className="orders-list__table-cell">
-                                            {isVisible.deleteOrderButt && (
-                                                <Button
-                                                    size="xs"
-                                                    color="red"
-                                                    onClick={(e) => handleDeleteClick(e, order._id)}
-                                                    className="orders-list__delete-button"
-                                                >
-                                                    Delete
-                                                </Button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </ScrollArea>
-                )}
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
-                {totalPages > 1 && (
-                    <Pagination page={currentPage} onChange={handlePageChange} total={totalPages} className="orders-list__pagination" />
-                )}
-            </Stack>
+            {totalPages > 1 && (
+                <div className="orders-list__pagination">
+                    {getPageNumbers().map((page) => (
+                        <button
+                            key={page}
+                            className={`orders-list__pagination-button ${currentPage === page ? 'orders-list__pagination-button--active' : ''}`}
+                            onClick={() => handlePageChange(page)}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            )}
 
-            <Modal
-                opened={showModal}
-                onClose={() => setShowModal(false)}
-                title="Confirm Deletion"
-                centered
-            >
-                <p>Are you sure you want to delete this order?</p>
-                <Group position="apart" mt="md" className="orders-list__modal-buttons">
-                    <Button onClick={() => setShowModal(false)} variant="default">Cancel</Button>
-                    <Button color="red" onClick={handleConfirmDelete}>Delete</Button>
-                </Group>
-            </Modal>
-        </Container>
+            {showModal && (
+                <div className="orders-list__modal-overlay">
+                    <div className="orders-list__modal">
+                        <p className="orders-list__modal-text">Are you sure you want to delete this order?</p>
+                        <div className="orders-list__modal-buttons">
+                            <button className="orders-list__button orders-list__button--cancel" onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className="orders-list__button orders-list__button--delete-confirm" onClick={handleConfirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 

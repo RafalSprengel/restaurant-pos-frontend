@@ -1,4 +1,4 @@
-.customer-login {
+.login-customer {
      width: 100%;
      height: 100vh;
      display: flex;
@@ -17,6 +17,10 @@
      }
 
      &__form {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
           background: #fff;
           padding: 2rem;
           border-radius: 8px;
@@ -43,6 +47,12 @@
           border-radius: 4px;
           font-size: 1rem;
           transition: border-color 0.2s;
+
+          &--error {
+                background-color: #ffe6e6;;
+               border-color: red;
+          }
+
 
           &:focus {
                border-color: #007bff;
@@ -136,4 +146,9 @@
           color: black;
           text-decoration: underline;
      }
+
+     &.mantine-Button-inner{
+          height: inherit;
+     }
+
 }

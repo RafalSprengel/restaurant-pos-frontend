@@ -83,31 +83,46 @@ export default function UpdateMgmt() {
   }
 
   return (
-    <div className="update-mgmt-container">
-      <h2 className="update-mgmt-container__title">Update User</h2>
+    <div className="update-mgmt">
+      <h2 className="update-mgmt__title">Update User</h2>
 
       {showError && <div className="update-mgmt__error">{errorMessage}</div>}
 
-      <form className="update-mgmt-form" onSubmit={form.onSubmit(handleSubmit)}>
+      <form className="update-mgmt__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
           label="Name"
+          placeholder="Name"
           {...form.getInputProps('name')}
           disabled={!isEditable}
-          className="update-mgmt-form__input"
+          classNames={{
+            root: 'update-mgmt__field',
+            input: `update-mgmt__input ${form.errors.name ? 'update-mgmt__input--error' : ''}`,
+            label: 'update-mgmt__label',
+          }}
         />
 
         <TextInput
           label="Surname"
+          placeholder="Surname"
           {...form.getInputProps('surname')}
           disabled={!isEditable}
-          className="update-mgmt-form__input"
+          classNames={{
+            root: 'update-mgmt__field',
+            input: `update-mgmt__input ${form.errors.surname ? 'update-mgmt__input--error' : ''}`,
+            label: 'update-mgmt__label',
+          }}
         />
 
         <TextInput
           label="Email"
+          placeholder="Email"
           {...form.getInputProps('email')}
           disabled={!isEditable}
-          className="update-mgmt-form__input"
+          classNames={{
+            root: 'update-mgmt__field',
+            input: `update-mgmt__input ${form.errors.email ? 'update-mgmt__input--error' : ''}`,
+            label: 'update-mgmt__label',
+          }}
         />
 
         <Select
@@ -115,18 +130,27 @@ export default function UpdateMgmt() {
           data={roles}
           {...form.getInputProps('role')}
           disabled={!isEditable}
-          className="update-mgmt-form__input"
+          classNames={{
+            root: 'update-mgmt__field',
+            input: `update-mgmt__input ${form.errors.role ? 'update-mgmt__input--error' : ''}`,
+            label: 'update-mgmt__label',
+          }}
         />
 
         <PasswordInput
           label="Password"
+          placeholder="Password"
           {...form.getInputProps('password')}
           disabled={!isEditable}
-          className="update-mgmt-form__input"
+          classNames={{
+            root: 'update-mgmt__field',
+            input: `update-mgmt__input ${form.errors.password ? 'update-mgmt__input--error' : ''}`,
+            label: 'update-mgmt__label',
+          }}
         />
 
         {isEditable && (
-          <Button type="submit" className="update-mgmt-button" disabled={isLoading}>
+          <Button type="submit" className="update-mgmt__button" disabled={isLoading}>
             {isLoading ? 'Updating...' : 'Update User'}
           </Button>
         )}

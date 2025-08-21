@@ -123,18 +123,17 @@ const ProductsList = () => {
   const SortIcon = ({ criteria }) => {
     if (criteria !== sortCriteria || !sortOrder) return null;
     return sortOrder === 'desc' ? (
-      <IconSortDescending size={16} className="products-list-sort-icon" />
+      <IconSortDescending size={16} className="products-list__sort-icon" />
     ) : (
-      <IconSortAscending size={16} className="products-list-sort-icon" />
+      <IconSortAscending size={16} className="products-list__sort-icon" />
     );
   };
 
   const getBadgeClass = (value, type) => {
     if (type === 'boolean') {
-      return value ? 'products-list-badge products-list-badge--green' : 'products-list-badge products-list-badge--red';
+      return value ? 'products-list__badge products-list__badge--green' : 'products-list__badge products-list__badge--red';
     }
-    // Dalsze warunki dla innych typów, jeśli potrzebne
-    return 'products-list-badge';
+    return 'products-list__badge';
   };
 
   const rows = productsList.map((item) => (
@@ -158,9 +157,9 @@ const ProductsList = () => {
           {item.isGlutenFree ? 'Yes' : 'No'}
         </span>
       </td>
-      <td className="products-list-table-cell--actions">
+      <td className="products-list__table-cell--actions">
         {isVisible.deleteProductButt && (
-          <button className="products-list-delete-button" onClick={(e) => handleDeleteClick(e, item._id)}>
+          <button className="products-list__delete-button" onClick={(e) => handleDeleteClick(e, item._id)}>
             <IconTrash size={16} />
           </button>
         )}
@@ -169,20 +168,20 @@ const ProductsList = () => {
   ));
 
   return (
-    <div className="products-list-container">
-      <div className="products-list-header">
-        <h2 className="products-list-header__title">Products</h2>
-        <div className="products-list-controls">
+    <div className="products-list__container">
+      <div className="products-list__header">
+        <h2 className="products-list__header__title">Products</h2>
+        <div className="products-list__controls">
           {isVisible.addProductButt && (
-            <button className="products-list-add-button" onClick={() => navigate('/management/add-product')}>
+            <button className="products-list__add-button" onClick={() => navigate('/management/add-product')}>
               <IconPlus size={16} />
               Add New
             </button>
           )}
-          <div className="products-list-controls__search">
+          <div className="products-list__controls__search">
             <IconSearch size={16} />
             <input
-              className="products-list-controls__search-input"
+              className="products-list__controls__search__input"
               type="text"
               placeholder="Search products..."
               value={searchString}
@@ -193,18 +192,18 @@ const ProductsList = () => {
       </div>
 
       {errorMessage && (
-        <div className="products-list-error-message">
+        <div className="products-list__error-message">
           <p>{errorMessage}</p>
         </div>
       )}
 
       {isLoading ? (
-        <div className="products-list-loader">
-          <p>Loading...</p> {/* Zastąp loader Mantine prostym tekstem lub animacją CSS */}
+        <div className="products-list__loader">
+          <p>Loading...</p>
         </div>
       ) : productsList?.length > 0 ? (
-        <div className="products-list-table-wrapper">
-          <table className="products-list-table">
+        <div className="products-list__table-wrapper">
+          <table className="products-list__table">
             <thead>
               <tr>
                 <th onClick={handleSort} data-name="productNumber">No <SortIcon criteria="productNumber" /></th>
@@ -221,15 +220,15 @@ const ProductsList = () => {
           </table>
         </div>
       ) : (
-        <p className="products-list-message">No products found.</p>
+        <p className="products-list__message">No products found.</p>
       )}
 
       {totalPages > 1 && (
-        <div className="products-list-pagination">
+        <div className="products-list__pagination">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              className={`products-list-pagination-button ${currentPage === page ? 'products-list-pagination-button--active' : ''}`}
+              className={`products-list__pagination__button ${currentPage === page ? 'products-list__pagination__button--active' : ''}`}
               onClick={() => handlePageChange(page)}
             >
               {page}
@@ -239,9 +238,9 @@ const ProductsList = () => {
       )}
 
       {showModal && (
-        <div className="products-list-modal">
+        <div className="products-list__modal">
           <p>Are you sure you want to delete this product?</p>
-          <div className="products-list-modal-buttons">
+          <div className="products-list__modal-buttons">
             <button onClick={() => setShowModal(false)}>Cancel</button>
             <button onClick={handleConfirmDelete} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>Delete</button>
           </div>

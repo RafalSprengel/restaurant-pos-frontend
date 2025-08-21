@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
-import { Input, Textarea, Select, Checkbox, Button, Notification, Loader, Center } from '@mantine/core'
+import { Input, TextInput, Textarea, Select, Checkbox, Button, Notification, Loader, Center } from '@mantine/core'
 import api from '../../../utils/axios.js'
 import './addProduct.scss'
 
@@ -87,17 +87,18 @@ const AddProduct = () => {
       <form className="add-product-form" onSubmit={form.onSubmit(handleSubmit)}>
         {errorMessage && <Notification color="red">{errorMessage}</Notification>}
 
-        <Input
-          label="Name"
-          placeholder="Product Name"
-          {...form.getInputProps('name')}
-          error={form.errors.name}
-          classNames={{
-            root: 'add-product-form__field',
-            input: `add-product-form__input ${form.errors.name ? 'add-product-form__input--error' : ''}`,
-            label: 'add-product-form__label',
-          }}
-        />
+        <TextInput
+  label="Name"
+  placeholder="Product Name"
+  {...form.getInputProps('name')}
+  error={form.errors.name}
+  classNames={{
+    root: 'add-product-form__field',
+    input: `add-product-form__input ${form.errors.name ? 'add-product-form__input--error' : ''}`,
+    label: 'add-product-form__label',
+    error: 'add-product-form__error',
+  }}
+/>
 
         <Textarea
           label="Description"
@@ -110,7 +111,7 @@ const AddProduct = () => {
           }}
         />
 
-        <Input
+        <TextInput
           label="Price"
           placeholder="0.00"
           type="number"
@@ -124,7 +125,7 @@ const AddProduct = () => {
           }}
         />
 
-        <Input
+        <TextInput
           label="Image URL"
           placeholder="http://..."
           {...form.getInputProps('image')}
@@ -148,7 +149,7 @@ const AddProduct = () => {
           }}
         />
 
-        <Input
+        <TextInput
           label="Ingredients (comma-separated)"
           placeholder="ingredient1, ingredient2"
           {...form.getInputProps('ingredients')}

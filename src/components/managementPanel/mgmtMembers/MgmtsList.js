@@ -109,9 +109,9 @@ const MgmtsList = () => {
   const SortIcon = ({ criteria }) => {
     if (criteria !== sortCriteria) return null;
     return sortOrder === 'desc' ? (
-      <IconSortDescending size={16} className="mgmts-list-sort-icon" />
+      <IconSortDescending size={16} className="mgmts-list__sort-icon" />
     ) : (
-      <IconSortAscending size={16} className="mgmts-list-sort-icon" />
+      <IconSortAscending size={16} className="mgmts-list__sort-icon" />
     );
   };
 
@@ -133,9 +133,9 @@ const MgmtsList = () => {
       <td>{staff.email}</td>
       <td>{staff.role}</td>
       <td>{dayjs(staff.createdAt).format('HH:mm DD/MM/YY')}</td>
-      <td className="mgmts-list-table-cell--actions">
+      <td className="mgmts-list__table-cell--actions">
         {isVisible.deleteStaffButt && (
-          <button className="mgmts-list-delete-button" onClick={(e) => handleDeleteClick(e, staff._id)}>
+          <button className="mgmts-list__delete-button" onClick={(e) => handleDeleteClick(e, staff._id)}>
             <IconTrash size={16} />
           </button>
         )}
@@ -144,20 +144,20 @@ const MgmtsList = () => {
   ));
 
   return (
-    <div className="mgmts-list-container">
-      <div className="mgmts-list-header">
-        <h2 className="mgmts-list-header__title">Staff</h2>
-        <div className="mgmts-list-controls">
+    <div className="mgmts-list">
+      <div className="mgmts-list__header">
+        <h2 className="mgmts-list__header__title">Staff</h2>
+        <div className="mgmts-list__controls">
           {isVisible.addStaffButt && (
-            <button className="mgmts-list-add-button" onClick={() => navigate('/management/add-mgmt')}>
+            <button className="mgmts-list__add-button" onClick={() => navigate('/management/add-mgmt')}>
               <IconPlus size={16} />
               Add New
             </button>
           )}
-          <div className="mgmts-list-controls__search">
+          <div className="mgmts-list__controls__search">
             <IconSearch size={16} />
             <input
-              className="mgmts-list-controls__search-input"
+              className="mgmts-list__controls__search-input"
               type="text"
               placeholder="Search staff..."
               value={searchString}
@@ -168,18 +168,18 @@ const MgmtsList = () => {
       </div>
 
       {errorMessage && (
-        <div className="mgmts-list-error-message">
+        <div className="mgmts-list__error-message">
           <p>{errorMessage}</p>
         </div>
       )}
 
       {isLoading ? (
-        <div className="mgmts-list-loader">
+        <div className="mgmts-list__loader">
           <p>Loading...</p>
         </div>
       ) : staffList?.length > 0 ? (
-        <div className="mgmts-list-table-wrapper">
-          <table className="mgmts-list-table">
+        <div className="mgmts-list__table-wrapper">
+          <table className="mgmts-list__table">
             <thead>
               <tr>
                 <th onClick={handleSort} data-name="staffNumber">No <SortIcon criteria="staffNumber" /></th>
@@ -194,15 +194,15 @@ const MgmtsList = () => {
           </table>
         </div>
       ) : (
-        <p className="mgmts-list-message">No staff found.</p>
+        <p className="mgmts-list__message">No staff found.</p>
       )}
 
       {totalPages > 1 && (
-        <div className="mgmts-list-pagination">
+        <div className="mgmts-list__pagination">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              className={`mgmts-list-pagination-button ${currentPage === page ? 'mgmts-list-pagination-button--active' : ''}`}
+              className={`mgmts-list__pagination-button ${currentPage === page ? 'mgmts-list__pagination-button--active' : ''}`}
               onClick={() => handlePageChange(page)}
             >
               {page}
@@ -212,9 +212,9 @@ const MgmtsList = () => {
       )}
 
       {showModal && (
-        <div className="mgmts-list-modal">
+        <div className="mgmts-list__modal">
           <p>Are you sure you want to delete this staff member?</p>
-          <div className="mgmts-list-modal-buttons">
+          <div className="mgmts-list__modal-buttons">
             <button onClick={() => setShowModal(false)}>Cancel</button>
             <button onClick={handleConfirmDelete} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>Delete</button>
           </div>

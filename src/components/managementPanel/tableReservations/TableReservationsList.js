@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import api from '../../../utils/axios';
-import './TableReservationsList.scss';
+import './tableReservationsList.scss';
 
 const TableReservationsList = () => {
   const [reservations, setReservations] = useState([]);

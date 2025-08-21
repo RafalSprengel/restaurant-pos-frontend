@@ -148,6 +148,7 @@ const MessagesList = () => {
                         />
                     </div>
                     <select className="messages-list-controls__select" value={typeFilter} onChange={(e) => handleTypeFilter(e.target.value)}>
+                        <option value="all">All</option>
                         <option value="received">Received</option>
                         <option value="sent">Sent</option>
                     </select>

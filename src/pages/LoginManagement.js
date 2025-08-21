@@ -1,26 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import '../styles/login-management.scss';
+import './login-management.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios';
-import { Alert } from '@mantine/core';
-import { IconXboxX } from '@tabler/icons-react';
+import { Alert, TextInput, PasswordInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { IconXboxX, IconAt, IconLock } from '@tabler/icons-react';
 
 export default function StaffLogin() {
      const navigate = useNavigate();
-     const [email, setEmail] = useState('admin@wp.pl');
-     const [password, setPassword] = useState('123');
-     const [error, setError] = useState(null);
-     const [loading, setLoading] = useState(false);
      const { isAuthenticated, isLoading, login } = useAuth();
+     const [error, setError] = React.useState(null);
+     const [loading, setLoading] = React.useState(false);
 
-     const handleLogin = async (e) => {
-          e.preventDefault();
+     const form = useForm({
+          initialValues: {
+               email: 'admin@wp.pl',
+               password: '123',
+          },
+          validate: {
+               email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+               password: (value) => (value.length > 0 ? null : 'Password is required'),
+          },
+     });
+
+     const handleLogin = async (values) => {
           setError(null);
           setLoading(true);
 
           try {
-               const response = await api.post('/auth/login/mgmt', { email, password });
+               const response = await api.post('/auth/login/mgmt', values);
                const { user } = response.data;
                login(user);
                navigate('/management', { replace: true });
@@ -49,31 +58,34 @@ export default function StaffLogin() {
                     title={error}
                     icon={<IconXboxX />}
                />}
-               <form onSubmit={handleLogin} className="management-login__form">
-                    <div className="management-login__input-group">
-                         <label htmlFor="email" className="management-login__label">Email:</label>
-                         <input
-                              id="email"
-                              type="email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              required
-                              className="management-login__input"
-                         />
-                    </div>
 
-                    <div className="management-login__input-group">
-                         <label htmlFor="password" className="management-login__label">Password:</label>
-                         <input
-                              id="password"
-                              type="password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              required
-                              className="management-login__input"
-                         />
-                    </div>
+               <form
+                    onSubmit={form.onSubmit(handleLogin)}
+                    className="management-login__form"
+               >
+                    <TextInput
+                         label="Email"
+                         placeholder="Your email"
+                         rightSection={<IconAt size={18} />}
+                         {...form.getInputProps('email')}
+                         classNames={{
+                              root: 'management-login__input-group',
+                              input: `management-login__input ${form.errors.email ? 'management-login__input--error' : ''}`,
+                              label: 'management-login__label',
+                         }}
+                    />
 
+                    <PasswordInput
+                         label="Password"
+                         placeholder="Your password"
+                         icon={<IconLock size={18} />}
+                         {...form.getInputProps('password')}
+                         classNames={{
+                              root: 'management-login__input-group',
+                              input: `management-login__input ${form.errors.password ? 'management-login__input--error' : ''}`,
+                              label: 'management-login__label',
+                         }}
+                    />
                     <button
                          type="submit"
                          className={`management-login__button ${loading ? 'management-login__button--loading' : ''}`}
@@ -88,4 +100,4 @@ export default function StaffLogin() {
                </NavLink>
           </div>
      );
-}
+};

@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useFetch } from "../../../hooks/useFetch.js";
 import api from '../../../utils/axios.js';
-import "../../../styles/single-table-reservation.scss";
+import "./singleTableReservation.scss";
 
 const SingleTableReservation = () => {
   const { id } = useParams();

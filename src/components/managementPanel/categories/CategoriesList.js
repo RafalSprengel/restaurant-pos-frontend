@@ -18,14 +18,9 @@ const CategoriesList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth('management');
+  const { user } = useAuth();
 
-  const {
-    data: categoriesList,
-    loading: isLoading,
-    error: fetchError,
-    refetch,
-  } = useFetch(`/product-categories${location.search}`);
+  const { data: categoriesList, loading: isLoading, error: fetchError, refetch } = useFetch(`/product-categories${location.search}`);
 
   const rolePermissions = {
     admin: { addCategoryButt: true, deleteCategoryButt: true },
@@ -35,9 +30,7 @@ const CategoriesList = () => {
 
   const isVisible = rolePermissions[user.role] || { addCategoryButt: false, deleteCategoryButt: false };
 
-  const handleRowClick = (id) => {
-    navigate(`${id}`);
-  };
+  const handleRowClick = (id) => navigate(`${id}`);
 
   const handleDeleteClick = (event, id) => {
     event.stopPropagation();
@@ -51,11 +44,8 @@ const CategoriesList = () => {
     setErrorMessage(null);
     try {
       const response = await api.delete(`/product-categories/${categoryToDelete}`);
-      if (response.status === 200) {
-        refetch(); // Odświeżamy dane po usunięciu
-      } else {
-        throw new Error(response.data?.message || 'Unknown error');
-      }
+      if (response.status === 200) refetch();
+      else throw new Error(response.data?.message || 'Unknown error');
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Failed to delete the category. Please try again.');
     } finally {
@@ -83,11 +73,7 @@ const CategoriesList = () => {
     const { name } = e.currentTarget.dataset;
     const params = new URLSearchParams(location.search);
     const currentOrder = params.get('sortOrder');
-    if (currentOrder !== 'desc') {
-      params.set('sortOrder', 'desc');
-    } else {
-      params.set('sortOrder', 'asc');
-    }
+    params.set('sortOrder', currentOrder !== 'desc' ? 'desc' : 'asc');
     params.delete('page');
     params.set('sortBy', name);
     navigate('?' + params);
@@ -103,9 +89,9 @@ const CategoriesList = () => {
   const SortIcon = ({ criteria }) => {
     if (criteria !== sortCriteria) return null;
     return sortOrder === 'desc' ? (
-      <IconSortDescending size={16} className="categories-list-sort-icon" />
+      <IconSortDescending size={16} className="categories-list__sort-icon" />
     ) : (
-      <IconSortAscending size={16} className="categories-list-sort-icon" />
+      <IconSortAscending size={16} className="categories-list__sort-icon" />
     );
   };
 
@@ -116,14 +102,14 @@ const CategoriesList = () => {
         <img
           src={item.image || `https://picsum.photos/200/200?random=${Math.random()}`}
           alt="Category"
-          className="categories-list-image"
+          className="categories-list__image"
         />
       </td>
       <td>{item.index}</td>
-      <td className="categories-list-table-cell--actions">
+      <td className="categories-list__table-cell--actions">
         {isVisible.deleteCategoryButt && (
           <button
-            className="categories-list-delete-button"
+            className="categories-list__delete-button"
             onClick={(e) => handleDeleteClick(e, item._id)}
           >
             <IconTrash size={16} />
@@ -134,23 +120,23 @@ const CategoriesList = () => {
   ));
 
   return (
-    <div className="categories-list-container">
-      <div className="categories-list-header">
-        <h2 className="categories-list-header__title">Categories</h2>
-        <div className="categories-list-controls">
+    <div className="categories-list__container">
+      <div className="categories-list__header">
+        <h2 className="categories-list__title">Categories</h2>
+        <div className="categories-list__controls">
           {isVisible.addCategoryButt && (
             <button
-              className="categories-list-add-button"
+              className="categories-list__add-button"
               onClick={() => navigate('/management/add-category')}
             >
               <IconPlus size={16} />
               Add New
             </button>
           )}
-          <div className="categories-list-controls__search">
+          <div className="categories-list__controls-search">
             <IconSearch size={16} />
             <input
-              className="categories-list-controls__search-input"
+              className="categories-list__controls-search-input"
               type="text"
               placeholder="Search categories..."
               value={searchString}
@@ -161,24 +147,24 @@ const CategoriesList = () => {
       </div>
 
       {errorMessage && (
-        <div className="categories-list-error-message">
+        <div className="categories-list__error-message">
           <p>{errorMessage}</p>
         </div>
       )}
 
       {fetchError && (
-        <div className="categories-list-error-message">
+        <div className="categories-list__error-message">
           <p>{fetchError.toString()}</p>
         </div>
       )}
 
       {isLoading ? (
-        <div className="categories-list-loader">
+        <div className="categories-list__loader">
           <p>Loading...</p>
         </div>
       ) : categoriesList?.length > 0 ? (
-        <div className="categories-list-table-wrapper">
-          <table className="categories-list-table">
+        <div className="categories-list__table-wrapper">
+          <table className="categories-list__table">
             <thead>
               <tr>
                 <th onClick={handleSort} data-name="name">
@@ -195,15 +181,18 @@ const CategoriesList = () => {
           </table>
         </div>
       ) : (
-        <p className="categories-list-message">No categories found.</p>
+        <p className="categories-list__message">No categories found.</p>
       )}
 
       {showModal && (
-        <div className="categories-list-modal">
+        <div className="categories-list__modal">
           <p>Are you sure you want to delete this category?</p>
-          <div className="categories-list-modal-buttons">
+          <div className="categories-list__modal-buttons">
             <button onClick={() => setShowModal(false)}>Cancel</button>
-            <button onClick={handleConfirmDelete} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>
+            <button
+              onClick={handleConfirmDelete}
+              style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}
+            >
               Delete
             </button>
           </div>

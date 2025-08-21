@@ -3,26 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import { useFetch } from '../../../hooks/useFetch.js';
-import {
-    TextInput,
-    Textarea,
-    Checkbox,
-    Button,
-    Container,
-    Stack,
-    Title,
-    Notification,
-    Modal,
-    Card,
-    Text,
-    Group,
-    Divider,
-    Badge,
-    Table,
-    Select,
-    Paper,
-} from '@mantine/core';
 import { format } from 'date-fns';
+import './updateOrder.scss';
 
 const UpdateOrder = () => {
     const { id } = useParams();
@@ -42,7 +24,7 @@ const UpdateOrder = () => {
 
     const { data: orderTypes, loading: loadingOrderTypes, error: errorOrderTypes } = useFetch('/orders/order-types');
 
-    const isEditable = ['admin', 'moderator'].includes(user.role);
+   const isEditable = user?.role ? ['admin', 'moderator'].includes(user.role) : false;
 
     const getOrder = async () => {
         try {
@@ -94,11 +76,6 @@ const UpdateOrder = () => {
         }
     };
 
-    const selectOrderTypes = orderTypes?.map((type) => ({
-        value: type,
-        label: type.charAt(0).toUpperCase() + type.slice(1),
-    })) || [];
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -118,115 +95,125 @@ const UpdateOrder = () => {
     };
 
     return (
-        <Container w="100%" size="lg">
-            <form onSubmit={handleSubmit}>
-                <Stack spacing="xl">
-                    <Title order={2}>Update Order</Title>
+        <div className="update-order__wrapper">
+            <form className="update-order__form" onSubmit={handleSubmit}>
+                <h2 className="update-order__heading--main">Update Order</h2>
 
-                    {showErrorAlert && (
-                        <Notification color="red" onClose={() => setShowErrorAlert(false)}>
-                            {errorMessage}
-                        </Notification>
-                    )}
+                {showErrorAlert && (
+                    <div className="update-order__notification">
+                        <p>{errorMessage}</p>
+                    </div>
+                )}
 
-                    <Card withBorder shadow="sm" padding="lg">
-                        <Group position="apart">
-                            <Text weight={500}>Order #{order?.orderNumber}</Text>
-                            <Badge color={order?.isPaid ? 'green' : 'red'}>
-                                {order?.isPaid ? 'Paid' : 'Unpaid'}
-                            </Badge>
-                        </Group>
-                        <Text size="sm" mt="xs">
-                            Placed: {formatDate(order?.createdAt)}
-                        </Text>
-                        <Text size="sm">Updated: {formatDate(order?.updatedAt)}</Text>
-                        <Text size="sm" mt="md">Total Price: £{order?.totalPrice}</Text>
-                    </Card>
+                <div className="update-order__section">
+                    <div className="update-order__group">
+                        <p className="update-order__info" style={{ fontWeight: 500 }}>Order #{order?.orderNumber}</p>
+                        <span className={`update-order__badge update-order__badge--${order?.isPaid ? 'green' : 'red'}`}>
+                            {order?.isPaid ? 'Paid' : 'Unpaid'}
+                        </span>
+                    </div>
+                    <p className="update-order__info" style={{ marginTop: '8px' }}>
+                        Placed: {formatDate(order?.createdAt)}
+                    </p>
+                    <p className="update-order__info">Updated: {formatDate(order?.updatedAt)}</p>
+                    <p className="update-order__info" style={{ marginTop: '16px' }}>Total Price: £{order?.totalPrice}</p>
+                </div>
 
-                    <Card withBorder shadow="sm" padding="lg">
-                        <Title order={4}>Purchaser details</Title>
-                        <Text size="sm" mt="sm">Name: {order?.purchaserDetails?.firstName} {order?.purchaserDetails?.surname}</Text>
-                        <Text size="sm">Phone: {order?.purchaserDetails?.phone}</Text>
-                        <Text size="sm">Email: {order?.purchaserDetails?.email}</Text>
-                    </Card>
+                <div className="update-order__section">
+                    <h4 className="update-order__heading--card">Purchaser details</h4>
+                    <p className="update-order__info" style={{ marginTop: '8px' }}>Name: {order?.purchaserDetails?.firstName} {order?.purchaserDetails?.surname}</p>
+                    <p className="update-order__info">Phone: {order?.purchaserDetails?.phone}</p>
+                    <p className="update-order__info">Email: {order?.purchaserDetails?.email}</p>
+                </div>
 
-                    <Card withBorder shadow="sm" padding="lg">
-                        <Title order={4}>Products</Title>
-                        <Table withTableBorder striped highlightOnHover mt="sm">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                    <th>Details</th>
+                <div className="update-order__section">
+                    <h4 className="update-order__heading--card">Products</h4>
+                    <table className="update-order__table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {order?.products?.map((product, index) => (
+                                <tr key={index}>
+                                    <td>{product.name}</td>
+                                    <td>{product.quantity}</td>
+                                    <td>£{product.price}</td>
+                                    <td>£{product.totalPrice}</td>
+                                    <td style={{ width: '150px', display: 'flex', flexDirection:'column' }}>
+                                        {product.ingredients?.join(', ')}<br />
+                                        {product.isVegetarian && <span className="update-order__badge update-order__badge--green" style={{ marginRight: '8px' }}>Vegetarian</span>}
+                                        {product.isGlutenFree && <span className="update-order__badge update-order__badge--blue">Gluten-Free</span>}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {order?.products?.map((product) => (
-                                    <tr key={product._id}>
-                                        <td>{product.name}</td>
-                                        <td>{product.quantity}</td>
-                                        <td>£{product.price}</td>
-                                        <td>£{product.totalPrice}</td>
-                                        <td style={{ width: '150px' }}>
-                                            {product.ingredients?.join(', ')}<br />
-                                            {product.isVegetarian && <Badge color="green" size="xs" mr="xs">Vegetarian</Badge>}
-                                            {product.isGlutenFree && <Badge color="blue" size="xs">Gluten-Free</Badge>}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </Card>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
-                    <Divider label="Edit Fields" labelPosition="center" />
+                <hr style={{ margin: '16px 0', border: 0, borderTop: '1px solid #e0e0e0' }} />
 
-                    <Select
-                        label="Order Type"
+                <div className="update-order__form-group">
+                    <label className="update-order__label" htmlFor="orderType">Order Type</label>
+                    <select
+                        className="update-order__select"
                         name="orderType"
-                        data={selectOrderTypes}
-                        value={formData.orderType || ''}
-                        onChange={(value) =>
-                            setFormData((prev) => ({ ...prev, orderType: value }))
-                        }
-                        placeholder={loadingOrderTypes ? 'Loading...' : 'Select order type'}
+                        value={formData.orderType}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, orderType: e.target.value }))}
                         disabled={loadingOrderTypes || !isEditable}
                         required
-                    />
+                    >
+                        <option value="" disabled>{loadingOrderTypes ? 'Loading...' : 'Select order type'}</option>
+                        {orderTypes?.map((type) => (
+                            <option key={type} value={type}>
+                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                    <Textarea
-                        label="Note"
+                <div className="update-order__form-group">
+                    <label className="update-order__label" htmlFor="note">Note</label>
+                    <textarea
+                        className="update-order__textarea"
                         name="note"
                         value={formData.note}
                         onChange={handleChange}
                         disabled={!isEditable}
-                    />
+                    ></textarea>
+                </div>
 
-                    <Checkbox
-                        label="Is Paid"
+                <div className="update-order__checkbox-group">
+                    <input
+                        type="checkbox"
+                        className="update-order__checkbox"
                         name="isPaid"
                         checked={formData.isPaid}
                         onChange={handleChange}
                         disabled={!isEditable}
                     />
+                    <label htmlFor="isPaid">Is Paid</label>
+                </div>
 
-                    {isEditable && (
-                        <Button type="submit">Save Order</Button>
-                    )}
-                </Stack>
+                {isEditable && (
+                    <button type="submit" className="update-order__button">Save Order</button>
+                )}
             </form>
 
-            <Modal
-                opened={showSuccessModal}
-                onClose={() => setShowSuccessModal(false)}
-                title="Success"
-                centered
-            >
-                <p>{message}</p>
-                <Button onClick={handleCloseSuccessModal}>OK</Button>
-            </Modal>
-        </Container>
+            {showSuccessModal && (
+                <div className="update-order__modal">
+                    <p>{message}</p>
+                    <div className="update-order__modal-buttons">
+                        <button onClick={handleCloseSuccessModal}>OK</button>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 
