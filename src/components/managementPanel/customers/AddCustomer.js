@@ -1,89 +1,132 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/authContext';
-import api from '../../../utils/axios';
-import '../../../styles/update-customer.scss';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useForm } from '@mantine/form'
+import { TextInput, Button } from '@mantine/core'
+import api from '../../../utils/axios.js'
+import { useAuth } from '../../../context/authContext.js'
+import './addCustomer.scss'
 
 const AddCustomer = () => {
-     const [formData, setFormData] = useState({
-          name: '',
-          surname: '',
-          email: '',
-          phone: '',
-          password: '',
-     });
-     const [isLoading, setIsLoading] = useState(false);
-     const [errorMessage, setErrorMessage] = useState('');
-     const navigate = useNavigate();
-     const { user } = useAuth('staff');
+  const navigate = useNavigate()
+  const { user } = useAuth('staff')
+  const isEditable = ['admin', 'moderator'].includes(user.role)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
-     const isEditable = ['admin', 'moderator'].includes(user.role);
+  const form = useForm({
+    initialValues: { name: '', surname: '', email: '', phone: '', password: '' },
+    validate: {
+      name: (value) => (value.trim() === '' ? 'Name is required' : null),
+      surname: (value) => (value.trim() === '' ? 'Surname is required' : null),
+      email: (value) =>
+        /^\S+@\S+$/.test(value) ? null : 'Invalid email',
+      phone: (value) =>
+        value.trim() === '' || /^\+?[0-9\s\-()]*$/.test(value)
+          ? null
+          : 'Invalid phone number',
+      password: (value) =>
+        value.length < 6 ? 'Password must be at least 6 characters' : null,
+    },
+    validateInputOnBlur: true,
+  })
 
-     const handleChange = (e) => {
-          const { name, value } = e.target;
-          setErrorMessage('');
-          setFormData({
-               ...formData,
-               [name]: value,
-          });
-     };
+  const handleSubmit = async (values) => {
+    setIsLoading(true)
+    setErrorMessage('')
+    try {
+      const response = await api.post('/auth/register/customer/', values)
+      if (response.status === 201) navigate('/management/customers')
+      else setErrorMessage(response.data?.error || 'Failed to add customer')
+    } catch (err) {
+      setErrorMessage(err.response?.data?.error || 'An error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-     const handleSubmit = async (e) => {
-          e.preventDefault();
-          setIsLoading(true);
+  return (
+    <div className="add-customer">
+      <form className="add-customer-form" onSubmit={form.onSubmit(handleSubmit)}>
+        <h2 className="add-customer-form__title">Add Customer</h2>
 
-          try {
-               const response = await api.post('/auth/register/customer/', formData);
-               if (response.status === 201) {
-                    alert('Customer added successfully!');
-                    navigate('/management/customers');
-               } else {
-                    throw new Error(response.data.error || 'Failed to add customer.');
-               }
-          } catch (error) {
-               setErrorMessage(error.response?.data?.error || error.message);
-          } finally {
-               setIsLoading(false);
-          }
-     };
+        {errorMessage && (
+          <div className="add-customer-form__notification add-customer-form__notification--error">
+            <p>{errorMessage}</p>
+          </div>
+        )}
 
-     return (
-          <>
-               <form className="customer-form" onSubmit={handleSubmit}>
-                    <h2>Add Customer</h2>
-                    {errorMessage && <div className="error-alert">{errorMessage}</div>}
+        <TextInput
+          label="Name"
+          placeholder="Customer name"
+          {...form.getInputProps('name')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'add-customer-form__field',
+            input: `add-customer-form__input ${form.errors.name ? 'add-customer-form__input--error' : ''}`,
+            label: 'add-customer-form__label',
+          }}
+        />
 
-                    <label>Name:</label>
-                    <input name="name" type="text" value={formData.name} onChange={handleChange} disabled={!isEditable} />
+        <TextInput
+          label="Surname"
+          placeholder="Customer surname"
+          {...form.getInputProps('surname')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'add-customer-form__field',
+            input: `add-customer-form__input ${form.errors.surname ? 'add-customer-form__input--error' : ''}`,
+            label: 'add-customer-form__label',
+          }}
+        />
 
-                    <label>Surname:</label>
-                    <input name="surname" type="text" value={formData.surname} onChange={handleChange} disabled={!isEditable} />
+        <TextInput
+          label="Email"
+          placeholder="Customer email"
+          {...form.getInputProps('email')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'add-customer-form__field',
+            input: `add-customer-form__input ${form.errors.email ? 'add-customer-form__input--error' : ''}`,
+            label: 'add-customer-form__label',
+          }}
+        />
 
-                    <label>Email:</label>
-                    <input name="email" type="email" value={formData.email} onChange={handleChange} disabled={!isEditable} />
+        <TextInput
+          label="Phone"
+          placeholder="Customer phone"
+          {...form.getInputProps('phone')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'add-customer-form__field',
+            input: `add-customer-form__input ${form.errors.phone ? 'add-customer-form__input--error' : ''}`,
+            label: 'add-customer-form__label',
+          }}
+        />
 
-                    <label>Phone:</label>
-                    <input
-                         name="phone"
-                         type="text"
-                         value={formData.phone}
-                         onChange={handleChange}
-                         disabled={!isEditable}
-                         pattern="^\+?[0-9\s\-\(\)]*$"
-                         title="Phone number can contain only numbers, spaces, '-', '(', ')' and '+'"
-                    />
+        <TextInput
+          label="Password"
+          placeholder="Customer password"
+          {...form.getInputProps('password')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'add-customer-form__field',
+            input: `add-customer-form__input ${form.errors.password ? 'add-customer-form__input--error' : ''}`,
+            label: 'add-customer-form__label',
+          }}
+        />
 
-                    <label>Password:</label>
-                    <input name="password" type="text" value={formData.password} onChange={handleChange} disabled={!isEditable} />
+        {isEditable && (
+          <Button
+            type="submit"
+            className="add-customer-form__submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Adding...' : 'Add Customer'}
+          </Button>
+        )}
+      </form>
+    </div>
+  )
+}
 
-                    {isEditable && (
-                         <button type="submit" disabled={isLoading}>
-                              Add Customer
-                         </button>
-                    )}
-               </form>
-          </>
-     );
-};
-
-export default AddCustomer;
+export default AddCustomer

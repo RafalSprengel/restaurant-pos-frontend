@@ -1,113 +1,125 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Modal, Button, Text } from '@mantine/core';
-import api from '../../../utils/axios.js';
-import '../../../styles/form-styles.scss';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useForm } from '@mantine/form'
+import { TextInput, NumberInput, Button, Loader, Center } from '@mantine/core'
+import api from '../../../utils/axios.js'
+import { useAuth } from '../../../context/authContext.js'
+import './addCategory.scss'
 
 const AddCategory = () => {
-     const [isLoading, setIsLoading] = useState(false);
-     const [errorMessage, setErrorMessage] = useState('');
-     const [formData, setFormData] = useState({
-          name: '',
-          image: '',
-          index: '',
-     });
+  const { user } = useAuth('staff')
+  const isEditable = ['admin', 'moderator'].includes(user.role)
+  const [isLoading, setIsLoading] = useState(false)
+  const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [imageFile, setImageFile] = useState(null)
+  const navigate = useNavigate()
 
-     const [showSuccessModal, setShowSuccessModal] = useState(false);
-     const navigate = useNavigate();
+  const form = useForm({
+    initialValues: { name: '', index: '' },
+    validate: {
+      name: (value) => (value.trim() === '' ? 'Name is required' : null),
+      index: (value) => (value === '' || value < 0 ? 'Index must be positive' : null),
+    },
+    validateInputOnBlur: true,
+  })
 
-     const handleChange = (e) => {
-          const { name, value, type, files } = e.target;
-          if (type === 'file') {
-               setFormData({ ...formData, image: files[0] });
-          } else {
-               setFormData({ ...formData, [name]: value });
-          }
-     };
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0])
+  }
 
-     const handleSubmit = async (e) => {
-          e.preventDefault();
-          setIsLoading(true);
-          setErrorMessage(null);
+  const handleSubmit = async (values) => {
+    setIsLoading(true)
+    setShowErrorAlert(false)
+    try {
+      const formDataToSend = new FormData()
+      formDataToSend.append('name', values.name)
+      formDataToSend.append('index', values.index)
+      if (imageFile) formDataToSend.append('image', imageFile)
 
-          const formDataToSend = new FormData();
-          formDataToSend.append('name', formData.name);
-          formDataToSend.append('index', formData.index);
-          formDataToSend.append('image', formData.image);
+      const res = await api.post('/product-categories/', formDataToSend)
+      if (res.status === 201) navigate('/management/categories')
+      else {
+        setShowErrorAlert(true)
+        setErrorMessage(res.data?.error || 'Failed to save category')
+      }
+    } catch (err) {
+      setShowErrorAlert(true)
+      setErrorMessage(err.response?.data?.error || 'An error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-          try {
-               const res = await api.post('/product-categories/', formDataToSend);
-               if (res.status === 201) {
-                    setShowSuccessModal(true);
-               } else {
-                    setErrorMessage(`Failed to save category (${res.data.error})`);
-               }
-          } catch (e) {
-               console.log(e);
-               setErrorMessage(e.response?.data?.error || 'An error occurred');
-          } finally {
-               setIsLoading(false);
-          }
-     };
+  if (isLoading)
+    return (
+      <Center className="add-category__center">
+        <Loader size="md" />
+      </Center>
+    )
 
-     const handleModalClose = () => {
-          setShowSuccessModal(false);
-          navigate('/management/categories');
-     };
+  return (
+    <div className="add-category">
+      <h2 className="add-category__title">Add Category</h2>
 
-     return (
-          <>
-               <h3>Add a new category</h3>
+      {showErrorAlert && (
+        <div className="add-category-form__notification add-category-form__notification--error">
+          <p>{errorMessage}</p>
+        </div>
+      )}
 
-               <form className="form-container" onSubmit={handleSubmit}>
-                    {errorMessage && <p className="error">{errorMessage}</p>}
-                    <label>Name:</label>
-                    <input
-                         type="text"
-                         name="name"
-                         value={formData.name}
-                         onChange={handleChange}
-                         required
-                         disabled={isLoading}
-                    />
+      <form className="add-category-form" onSubmit={form.onSubmit(handleSubmit)}>
+        <TextInput
+          label="Name"
+          placeholder="Category name"
+          {...form.getInputProps('name')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'add-category-form__field',
+            input: `add-category-form__input ${form.errors.name ? 'add-category-form__input--error' : ''}`,
+            label: 'add-category-form__label',
+          }}
+        />
 
-                    <label>Index:</label>
-                    <input
-                         type="number"
-                         name="index"
-                         value={formData.index}
-                         onChange={handleChange}
-                         required
-                         disabled={isLoading}
-                    />
+        <NumberInput
+          label="Index"
+          placeholder="Category index"
+          {...form.getInputProps('index')}
+          disabled={!isEditable || isLoading}
+          min={0}
+          classNames={{
+            root: 'add-category-form__field',
+            input: `add-category-form__input ${form.errors.index ? 'add-category-form__input--error' : ''}`,
+            label: 'add-category-form__label',
+          }}
+        />
 
-                    <label>Image:</label>
-                    <input
-                         type="file"
-                         accept="image/*"
-                         name="image"
-                         onChange={handleChange}
-                         disabled={isLoading}
-                    />
+        <div className="add-category-form__field">
+          <label className="add-category-form__label" htmlFor="image">
+            Image:
+          </label>
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            disabled={!isEditable || isLoading}
+            className="add-category-form__input add-category-form__input--file"
+          />
+        </div>
 
-                    <button type="submit" disabled={isLoading}>
-                         {isLoading ? 'Saving...' : 'Save Category'}
-                    </button>
-               </form>
+        {isEditable && (
+          <Button
+            type="submit"
+            className="add-category-form__submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save Category'}
+          </Button>
+        )}
+      </form>
+    </div>
+  )
+}
 
-               <Modal
-                    opened={showSuccessModal}
-                    onClose={handleModalClose}
-                    title="Success"
-                    centered
-               >
-                    <Text>Category added successfully!</Text>
-                    <Button onClick={handleModalClose} mt="md" fullWidth>
-                         OK
-                    </Button>
-               </Modal>
-          </>
-     );
-};
-
-export default AddCategory;
+export default AddCategory

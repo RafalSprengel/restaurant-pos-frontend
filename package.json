@@ -26,6 +26,7 @@
           "dayjs": "^1.11.13",
           "express-session": "^1.18.1",
           "flatpickr": "^4.6.13",
+          "framer-motion": "^12.23.12",
           "gh-pages": "^6.1.1",
           "glightbox": "^3.3.1",
           "lucide-react": "^0.485.0",

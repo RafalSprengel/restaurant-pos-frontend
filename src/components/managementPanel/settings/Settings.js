@@ -1,45 +1,43 @@
-import { useEffect, useState } from "react";
-import {
-  TextInput,
-  NumberInput,
-  Button,
-  Divider,
-  Stack,
-  Title,
-  Container,
-  Checkbox,
-  PasswordInput,
-  Group,
-  Tooltip,
-  Box,
-} from "@mantine/core";
-
-import { showNotification } from '@mantine/notifications';
+import { useEffect } from "react";
+import { TextInput, NumberInput, Checkbox, Button } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import api from "../../../utils/axios";
+import "./Settings.scss";
 
 export default function Settings() {
-  const [reservationSettings, setReservationSettings] = useState({
-    startHour: 10,
-    endHour: 23,
-    startHourOffset: 0,
-    reservationDurationHours: 2,
-    maxDaysInAdvance: 21,
-  });
-
-  const [smtpSettings, setSmtpSettings] = useState({
-    host: '',
-    port: 587,
-    secure: false,
-    user: '',
-    pass: '',
+  const form = useForm({
+    initialValues: {
+      startHour: 10,
+      endHour: 23,
+      startHourOffset: 0,
+      reservationDurationHours: 2,
+      maxDaysInAdvance: 21,
+      host: '',
+      port: 587,
+      secure: false,
+      user: '',
+      pass: '',
+    },
+    validate: {
+      startHour: (value) => value >= 0 && value <= 23 ? null : 'Start hour must be 0-23',
+      endHour: (value) => value >= 0 && value <= 23 ? null : 'End hour must be 0-23',
+      startHourOffset: (value) => value >= 0 && value <= 12 ? null : 'Offset must be 0-12',
+      reservationDurationHours: (value) => value >= 1 && value <= 12 ? null : 'Duration must be 1-12',
+      maxDaysInAdvance: (value) => value >= 1 && value <= 60 ? null : 'Max days 1-60',
+      host: (value) => value.trim() ? null : 'Host is required',
+      port: (value) => value > 0 && value <= 65535 ? null : 'Port must be 1-65535',
+      user: (value) => value.trim() ? null : 'User is required',
+      pass: (value) => value.trim() ? null : 'Password is required',
+    },
+    validateInputOnBlur: true,
   });
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const res = await api.get("/settings");
-        setReservationSettings(res.data.reservationSettings || reservationSettings);
-        setSmtpSettings(res.data.smtpSettings || smtpSettings);
+        if(res.data.reservationSettings) form.setValues(res.data.reservationSettings);
+        if(res.data.smtpSettings) form.setValues((v) => ({ ...v, ...res.data.smtpSettings }));
       } catch (err) {
         console.error("Error fetching settings:", err);
       }
@@ -47,152 +45,140 @@ export default function Settings() {
     fetchSettings();
   }, []);
 
-  const saveSettings = async () => {
+  const saveSettings = async (values) => {
     try {
       await api.put("/settings", {
-        reservationSettings,
-        smtpSettings,
-      });
-      showNotification({
-        title: 'Success',
-        message: 'Settings saved successfully',
-        color: 'green',
-        autoClose: 3000,
-        disallowClose: true,
+        reservationSettings: {
+          startHour: values.startHour,
+          endHour: values.endHour,
+          startHourOffset: values.startHourOffset,
+          reservationDurationHours: values.reservationDurationHours,
+          maxDaysInAdvance: values.maxDaysInAdvance,
+        },
+        smtpSettings: {
+          host: values.host,
+          port: values.port,
+          secure: values.secure,
+          user: values.user,
+          pass: values.pass,
+        },
       });
     } catch (err) {
-      showNotification({
-        title: 'Error',
-        message: 'Failed to save settings',
-        color: 'red',
-        autoClose: 5000,
-        disallowClose: true,
-      });
       console.error("Error saving settings:", err);
     }
   };
 
   return (
-    <Container style={{ width: "100%" }}>
-      <Group position="apart" mb="md">
-        <Title align="center" order={2}>
-          Settings
-        </Title>
-      </Group>
+    <form className="settings" onSubmit={form.onSubmit(saveSettings)}>
+      <h2 className="settings__title">Settings</h2>
 
-      <Stack spacing="sm" mb="xl">
-        <Title order={4}>Table Reservations</Title>
-        <Group spacing="md">
-          <Box sx={{ flex: 1 }}>
-            <NumberInput
-              label="Start hour"
-              min={0}
-              max={23}
-              value={reservationSettings?.startHour}
-              onChange={(val) =>
-                setReservationSettings((s) => ({ ...s, startHour: val ?? 0 }))
-              }
-            />
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <NumberInput
-              label="End hour"
-              min={0}
-              max={23}
-              value={reservationSettings?.endHour}
-              onChange={(val) =>
-                setReservationSettings((s) => ({ ...s, endHour: val ?? 0 }))
-              }
-            />
-          </Box>
-        </Group>
+      <div className="settings__section">
+        <h3 className="settings__section-title">Table Reservations</h3>
+        <div className="settings__row">
+          <NumberInput
+            label="Start Hour"
+            min={0} max={23}
+            {...form.getInputProps('startHour')}
+            classNames={{
+              root: 'settings__field',
+              input: `settings__input ${form.errors.startHour ? 'settings__input--error' : ''}`,
+              label: 'settings__label'
+            }}
+          />
+          <NumberInput
+            label="End Hour"
+            min={0} max={23}
+            {...form.getInputProps('endHour')}
+            classNames={{
+              root: 'settings__field',
+              input: `settings__input ${form.errors.endHour ? 'settings__input--error' : ''}`,
+              label: 'settings__label'
+            }}
+          />
+        </div>
         <NumberInput
           label="Start Hour Offset"
-          min={0}
-          max={12}
-          value={reservationSettings?.startHourOffset}
-          onChange={(val) =>
-            setReservationSettings((s) => ({ ...s, startHourOffset: val ?? 0 }))
-          }
+          min={0} max={12}
+          {...form.getInputProps('startHourOffset')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.startHourOffset ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
         />
         <NumberInput
           label="Reservation Duration (hours)"
-          min={1}
-          max={12}
-          value={reservationSettings?.reservationDurationHours}
-          onChange={(val) =>
-            setReservationSettings((s) => ({ ...s, reservationDurationHours: val ?? 1 }))
-          }
+          min={1} max={12}
+          {...form.getInputProps('reservationDurationHours')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.reservationDurationHours ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
         />
         <NumberInput
           label="Max Days In Advance"
-          min={1}
-          max={60}
-          value={reservationSettings?.maxDaysInAdvance}
-          onChange={(val) =>
-            setReservationSettings((s) => ({ ...s, maxDaysInAdvance: val ?? 1 }))
-          }
+          min={1} max={60}
+          {...form.getInputProps('maxDaysInAdvance')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.maxDaysInAdvance ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
         />
-      </Stack>
+      </div>
 
-      <Divider my="xl" />
-
-      <Stack spacing="sm" mb="xl">
-        <Title order={4}>SMTP Settings</Title>
-        <Tooltip label="Adres serwera SMTP, np. smtp.gmail.com" withArrow>
-          <TextInput
-            label="SMTP Host"
-            value={smtpSettings.host}
-            onChange={(e) =>
-              setSmtpSettings((s) => ({ ...s, host: e.target.value }))
-            }
-          />
-        </Tooltip>
-        <Tooltip label="Port serwera SMTP, zwykle 587 lub 465" withArrow>
-          <NumberInput
-            label="SMTP Port"
-            min={1}
-            max={65535}
-            value={smtpSettings.port}
-            onChange={(val) =>
-              setSmtpSettings((s) => ({ ...s, port: val ?? 0 }))
-            }
-          />
-        </Tooltip>
+      <div className="settings__section">
+        <h3 className="settings__section-title">SMTP Settings</h3>
+        <TextInput
+          label="SMTP Host"
+          {...form.getInputProps('host')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.host ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
+        />
+        <NumberInput
+          label="SMTP Port"
+          min={1} max={65535}
+          {...form.getInputProps('port')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.port ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
+        />
         <Checkbox
           label="Use Secure (SSL/TLS)"
-          checked={smtpSettings.secure}
-          onChange={(e) =>
-            setSmtpSettings((s) => ({ ...s, secure: e.currentTarget.checked }))
-          }
+          {...form.getInputProps('secure', { type: 'checkbox' })}
+          className="settings__checkbox"
         />
-        <Tooltip label="Nazwa użytkownika do logowania do SMTP" withArrow>
-          <TextInput
-            label="SMTP User"
-            value={smtpSettings.user}
-            onChange={(e) =>
-              setSmtpSettings((s) => ({ ...s, user: e.target.value }))
-            }
-          />
-        </Tooltip>
-        <Tooltip label="Hasło do SMTP" withArrow>
-          <PasswordInput
-            label="SMTP Password"
-            value={smtpSettings.pass}
-            onChange={(e) =>
-              setSmtpSettings((s) => ({ ...s, pass: e.target.value }))
-            }
-          />
-        </Tooltip>
-      </Stack>
+        <TextInput
+          label="SMTP User"
+          {...form.getInputProps('user')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.user ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
+        />
+        <TextInput
+          label="SMTP Password"
+          type="password"
+          {...form.getInputProps('pass')}
+          classNames={{
+            root: 'settings__field',
+            input: `settings__input ${form.errors.pass ? 'settings__input--error' : ''}`,
+            label: 'settings__label'
+          }}
+        />
+      </div>
 
-
-      <Button fullWidth mt="xl" onClick={saveSettings}>
-        Save Settings
-      </Button>
-      <Button variant="outline"  fullWidth mt="xl" onClick={() => window.history.back()}>
-        Back
-      </Button>
-    </Container>
+      <div className="settings__buttons">
+        <Button type="button" variant="default" onClick={() => window.history.back()}>Back</Button>
+        <Button type="submit">Save Settings</Button>
+      </div>
+    </form>
   );
 }

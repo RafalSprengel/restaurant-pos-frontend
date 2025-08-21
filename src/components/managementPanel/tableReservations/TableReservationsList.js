@@ -1,22 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import {
-  Table,
-  Button,
-  Text,
-  Stack,
-  Container,
-  Title,
-  Pagination,
-  TextInput,
-  Group,
-  Center,
-  ScrollArea,
-  Skeleton,
-} from '@mantine/core';
-import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import api from '../../../utils/axios';
+import './TableReservationsList.scss';
 
 const TableReservationsList = () => {
   const [reservations, setReservations] = useState([]);
@@ -28,6 +14,8 @@ const TableReservationsList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [reservationToDelete, setReservationToDelete] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -56,10 +44,10 @@ const TableReservationsList = () => {
     try {
       setDeletingId(_id);
       await api.delete(`/tables/reservations/${_id}`);
-      notifications.show({ title: 'Success', message: 'Element deleted!', color: 'green' });
+      setShowModal(false);
     } catch (err) {
       console.error(err);
-      notifications.show({ title: 'Error', message: 'Cannot delete element!', color: 'red' });
+      setErrorMessage('Cannot delete element!');
     } finally {
       setDeletingId(null);
       getReservations();
@@ -68,12 +56,8 @@ const TableReservationsList = () => {
 
   const openDeleteModal = (e, _id) => {
     e.stopPropagation();
-    modals.openConfirmModal({
-      title: 'Please confirm your action',
-      children: <Text size="sm">Do you really want to delete this reservation?</Text>,
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () => handleDelete(_id),
-    });
+    setReservationToDelete(_id);
+    setShowModal(true);
   };
 
   const handleSearchChange = (e) => {
@@ -106,12 +90,13 @@ const TableReservationsList = () => {
     navigate(`${_id}`);
   };
 
-  const SortArrow = ({ criteria }) => {
-    const arrow = () => {
-      if (criteria === sortCriteria) return sortOrder === 'desc' ? '▼' : '▲';
-      return '•';
-    };
-    return <>{arrow()}</>;
+  const SortIcon = ({ criteria }) => {
+    if (criteria !== sortCriteria) return null;
+    return sortOrder === 'desc' ? (
+      <IconSortDescending size={16} className="table-reservations-list-sort-icon" />
+    ) : (
+      <IconSortAscending size={16} className="table-reservations-list-sort-icon" />
+    );
   };
 
   useEffect(() => {
@@ -126,99 +111,92 @@ const TableReservationsList = () => {
   }, [location.search]);
 
   const rows = reservations.map((r) => (
-    <Table.Tr key={r._id} onClick={() => handleRowClick(r._id)} style={{ cursor: 'pointer' }}>
-      <Table.Td>{r.tableNumber}</Table.Td>
-      <Table.Td>{r.timeSlot.start}</Table.Td>
-      <Table.Td>{r.customerDetails.name}</Table.Td>
-      <Table.Td>{r.customerDetails.email}</Table.Td>
-      <Table.Td>
-        <Button onClick={(e) => openDeleteModal(e, r._id)} disabled={deletingId === r._id} size="xs" color="red">
-          {deletingId === r._id ? 'Deleting...' : 'Delete'}
-        </Button>
-      </Table.Td>
-    </Table.Tr>
+    <tr key={r._id} onClick={() => handleRowClick(r._id)} style={{ cursor: 'pointer' }}>
+      <td>{r.tableNumber}</td>
+      <td>{r.timeSlot.start}</td>
+      <td>{r.customerDetails.name}</td>
+      <td>{r.customerDetails.email}</td>
+      <td className="table-reservations-list-table-cell--actions">
+        <button className="table-reservations-list-delete-button" onClick={(e) => openDeleteModal(e, r._id)} disabled={deletingId === r._id}>
+          {deletingId === r._id ? 'Deleting...' : <IconTrash size={16} />}
+        </button>
+      </td>
+    </tr>
   ));
 
-  const skeletonRows = Array(5)
-    .fill(0)
-    .map((_, index) => (
-      <Table.Tr key={index}>
-        <Table.Td>
-          <Skeleton height={20} radius="sm" />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={20} radius="sm" />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={20} radius="sm" />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={20} radius="sm" />
-        </Table.Td>
-        <Table.Td>
-          <Skeleton height={24} width={60} radius="sm" />
-        </Table.Td>
-      </Table.Tr>
-    ));
-
   return (
-    <Container w={'100%'}>
-      <Stack>
-        <Title order={2}>Reservations</Title>
+    <div className="table-reservations-list-container">
+      <div className="table-reservations-list-header">
+        <h2 className="table-reservations-list-header__title">Reservations</h2>
+        <div className="table-reservations-list-controls">
+          <div className="table-reservations-list-controls__search">
+            <IconSearch size={16} />
+            <input
+              className="table-reservations-list-controls__search-input"
+              type="text"
+              placeholder="Search by name, email or table no..."
+              value={searchString}
+              onChange={handleSearchChange}
+            />
+          </div>
+        </div>
+      </div>
 
-        <Group align="center" justify="space-between" mb="md">
-          <TextInput
-            value={searchString}
-            onChange={handleSearchChange}
-            placeholder="Search by name, email or table no..."
-            style={{ maxWidth: 400 }}
-          />
-        </Group>
+      {errorMessage && (
+        <div className="table-reservations-list-error-message">
+          <p>{errorMessage}</p>
+        </div>
+      )}
 
-        {errorMessage ? (
-          <Text color="red">{errorMessage}</Text>
-        ) : (
-          <>
-            <ScrollArea>
-              <Table striped withTableBorder highlightOnHover  style={{ width: '100%' }}>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th data-name="tableNumber" onClick={handleSort} style={{ cursor: 'pointer' }}>
-                      Table No. <SortArrow criteria="tableNumber" />
-                    </Table.Th>
-                    <Table.Th data-name="timeSlot.start" onClick={handleSort} style={{ cursor: 'pointer' }}>
-                      Date <SortArrow criteria="timeSlot.start" />
-                    </Table.Th>
-                    <Table.Th data-name="customerDetails.name" onClick={handleSort} style={{ cursor: 'pointer' }}>
-                      Name <SortArrow criteria="customerDetails.name" />
-                    </Table.Th>
-                    <Table.Th data-name="customerDetails.email" onClick={handleSort} style={{ cursor: 'pointer' }}>
-                      Email <SortArrow criteria="customerDetails.email" />
-                    </Table.Th>
-                    <Table.Th>Options</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{isLoading ? skeletonRows : rows}</Table.Tbody>
-              </Table>
-            </ScrollArea>
+      {isLoading ? (
+        <div className="table-reservations-list-loader">
+          <p>Loading...</p>
+        </div>
+      ) : reservations?.length > 0 ? (
+        <div className="table-reservations-list-table-wrapper">
+          <table className="table-reservations-list-table">
+            <thead>
+              <tr>
+                <th onClick={handleSort} data-name="tableNumber">Table No. <SortIcon criteria="tableNumber" /></th>
+                <th onClick={handleSort} data-name="timeSlot.start">Date <SortIcon criteria="timeSlot.start" /></th>
+                <th onClick={handleSort} data-name="customerDetails.name">Name <SortIcon criteria="customerDetails.name" /></th>
+                <th onClick={handleSort} data-name="customerDetails.email">Email <SortIcon criteria="customerDetails.email" /></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="table-reservations-list-message">No reservations found.</p>
+      )}
 
-            {!isLoading && (
-              <Center mt="lg">
-                <Pagination
-                  total={totalPages}
-                  page={currentPage}
-                  onChange={handlePageChange}
-                  boundaries={1}
-                  siblings={1}
-                  size="md"
-                  withEdges
-                />
-              </Center>
-            )}
-          </>
-        )}
-      </Stack>
-    </Container>
+      {totalPages > 1 && (
+        <div className="table-reservations-list-pagination">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              className={`table-reservations-list-pagination-button ${currentPage === page ? 'table-reservations-list-pagination-button--active' : ''}`}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {showModal && (
+        <div className="table-reservations-list-modal">
+          <div className="table-reservations-list-modal-content">
+            <p>Do you really want to delete this reservation?</p>
+            <div className="table-reservations-list-modal-buttons">
+              <button className="table-reservations-list-modal-button" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="table-reservations-list-modal-button table-reservations-list-modal-button--delete" onClick={() => handleDelete(reservationToDelete)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

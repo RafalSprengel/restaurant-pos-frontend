@@ -1,0 +1,81 @@
+.add-customer {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+
+  &-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &__title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    &__notification {
+      background-color: #fff5f5;
+      border: 1px solid #c92a2a;
+      border-radius: 4px;
+      padding: 12px;
+      color: #c92a2a;
+      margin-bottom: 24px;
+
+      &--error {
+        color: #c92a2a;
+      }
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    &__label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #495057;
+    }
+
+    &__input {
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 1rem;
+
+      &--error{
+        border: 1px solid #c92a2a;
+        color: #c92a2a;
+      }
+
+      &:disabled {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+      }
+    }
+
+    &__submit {
+      padding: 10px;
+      background-color: #228be6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #1c7ed6;
+      }
+
+      &:disabled {
+        background-color: #ced4da;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

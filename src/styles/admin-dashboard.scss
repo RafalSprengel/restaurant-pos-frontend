@@ -1,0 +1,101 @@
+/* Block: admin-dashboard */
+.admin-dashboard {
+  padding: 2rem;
+  background-color: #f9fafb;
+  font-family: Arial, sans-serif;
+  min-width: 80%;
+}
+
+/* Title */
+.admin-dashboard__title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* Error Message */
+.admin-dashboard__error {
+  color: red;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Status Section */
+.admin-dashboard__status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-dashboard__status-card {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  &-title {
+    font-size: 1.125rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #1e293b;
+  }
+
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+
+    span:last-child {
+      font-weight: bold;
+      color: #334155;
+    }
+  }
+}
+
+/* Section Titles */
+.admin-dashboard__section-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #1e293b;
+}
+
+/* Tables */
+.admin-dashboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+
+  thead {
+    background-color: #f3f4f6;
+    color: #334155;
+    text-align: left;
+
+    th {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #e5e7eb;
+
+      &:hover {
+        background-color: #f9fafb;
+      }
+
+      td {
+        padding: 0.75rem;
+        color: #4b5563;
+      }
+    }
+  }
+}

@@ -22,7 +22,7 @@ import { Notifications } from '@mantine/notifications';
 import { ShoppingCartProvider } from './context/ShoppingCartContext.js';
 import { UnreadMessagesProvider } from './context/UnreadMessagesProvider.js';
 
-import Dashboard from './components/managementPanel/Dashboard.js';
+import AdminDashboard from './components/managementPanel/AdminDashboard.js';
 import AddCategory from './components/managementPanel/categories/AddCategory.js';
 import AddProduct from './components/managementPanel/products/AddProduct.js';
 import AddCustomer from './components/managementPanel/customers/AddCustomer.js';
@@ -74,7 +74,7 @@ function App() {
                                              <ManagementPanel />
                                         </UnreadMessagesProvider>
                                    }>
-                                        <Route index element={<Dashboard />} />
+                                        <Route index element={<AdminDashboard />} />
                                         <Route path="products" element={<ProductsList />} />
                                         <Route path="products/:id" element={<UpdateProduct />} />
                                         <Route path="add-product" element={<AddProduct />} />

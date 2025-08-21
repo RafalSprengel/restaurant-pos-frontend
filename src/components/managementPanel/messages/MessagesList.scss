@@ -1,0 +1,159 @@
+.messages-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.messages-list-header {
+  margin-bottom: 24px;
+}
+
+.messages-list-header__title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.messages-list-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.messages-list-controls__search-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.messages-list-controls__search-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.messages-list-controls__select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.messages-list-delete-button {
+  padding: 8px 16px;
+  background-color: #fa5252;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #e03131;
+  }
+
+  &:disabled {
+    background-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+  }
+}
+
+.messages-list-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.messages-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.messages-list-table th,
+.messages-list-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.messages-list-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.messages-list-table tr:hover {
+  background-color: #f1f3f5;
+}
+
+.messages-list-sort-icon {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.messages-list-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.messages-list-pagination-button {
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.messages-list-pagination-button--active {
+  background-color: #228be6;
+  color: white;
+  border-color: #228be6;
+}
+
+.messages-list-modal {
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  margin: 100px auto;
+}
+
+.messages-list-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.messages-list-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.25rem;
+  color: #868e96;
+}
+
+.messages-list-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.messages-list-error-message {
+  padding: 16px;
+  background-color: #fff5f5;
+  color: #c92a2a;
+  border: 1px solid #c92a2a;
+  border-radius: 4px;
+}

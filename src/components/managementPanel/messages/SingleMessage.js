@@ -1,13 +1,9 @@
 import { useParams } from 'react-router-dom';
-import { Button, Group, Text, Textarea, TextInput, Stack } from "@mantine/core";
-import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
 import { useFetch } from "../../../hooks/useFetch.js";
 import api from '../../../utils/axios.js';
 import { useEffect, useState } from 'react';
 import "../../../styles/single-message.scss";
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
-
 
 const SingleMessage = () => {
   const { id } = useParams();
@@ -15,60 +11,28 @@ const SingleMessage = () => {
   const [showReply, setShowReply] = useState(false);
   const [replySubject, setReplySubject] = useState('');
   const [replyBody, setReplyBody] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const { unreadMessageCount, refetchUnreadCount } = useUnreadMessages();
 
   const handleBack = () => {
     window.history.back();
   };
 
-  const openDeleteModal = (id) => {
-    modals.openConfirmModal({
-      title: 'Please confirm your action',
-      size: 'sm',
-      radius: 'md',
-      withCloseButton: false,
-      children: (
-        <Text size="sm">
-          Do you really want to delete this message?
-        </Text>
-      ),
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onCancel: () => { },
-      onConfirm: () => handleDelete(id),
-    });
-  };
-
-  const openSuccessNotification = (msg = 'Message deleted!') => {
-    notifications.show({
-      title: 'Success',
-      message: msg,
-      color: 'green',
-    });
-  };
-
-  const openErrorNotification = (msg = 'Cannot perform action!') => {
-    notifications.show({
-      title: 'Error',
-      message: msg,
-      color: 'red',
-      autoClose: 4000,
-      withCloseButton: true,
-    });
+  const openDeleteModal = () => {
+    setShowModal(true);
   };
 
   const handleDelete = async (id) => {
     try {
       await api.delete(`/messages/${id}`);
-      openSuccessNotification();
       handleBack();
     } catch (err) {
-      openErrorNotification();
+      console.log(err);
     }
   };
 
   const handleSendReply = async () => {
     if (!replySubject.trim() || !replyBody.trim()) {
-      openErrorNotification('Subject and body are required.');
       return;
     }
 
@@ -82,12 +46,11 @@ const SingleMessage = () => {
         type: 'sent',
       });
 
-      openSuccessNotification('Reply sent successfully!');
       setShowReply(false);
       setReplySubject('');
       setReplyBody('');
     } catch (err) {
-      openErrorNotification('Failed to send reply.');
+      console.log(err);
     }
   };
 
@@ -137,41 +100,55 @@ return (
           <p className="single-message__value">{data.body}</p>
         </div>
 
-        <Group justify="center" spacing="md" mt="md">
-          <Button variant="default" onClick={handleBack}>
+        <div className="single-message__buttons">
+          <button className="single-message__button" onClick={handleBack}>
             Back
-          </Button>
-          <Button color="red" onClick={() => openDeleteModal(id)}>
+          </button>
+          <button className="single-message__button single-message__button--delete" onClick={openDeleteModal}>
             Delete
-          </Button>
+          </button>
           {data.type === 'received' && (
-            <Button onClick={() => {
+            <button className="single-message__button" onClick={() => {
               setShowReply(!showReply);
               setReplySubject(`Re: ${data.subject}`);
             }}>
               {showReply ? 'Cancel' : 'Reply'}
-            </Button>
+            </button>
           )}
-        </Group>
+        </div>
 
         {showReply && (
-          <Stack mt="xl">
-            <TextInput
-              label="Subject"
+          <div className="single-message__reply-form">
+            <input
+              type="text"
+              className="single-message__reply-input"
+              placeholder="Subject"
               value={replySubject}
               onChange={(e) => setReplySubject(e.currentTarget.value)}
             />
-            <Textarea
-              label="Message"
+            <textarea
+              className="single-message__reply-textarea"
+              placeholder="Message"
               value={replyBody}
               onChange={(e) => setReplyBody(e.currentTarget.value)}
-              minRows={6}
+              rows={6}
             />
-            <Button onClick={handleSendReply}>Send</Button>
-          </Stack>
+            <button className="single-message__button" onClick={handleSendReply}>Send</button>
+          </div>
         )}
       </>
     )}
+    {showModal && (
+        <div className="single-message__modal">
+          <div className="single-message__modal-content">
+            <p>Are you sure you want to delete this message?</p>
+            <div className="single-message__modal-buttons">
+              <button className="single-message__button" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="single-message__button single-message__button--delete" onClick={() => handleDelete(id)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
   </div>
 );
 };

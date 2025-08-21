@@ -1,158 +1,202 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../../../utils/axios.js';
-import {
-     Button,
-     Checkbox,
-     Group,
-     Input,
-     LoadingOverlay,
-     Select,
-     Stack,
-     Textarea,
-     Title,
-     Text,
-     Notification
-} from '@mantine/core';
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useForm } from '@mantine/form'
+import { Input, Textarea, Select, Checkbox, Button, Notification, Loader, Center } from '@mantine/core'
+import api from '../../../utils/axios.js'
+import './addProduct.scss'
 
 const AddProduct = () => {
-     const [categories, setCategories] = useState([]);
-     const [isLoading, setIsLoading] = useState(true);
-     const [errorMessage, setErrorMessage] = useState('');
-     const [formData, setFormData] = useState({
-          name: '',
-          desc: '',
-          price: '',
-          image: '',
-          category: '',
-          isFeatured: false,
-          ingredients: '',
-          isVegetarian: false,
-          isGlutenFree: false,
-          isAvailable: true,
-     });
+  const [categories, setCategories] = useState([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
+  const navigate = useNavigate()
 
-     const navigate = useNavigate();
+  const form = useForm({
+    initialValues: {
+      name: '',
+      desc: '',
+      price: '',
+      image: '',
+      category: '',
+      ingredients: '',
+      isFeatured: false,
+      isVegetarian: false,
+      isGlutenFree: false,
+      isAvailable: true,
+    },
+    validate: {
+      name: (value) => (value.trim().length > 0 ? null : 'Product name is required'),
+      price: (value) =>
+        !isNaN(parseFloat(value)) && parseFloat(value) > 0
+          ? null
+          : 'Price must be a positive number',
+      category: (value) => (value ? null : 'Category is required'),
+    },
+    validateInputOnBlur: true,
+  })
 
-     const handleChange = (e) => {
-          const { name, value, type, checked } = e.target;
-          setFormData((prev) => ({
-               ...prev,
-               [name]: type === 'checkbox' ? checked : value,
-          }));
-     };
+  const getCategories = async () => {
+    try {
+      const response = await api.get('/product-categories')
+      if (response.status === 200) {
+        setCategories(response.data)
+      } else {
+        setErrorMessage(`Failed to load categories (${response.data.error})`)
+      }
+    } catch (e) {
+      setErrorMessage(`Connection error (${e.response?.data?.error || e.message})`)
+    } finally {
+      setLoadingCategories(false)
+    }
+  }
 
-     const handleSubmit = async (e) => {
-          e.preventDefault();
-          const dataToSend = {
-               ...formData,
-               price: parseFloat(formData.price),
-               ingredients: formData.ingredients.split(',').map((item) => item.trim()),
-               category: formData.category,
-          };
-          try {
-               const response = await api.post('/products/', JSON.stringify(dataToSend));
-               if (response.status === 201) {
-                    if (window.confirm('Product added successfully!')) {
-                         navigate(-1);
-                    }
-               } else {
-                    setErrorMessage(`Failed to save the product (${response.data.error})`);
-               }
-          } catch (e) {
-               setErrorMessage(`Error while saving... (${e.response?.data?.error || e.message})`);
-          }
-     };
+  useEffect(() => {
+    getCategories()
+  }, [])
 
-     const getCategories = async () => {
-          try {
-               setErrorMessage(null);
-               const response = await api.get('/product-categories');
-               if (response.status === 200) {
-                    setCategories(response.data);
-               } else {
-                    setErrorMessage(`Failed to load categories. (${response.data.error})`);
-               }
-          } catch (error) {
-               setErrorMessage(`Connection error (${error.response?.data?.error || error.message})`);
-          } finally {
-               setIsLoading(false);
-          }
-     };
+  const handleSubmit = async (values) => {
+    const dataToSend = {
+      ...values,
+      price: parseFloat(values.price),
+      ingredients: values.ingredients.split(',').map((i) => i.trim()),
+    }
 
-     useEffect(() => {
-          getCategories();
-     }, []);
+    try {
+      const response = await api.post('/products/', JSON.stringify(dataToSend))
+      if (response.status === 201) {
+        if (window.confirm('Product added successfully!')) {
+          navigate(-1)
+        }
+      } else {
+        setErrorMessage(`Failed to save product (${response.data.error})`)
+      }
+    } catch (e) {
+      setErrorMessage(`Error while saving... (${e.response?.data?.error || e.message})`)
+    }
+  }
 
-     return (
-          <div style={{ position: 'relative' }}>
-               <LoadingOverlay visible={isLoading} overlayBlur={1} />
-               {!isLoading && (
-                    <form onSubmit={handleSubmit}>
-                         <Stack spacing="md">
-                              <Title order={2}>Add a New Product</Title>
-                              {errorMessage && <Notification color="red">{errorMessage}</Notification>}
+  if (loadingCategories)
+    return (
+      <Center style={{ minHeight: '200px' }}>
+        <Loader size="xl" />
+      </Center>
+    )
 
-                              <Input.Wrapper label="Name" required>
-                                   <Input name="name" value={formData.name} onChange={handleChange} required />
-                              </Input.Wrapper>
+  return (
+    <div className="add-product">
+      <form className="add-product-form" onSubmit={form.onSubmit(handleSubmit)}>
+        {errorMessage && <Notification color="red">{errorMessage}</Notification>}
 
-                              <Textarea label="Description" name="desc" value={formData.desc} onChange={handleChange} />
+        <Input
+          label="Name"
+          placeholder="Product Name"
+          {...form.getInputProps('name')}
+          error={form.errors.name}
+          classNames={{
+            root: 'add-product-form__field',
+            input: `add-product-form__input ${form.errors.name ? 'add-product-form__input--error' : ''}`,
+            label: 'add-product-form__label',
+          }}
+        />
 
-                              <Input.Wrapper label="Price" required>
-                                   <Input type="number" name="price" step="0.01" value={formData.price} onChange={handleChange} required />
-                              </Input.Wrapper>
+        <Textarea
+          label="Description"
+          placeholder="Product description"
+          {...form.getInputProps('desc')}
+          classNames={{
+            root: 'add-product-form__field',
+            input: 'add-product-form__input',
+            label: 'add-product-form__label',
+          }}
+        />
 
-                              <Input.Wrapper label="Image URL">
-                                   <Input name="image" value={formData.image} onChange={handleChange} />
-                              </Input.Wrapper>
+        <Input
+          label="Price"
+          placeholder="0.00"
+          type="number"
+          step="0.01"
+          {...form.getInputProps('price')}
+          error={form.errors.price}
+          classNames={{
+            root: 'add-product-form__field',
+            input: `add-product-form__input ${form.errors.price ? 'add-product-form__input--error' : ''}`,
+            label: 'add-product-form__label',
+          }}
+        />
 
-                              <Select
-                                   label="Category"
-                                   data={categories.map((c) => ({ value: c._id, label: c.name }))}
-                                   name="category"
-                                   value={formData.category}
-                                   onChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
-                                   required
-                              />
+        <Input
+          label="Image URL"
+          placeholder="http://..."
+          {...form.getInputProps('image')}
+          classNames={{
+            root: 'add-product-form__field',
+            input: 'add-product-form__input',
+            label: 'add-product-form__label',
+          }}
+        />
 
-                              <Input.Wrapper label="Ingredients (comma-separated)">
-                                   <Input name="ingredients" value={formData.ingredients} onChange={handleChange} />
-                              </Input.Wrapper>
+        <Select
+          label="Category"
+          placeholder="Select category"
+          data={categories.map((c) => ({ value: c._id, label: c.name }))}
+          {...form.getInputProps('category')}
+          error={form.errors.category}
+          classNames={{
+            root: 'add-product-form__field',
+            input: `add-product-form__input ${form.errors.category ? 'add-product-form__input--error' : ''}`,
+            label: 'add-product-form__label',
+          }}
+        />
 
-                              <Group>
-                                   <Checkbox
-                                        label="Is Featured"
-                                        name="isFeatured"
-                                        checked={formData.isFeatured}
-                                        onChange={handleChange}
-                                   />
-                                   <Checkbox
-                                        label="Is Vegetarian"
-                                        name="isVegetarian"
-                                        checked={formData.isVegetarian}
-                                        onChange={handleChange}
-                                   />
-                                   <Checkbox
-                                        label="Is Gluten-Free"
-                                        name="isGlutenFree"
-                                        checked={formData.isGlutenFree}
-                                        onChange={handleChange}
-                                   />
-                                   <Checkbox
-                                        label="Is Available"
-                                        name="isAvailable"
-                                        checked={formData.isAvailable}
-                                        onChange={handleChange}
-                                   />
-                              </Group>
+        <Input
+          label="Ingredients (comma-separated)"
+          placeholder="ingredient1, ingredient2"
+          {...form.getInputProps('ingredients')}
+          classNames={{
+            root: 'add-product-form__field',
+            input: 'add-product-form__input',
+            label: 'add-product-form__label',
+          }}
+        />
 
-                              <Button type="submit">Save Product</Button>
-                         </Stack>
-                    </form>
-               )}
-          </div>
-     );
-};
+        <Checkbox
+          label="Is Featured"
+          {...form.getInputProps('isFeatured', { type: 'checkbox' })}
+          classNames={{
+            root: 'add-product-form__field',
+          }}
+        />
 
-export default AddProduct;
+        <Checkbox
+          label="Is Vegetarian"
+          {...form.getInputProps('isVegetarian', { type: 'checkbox' })}
+          classNames={{
+            root: 'add-product-form__field',
+          }}
+        />
+
+        <Checkbox
+          label="Is Gluten-Free"
+          {...form.getInputProps('isGlutenFree', { type: 'checkbox' })}
+          classNames={{
+            root: 'add-product-form__field',
+          }}
+        />
+
+        <Checkbox
+          label="Is Available"
+          {...form.getInputProps('isAvailable', { type: 'checkbox' })}
+          classNames={{
+            root: 'add-product-form__field',
+          }}
+        />
+
+        <Button type="submit" className="add-product-form__submit">
+          Save Product
+        </Button>
+      </form>
+    </div>
+  )
+}
+
+export default AddProduct

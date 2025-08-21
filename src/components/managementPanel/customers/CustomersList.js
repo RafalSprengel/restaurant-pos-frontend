@@ -1,20 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useAuth } from '../../../context/authContext';
-import api from '../../../utils/axios';
-import {
-  Group,
-  Button,
-  Center,
-  Alert,
-  Modal,
-  Pagination,
-  TextInput,
-  Table,
-  Text,
-  Loader
-} from '@mantine/core';
+import api from '../../../utils/axios.js';
+import { useAuth } from '../../../context/authContext.js';
+import './customersList.scss';
 
 const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
@@ -143,38 +132,48 @@ const CustomersList = () => {
 
   if (loading) {
     return (
-      <Center style={{ height: '60vh' }}>
-        <Loader size="md" />
-      </Center>
+      <div className="customers-list-loader">
+        <p>Loading...</p>
+      </div>
     );
   }
 
   return (
-    <>
-      <Text size="xl" weight={700} mb="md">Customers</Text>
-      <Group position="apart" mb="md">
+    <div className="customers-list">
+      {/* Header */}
+      <h2 className="customers-list__title">Customers</h2>
+
+      <div className="customers-list__controls">
         {isVisible.addNewButt && (
-          <Button onClick={() => navigate('/management/add-customer')}>Add customer</Button>
+          <button
+            className="customers-list__add-btn"
+            onClick={() => navigate('/management/add-customer')}
+          >
+            Add customer
+          </button>
         )}
-        <Group spacing="xs">
-          <Text>find customer:</Text>
-          <TextInput
-            placeholder="search..."
+        <div className="customers-list__search">
+          <span>Find customer:</span>
+          <input
+            className="customers-list__search-input"
+            type="text"
+            placeholder="Search..."
             value={searchString}
             onChange={handleSearchChange}
           />
-        </Group>
-      </Group>
+        </div>
+      </div>
 
+      {/* Error Notification */}
       {error && (
-        <Alert title="Error" color="red" mb="md">
-          {error}
-        </Alert>
+        <div className="customers-list__notification customers-list__notification--error">
+          <p>{error}</p>
+        </div>
       )}
 
       {customers.length > 0 ? (
         <>
-          <Table striped highlightOnHover withBorder>
+          <table className="customers-list__table">
             <thead>
               <tr>
                 <th data-name="customerNumber" onClick={handleSort}>
@@ -205,7 +204,11 @@ const CustomersList = () => {
               {customers.map((customer) => {
                 const formattedDate = dayjs(customer.createdAt).format('DD/MM/YYYY');
                 return (
-                  <tr key={customer._id} onClick={() => handleRowClick(customer._id)} style={{ cursor: 'pointer' }}>
+                  <tr
+                    key={customer._id}
+                    className="customers-list__row"
+                    onClick={() => handleRowClick(customer._id)}
+                  >
                     <td>{customer.customerNumber}</td>
                     <td>{customer.name}</td>
                     <td>{customer.surname}</td>
@@ -215,32 +218,65 @@ const CustomersList = () => {
                     <td>{customer.isRegistered ? 'Yes' : 'No'}</td>
                     <td>
                       {isVisible.deleteButt && (
-                        <Button color="red" size="xs" onClick={(e) => handleConfirmDelete(e, customer._id)}>
+                        <button
+                          className="customers-list__delete-btn"
+                          onClick={(e) => handleConfirmDelete(e, customer._id)}
+                        >
                           Delete
-                        </Button>
+                        </button>
                       )}
                     </td>
                   </tr>
                 );
               })}
             </tbody>
-          </Table>
-          <Center mt="md">
-            <Pagination total={totalPages} page={currentPage} onChange={handlePageChange} />
-          </Center>
+          </table>
+
+          {/* Pagination */}
+          <div className="customers-list__pagination">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                className={`customers-list__pagination-btn ${
+                  currentPage === page ? 'customers-list__pagination-btn--active' : ''
+                }`}
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
         </>
       ) : (
-        <Alert color="blue" title="Info">No customers found.</Alert>
+        <div className="customers-list__message">
+          <p>No customers found.</p>
+        </div>
       )}
 
-      <Modal opened={showModal} onClose={() => setShowModal(false)} title="Confirm Deletion" centered>
-        <Text>Are you sure you want to delete this customer?</Text>
-        <Group position="apart" mt="md">
-          <Button variant="default" onClick={() => setShowModal(false)}>Close</Button>
-          <Button color="red" onClick={deleteCustomer}>Confirm Delete</Button>
-        </Group>
-      </Modal>
-    </>
+      {/* Delete Confirmation Modal */}
+      {showModal && (
+        <div className="customers-list__modal">
+          <div className="customers-list__modal-content">
+            <h3 className="customers-list__modal-title">Confirm Deletion</h3>
+            <p>Are you sure you want to delete this customer?</p>
+            <div className="customers-list__modal-actions">
+              <button
+                className="customers-list__modal-btn customers-list__modal-btn--cancel"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="customers-list__modal-btn customers-list__modal-btn--delete"
+                onClick={deleteCustomer}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

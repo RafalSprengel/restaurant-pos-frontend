@@ -1,156 +1,148 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/authContext';
-import api from '../../../utils/axios';
-import {
-     TextInput,
-     NumberInput,
-     FileInput,
-     Button,
-     Stack,
-     Title,
-     Notification,
-} from '@mantine/core';
-import { IconX } from '@tabler/icons-react';
+import React, { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useForm } from '@mantine/form'
+import { TextInput, NumberInput, Button, Loader, Center } from '@mantine/core'
+import api from '../../../utils/axios.js'
+import { useAuth } from '../../../context/authContext.js'
+import './updateCategory.scss'
 
 const UpdateCategory = () => {
-     const { id } = useParams();
-     const [isLoading, setIsLoading] = useState(false);
-     const [showErrorAlert, setShowErrorAlert] = useState(false);
-     const [errorMessage, setErrorMessage] = useState('');
-     const navigate = useNavigate();
-     const [formData, setFormData] = useState({
-          name: '',
-          index: '',
-          image: null,
-     });
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { user } = useAuth('staff')
+  const isEditable = ['admin', 'moderator'].includes(user.role)
+  const [isLoading, setIsLoading] = useState(false)
+  const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [imageFile, setImageFile] = useState(null)
 
-     const { user } = useAuth('staff');
-     const isEditable = ['admin', 'moderator'].includes(user.role);
+  const form = useForm({
+    initialValues: { name: '', index: '' },
+    validate: {
+      name: (value) => (value.trim() === '' ? 'Name is required' : null),
+      index: (value) => (value === '' || value < 0 ? 'Index must be positive' : null),
+    },
+    validateInputOnBlur: true,
+  })
 
-     const getCategory = async () => {
-          try {
-               setIsLoading(true);
-               const response = await api.get(`/product-categories/${id}`);
-               if (response.status === 200) {
-                    setFormData({
-                         name: response.data.name || '',
-                         index: response.data.index || '',
-                         image: null,
-                    });
-               } else {
-                    throw new Error('Failed to fetch category');
-               }
-          } catch (error) {
-               console.error('Error: ' + (error.response ? error.response.data.error : error.message));
-          } finally {
-               setIsLoading(false);
-          }
-     };
+  const getCategory = async () => {
+    try {
+      setIsLoading(true)
+      const res = await api.get(`/product-categories/${id}`)
+      if (res.status === 200) {
+        form.setValues({
+          name: res.data.name || '',
+          index: res.data.index || '',
+        })
+      } else throw new Error('Failed to fetch category')
+    } catch (err) {
+      setShowErrorAlert(true)
+      setErrorMessage(err.response?.data?.error || err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-     const handleChange = (field) => (value) => {
-          setShowErrorAlert(false);
-          setErrorMessage('');
-          setFormData((prev) => ({
-               ...prev,
-               [field]: value,
-          }));
-     };
+  useEffect(() => {
+    getCategory()
+  }, [])
 
-     const handleFileChange = (file) => {
-          setShowErrorAlert(false);
-          setErrorMessage('');
-          setFormData((prev) => ({
-               ...prev,
-               image: file,
-          }));
-     };
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0])
+  }
 
-     const handleSubmit = async (e) => {
-          e.preventDefault();
-          const formDataToSend = new FormData();
-          formDataToSend.append('name', formData.name);
-          formDataToSend.append('index', formData.index);
-          if (formData.image) {
-               formDataToSend.append('image', formData.image);
-          }
+  const handleSubmit = async (values) => {
+    setIsLoading(true)
+    setShowErrorAlert(false)
+    try {
+      const formDataToSend = new FormData()
+      formDataToSend.append('name', values.name)
+      formDataToSend.append('index', values.index)
+      if (imageFile) formDataToSend.append('image', imageFile)
 
-          try {
-               setIsLoading(true);
-               const response = await api.put(`/product-categories/${id}`, formDataToSend);
-               if (response.status === 200) {
-                    navigate('/management/categories');
-               } else {
-                    setShowErrorAlert(true);
-                    setErrorMessage(response.data.error || 'Failed to save the category.');
-               }
-          } catch (error) {
-               setShowErrorAlert(true);
-               setErrorMessage(error.response ? error.response.data.error : error.message || 'Failed to save the category.');
-          } finally {
-               setIsLoading(false);
-          }
-     };
+      const res = await api.put(`/product-categories/${id}`, formDataToSend)
+      if (res.status === 200) navigate('/management/categories')
+      else {
+        setShowErrorAlert(true)
+        setErrorMessage(res.data?.error || 'Failed to update category')
+      }
+    } catch (err) {
+      setShowErrorAlert(true)
+      setErrorMessage(err.response?.data?.error || 'An error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-     useEffect(() => {
-          getCategory();
-     }, []);
+  if (isLoading)
+    return (
+      <Center className="update-category__center">
+        <Loader size="md" />
+      </Center>
+    )
 
-     return (
-          <form onSubmit={handleSubmit} style={{ width:'100%', margin: '0 auto' }}>
-               <Stack spacing="md" >
-                    <Title order={2}>Update existing category</Title>
+  return (
+    <div className="update-category">
+      <h2 className="update-category__title">Update Category</h2>
 
-                    {showErrorAlert && (
-                         <Notification
-                              icon={<IconX size={18} />}
-                              color="red"
-                              onClose={() => setShowErrorAlert(false)}
-                              title="Error"
-                         >
-                              {errorMessage}
-                         </Notification>
-                    )}
+      {showErrorAlert && (
+        <div className="update-category-form__notification update-category-form__notification--error">
+          <p>{errorMessage}</p>
+        </div>
+      )}
 
-                    <TextInput
-                         label="Name"
-                         name="name"
-                         value={formData.name}
-                         onChange={(event) => handleChange('name')(event.currentTarget.value)}
-                         disabled={!isEditable || isLoading}
-                         required
-                         fullWidth
-                    />
+      <form className="update-category-form" onSubmit={form.onSubmit(handleSubmit)}>
+        <TextInput
+          label="Name"
+          placeholder="Category name"
+          {...form.getInputProps('name')}
+          disabled={!isEditable || isLoading}
+          classNames={{
+            root: 'update-category-form__field',
+            input: `update-category-form__input ${form.errors.name ? 'update-category-form__input--error' : ''}`,
+            label: 'update-category-form__label',
+          }}
+        />
 
-                    <NumberInput
-                         label="Index"
-                         name="index"
-                         value={formData.index}
-                         onChange={handleChange('index')}
-                         disabled={!isEditable || isLoading}
-                         required
-                         fullWidth
-                    />
+        <NumberInput
+          label="Index"
+          placeholder="Category index"
+          {...form.getInputProps('index')}
+          disabled={!isEditable || isLoading}
+          min={0}
+          classNames={{
+            root: 'update-category-form__field',
+            input: `update-category-form__input ${form.errors.index ? 'update-category-form__input--error' : ''}`,
+            label: 'update-category-form__label',
+          }}
+        />
 
-                    <FileInput
-                         label="Image"
-                         name="image"
-                         onChange={handleFileChange}
-                         disabled={!isEditable || isLoading}
-                         accept="image/*"
-                         placeholder="Upload category image"
-                         clearable
-                         fullWidth
-                    />
+        <div className="update-category-form__field">
+          <label className="update-category-form__label" htmlFor="image">
+            Image:
+          </label>
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            disabled={!isEditable || isLoading}
+            className="update-category-form__input update-category-form__input--file"
+          />
+        </div>
 
-                    {isEditable && (
-                         <Button type="submit" loading={isLoading} disabled={isLoading}>
-                              Save Category
-                         </Button>
-                    )}
-               </Stack>
-          </form>
-     );
-};
+        {isEditable && (
+          <Button
+            type="submit"
+            className="update-category-form__submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save Category'}
+          </Button>
+        )}
+      </form>
+    </div>
+  )
+}
 
-export default UpdateCategory;
+export default UpdateCategory

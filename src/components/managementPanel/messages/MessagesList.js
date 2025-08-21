@@ -2,23 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
-import {
-    Button,
-    Group,
-    Center,
-    Flex,
-    TextInput,
-    Table,
-    Container,
-    Text,
-    Loader,
-    Stack,
-    ScrollArea,
-    Select,
-    Checkbox,
-    Pagination
-} from '@mantine/core';
-import { modals } from '@mantine/modals';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
+import './MessagesList.scss';
 
 const MessagesList = () => {
     const [messages, setMessages] = useState([]);
@@ -31,6 +16,7 @@ const MessagesList = () => {
     const [selectedMessages, setSelectedMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
@@ -87,28 +73,15 @@ const MessagesList = () => {
         }
     };
 
-    const openDeleteModal = (selectedMessages) => {
-        modals.openConfirmModal({
-            title: 'Please confirm your action',
-            size: 'sm',
-            radius: 'md',
-            withCloseButton: false,
-            children: (
-                <Text size="sm">
-                    Do you really want to delete this element?.
-                </Text>
-            ),
-            labels: { confirm: 'Confirm', cancel: 'Cancel' },
-            onCancel: () => console.log('Cancel'),
-            onConfirm: () => deleteSelected(selectedMessages),
-
-        })
+    const openDeleteModal = () => {
+        setShowModal(true);
     }
 
     const deleteSelected = async () => {
         try {
             await api.post(`/messages/delete-many`, { ids: selectedMessages });
             setSelectedMessages([]);
+            setShowModal(false);
             getMessages();
         } catch (err) {
             console.error('Failed to delete messages', err);
@@ -119,10 +92,14 @@ const MessagesList = () => {
         navigate(`${_id}`);
     };
 
-    const SortArrow = ({ criteria }) => {
-        if (criteria !== sortCriteria) return <>•</>;
-        return sortOrder === 'desc' ? <>▼</> : <>▲</>;
-    };
+    const SortIcon = ({ criteria }) => {
+        if (criteria !== sortCriteria) return null;
+        return sortOrder === 'desc' ? (
+          <IconSortDescending size={16} className="messages-list-sort-icon" />
+        ) : (
+          <IconSortAscending size={16} className="messages-list-sort-icon" />
+        );
+      };
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -137,89 +114,108 @@ const MessagesList = () => {
         refetchUnreadCount();
     },[unreadMessageCount]);
 
+    const rows = messages.map((msg) => (
+        <tr key={msg._id} onClick={() => handleRowClick(msg._id)} style={{ cursor: 'pointer' , fontWeight: msg.isRead ? 'normal' : 'bold'  }}>
+            <td>
+                <input
+                    type="checkbox"
+                    checked={selectedMessages.includes(msg._id)}
+                    onClick={e => e.stopPropagation()}
+                    onChange={(e) => handleCheckboxChange(msg._id, e.currentTarget.checked)}
+                />
+            </td>
+            <td>{msg.name}</td>
+            <td>{msg.email}</td>
+            <td>{msg.subject}</td>
+            <td>{msg.type}</td>
+            <td>{new Date(msg.createdAt).toLocaleString()}</td>
+        </tr>
+    ));
+
     return (
-        <Container fluid>
-            <Stack spacing="md">
-                <Text size="xl" fw={600}>Messages</Text>
-                <Flex wrap="wrap" gap="md" justify="space-between" align="center">
-                    <Flex gap="sm">
-                        <TextInput
+        <div className="messages-list-container">
+            <div className="messages-list-header">
+                <h2 className="messages-list-header__title">Messages</h2>
+                <div className="messages-list-controls">
+                    <div className="messages-list-controls__search-group">
+                        <IconSearch size={16} />
+                        <input
+                            className="messages-list-controls__search-input"
+                            type="text"
+                            placeholder="Search messages..."
                             value={searchString}
                             onChange={handleSearchChange}
-                            placeholder="Search messages..."
                         />
-                        <Select
-                            value={typeFilter}
-                            onChange={handleTypeFilter}
-                            data={[
-                                { value: 'received', label: 'Received' },
-                                { value: 'sent', label: 'Sent' },
-                            ]}
-                        />
-                        <Button color="red" disabled={!selectedMessages.length} onClick={() => openDeleteModal(selectedMessages)}>Delete selected</Button>
-                    </Flex>
-                </Flex>
-            </Stack>
+                    </div>
+                    <select className="messages-list-controls__select" value={typeFilter} onChange={(e) => handleTypeFilter(e.target.value)}>
+                        <option value="received">Received</option>
+                        <option value="sent">Sent</option>
+                    </select>
+                    <button className="messages-list-delete-button" disabled={!selectedMessages.length} onClick={openDeleteModal}>
+                        <IconTrash size={16} />
+                        Delete selected
+                    </button>
+                </div>
+            </div>
 
             {isLoading ? (
-                <Center style={{ height: '70vh' }}>
-                    <Loader size="md" variant="dots" />
-                </Center>
+                <div className="messages-list-loader">
+                    <p>Loading...</p>
+                </div>
             ) : errorMessage ? (
-                <Text color="red">{errorMessage}</Text>
+                <div className="messages-list-error-message">
+                    <p>{errorMessage}</p>
+                </div>
             ) : messages.length ? (
-                <ScrollArea>
-                    <Table striped highlightOnHover withTableBorder mt="md" verticalSpacing="sm" fontSize="sm">
+                <div className="messages-list-table-wrapper">
+                    <table className="messages-list-table">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th data-name="name" onClick={handleSort} style={{ cursor: 'pointer' }}>Name <SortArrow criteria="name" /></th>
-                                <th data-name="email" onClick={handleSort} style={{ cursor: 'pointer' }}>Email <SortArrow criteria="email" /></th>
-                                <th data-name="subject" onClick={handleSort} style={{ cursor: 'pointer' }}>Subject <SortArrow criteria="subject" /></th>
-                                <th data-name="type" onClick={handleSort} style={{ cursor: 'pointer' }}>Type <SortArrow criteria="type" /></th>
-                                <th data-name="createdAt" onClick={handleSort} style={{ cursor: 'pointer' }}>Date <SortArrow criteria="createdAt" /></th>
+                                <th onClick={handleSort} data-name="name">Name <SortIcon criteria="name" /></th>
+                                <th onClick={handleSort} data-name="email">Email <SortIcon criteria="email" /></th>
+                                <th onClick={handleSort} data-name="subject">Subject <SortIcon criteria="subject" /></th>
+                                <th onClick={handleSort} data-name="type">Type <SortIcon criteria="type" /></th>
+                                <th onClick={handleSort} data-name="createdAt">Date <SortIcon criteria="createdAt" /></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {messages.map((msg) => (
-                                <tr key={msg._id} onClick={() => handleRowClick(msg._id)} style={{ cursor: 'pointer' , fontWeight: msg.isRead ? 'normal' : 'bold'  }}>
-                                    <td>
-                                        <Checkbox
-                                            checked={selectedMessages.includes(msg._id)}
-                                            onClick={e => e.stopPropagation()}
-                                            onChange={(e) => handleCheckboxChange(msg._id, e.currentTarget.checked)}
-                                            
-                                        />
-                                    </td>
-                                    <td>{msg.name}</td>
-                                    <td>{msg.email}</td>
-                                    <td>{msg.subject}</td>
-                                    <td>{msg.type}</td>
-                                    <td>{new Date(msg.createdAt).toLocaleString()}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </ScrollArea>
+                        <tbody>{rows}</tbody>
+                    </table>
+                </div>
             ) : (
-                <Text mt="md">No messages found.</Text>
+                <p className="messages-list-message">No messages found.</p>
             )}
 
-            <Center mt="lg">
-                <Pagination
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={(page) => {
-                        const params = new URLSearchParams(location.search);
-                        params.set('page', page);
-                        navigate('?' + params.toString());
-                    }}
-                    withEdges
-                    siblings={1}
-                    boundaries={1}
-                />
-            </Center>
-        </Container>
+            {totalPages > 1 && (
+                <div className="messages-list-pagination">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                            key={page}
+                            className={`messages-list-pagination-button ${currentPage === page ? 'messages-list-pagination-button--active' : ''}`}
+                            onClick={() => {
+                                const params = new URLSearchParams(location.search);
+                                params.set('page', page);
+                                navigate('?' + params.toString());
+                            }}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {showModal && (
+                <div className="messages-list-modal">
+                    <div className="messages-list-modal-content">
+                        <p>Do you really want to delete the selected messages?</p>
+                        <div className="messages-list-modal-buttons">
+                            <button onClick={() => setShowModal(false)}>Cancel</button>
+                            <button onClick={deleteSelected} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };
 

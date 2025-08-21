@@ -1,0 +1,136 @@
+@import 'variables.scss';
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+
+    span.material-symbols-outlined {
+      font-size: 1.5rem;
+      color: #007bff;
+    }
+  }
+
+  &__user-info {
+    text-align: right;
+    font-size: 0.875rem;
+    color: #555;
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+  }
+
+  &__sidebar {
+    position: relative;
+    width: 240px;
+    background-color: #1e293b;
+    color: #fff;
+    padding: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+    @media (max-width: $lg){
+      padding:0;
+      width: 0;
+    }
+  }
+
+  &__sidebar--open {
+    width: 240px;
+    padding: 1rem;
+  }
+
+  &__sidebar-mobile-butt {
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    color: rgb(180, 180, 180);;
+    cursor: pointer;
+    border: 1px solid rgb(180, 180, 180);
+  }
+
+  &__sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: 0.375rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: #334155;
+    }
+  }
+
+  &__sidebar-item--active {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  &__sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.3s ease;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: #b91c1c;
+      color: #fff;
+    }
+  }
+
+  &__main {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+  }
+
+  &__layout {
+    position: relative;;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    @media (max-width: $lg){
+      padding: 1rem;
+      width: 90vw;
+    }
+  }
+}

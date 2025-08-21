@@ -1,22 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
-import {
-  Button,
-  Group,
-  Flex,
-  TextInput,
-  Table,
-  Modal,
-  Container,
-  Text,
-  Loader,
-  Stack,
-  ScrollArea,
-  Pagination,
-  Center
-} from '@mantine/core';
+import { useAuth } from '../../../context/authContext';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus } from '@tabler/icons-react';
+import './productsList.scss';
 
 const ProductsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,27 +28,24 @@ const ProductsList = () => {
     member: { addProductButt: false, deleteProductButt: false },
   };
 
-  const isVisible = rolePermissions[user.role] || { addProductButt: false, deleteProductButt: false };
+  const isVisible = rolePermissions[user?.role] || { addProductButt: false, deleteProductButt: false };
 
   const getProducts = async () => {
     const queryString = location.search;
-
     try {
       setErrorMessage(null);
       setIsLoading(true);
       const response = await api.get(`/products/${queryString}`);
-
       if (response.status === 200) {
         const data = response.data;
-        setProductsList(data.products);
-        setTotalPages(data.totalPages);
-        setCurrentPage(data.currentPage);
+        setProductsList(data?.products || []);
+        setTotalPages(data?.totalPages || 1);
+        setCurrentPage(data?.currentPage || 1);
       } else {
         setErrorMessage(`Server error: ${response.data.error}`);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
-      setErrorMessage(error.response ? error.response.data.error : error.message);
+      setErrorMessage(error.response?.data?.error || error.message || 'Unknown error');
     } finally {
       setIsLoading(false);
     }
@@ -81,27 +65,18 @@ const ProductsList = () => {
     setShowModal(false);
     setIsDeleting(true);
     setErrorMessage(null);
-
     try {
       const response = await api.delete(`/products/${productToDelete}`);
-
       if (response.status === 200) {
-        navigate(location.pathname, { replace: true });
+        getProducts();
       } else {
-        const errorData = response.data;
-        setErrorMessage(`Unable to delete this product (${errorData.message || 'unknown error'})`);
+        setErrorMessage(`Unable to delete this product (${response.data?.message || 'unknown error'})`);
       }
     } catch (error) {
-      if (error.response) {
-        const msg = error.response.data?.message || 'Failed to delete the product. Please try again.';
-        setErrorMessage(msg);
-        console.error('Error deleting product:', msg);
-      } else {
-        setErrorMessage('Network error. Please check your connection.');
-        console.error('Error deleting product:', error);
-      }
+      setErrorMessage(error.response?.data?.message || 'Failed to delete the product. Please try again.');
     } finally {
       setIsDeleting(false);
+      setProductToDelete(null);
     }
   };
 
@@ -145,102 +120,134 @@ const ProductsList = () => {
     getProducts();
   }, [isDeleting, searchParams, searchString, sortCriteria, sortOrder]);
 
-  const SortArrow = ({ criteria }) => {
-    const arrow = () => {
-      if (criteria === sortCriteria) return sortOrder === 'desc' ? '▼' : '▲';
-      return '•';
-    };
-    return <>{arrow()}</>;
+  const SortIcon = ({ criteria }) => {
+    if (criteria !== sortCriteria || !sortOrder) return null;
+    return sortOrder === 'desc' ? (
+      <IconSortDescending size={16} className="products-list-sort-icon" />
+    ) : (
+      <IconSortAscending size={16} className="products-list-sort-icon" />
+    );
   };
 
+  const getBadgeClass = (value, type) => {
+    if (type === 'boolean') {
+      return value ? 'products-list-badge products-list-badge--green' : 'products-list-badge products-list-badge--red';
+    }
+    // Dalsze warunki dla innych typów, jeśli potrzebne
+    return 'products-list-badge';
+  };
+
+  const rows = productsList.map((item) => (
+    <tr key={item._id} onClick={() => handleRowClick(item._id)} style={{ cursor: 'pointer' }}>
+      <td>{item.productNumber}</td>
+      <td>{item.name}</td>
+      <td>{item.category?.name || 'N/A'}</td>
+      <td>£{item.price}</td>
+      <td>
+        <span className={getBadgeClass(item.isAvailable, 'boolean')}>
+          {item.isAvailable ? 'Yes' : 'No'}
+        </span>
+      </td>
+      <td>
+        <span className={getBadgeClass(item.isVegetarian, 'boolean')}>
+          {item.isVegetarian ? 'Yes' : 'No'}
+        </span>
+      </td>
+      <td>
+        <span className={getBadgeClass(item.isGlutenFree, 'boolean')}>
+          {item.isGlutenFree ? 'Yes' : 'No'}
+        </span>
+      </td>
+      <td className="products-list-table-cell--actions">
+        {isVisible.deleteProductButt && (
+          <button className="products-list-delete-button" onClick={(e) => handleDeleteClick(e, item._id)}>
+            <IconTrash size={16} />
+          </button>
+        )}
+      </td>
+    </tr>
+  ));
+
   return (
-    <Container fluid position="center">
-      {!isLoading && !errorMessage && (
-        <Stack spacing="md">
-          <Text size="xl" fw={600}>Products</Text>
-          <Flex wrap="wrap" gap="md" justify="space-between" align="center">
-            {isVisible.addProductButt && (
-              <Button onClick={() => navigate('/management/add-product')}>Add new..</Button>
-            )}
-            <Flex align="center" gap="xs">
-              <Text size="sm">Find item:</Text>
-              <TextInput
-                value={searchString}
-                onChange={handleSearchChange}
-                placeholder="Search..."
-              />
-            </Flex>
-          </Flex>
-        </Stack>
+    <div className="products-list-container">
+      <div className="products-list-header">
+        <h2 className="products-list-header__title">Products</h2>
+        <div className="products-list-controls">
+          {isVisible.addProductButt && (
+            <button className="products-list-add-button" onClick={() => navigate('/management/add-product')}>
+              <IconPlus size={16} />
+              Add New
+            </button>
+          )}
+          <div className="products-list-controls__search">
+            <IconSearch size={16} />
+            <input
+              className="products-list-controls__search-input"
+              type="text"
+              placeholder="Search products..."
+              value={searchString}
+              onChange={handleSearchChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {errorMessage && (
+        <div className="products-list-error-message">
+          <p>{errorMessage}</p>
+        </div>
       )}
 
       {isLoading ? (
-        <Center style={{ height: '60vh' }}>
-          <Loader size="md" />
-        </Center>
-      ) : errorMessage ? (
-        <Text color="red">{errorMessage}</Text>
+        <div className="products-list-loader">
+          <p>Loading...</p> {/* Zastąp loader Mantine prostym tekstem lub animacją CSS */}
+        </div>
       ) : productsList?.length > 0 ? (
-        <ScrollArea>
-          <Table striped highlightOnHover withTableBorder mt="md" verticalSpacing="sm" fontSize="sm">
+        <div className="products-list-table-wrapper">
+          <table className="products-list-table">
             <thead>
               <tr>
-                <th data-name="productNumber" onClick={handleSort} style={{ cursor: 'pointer' }}>Number <SortArrow criteria="productNumber" /></th>
-                <th data-name="name" onClick={handleSort} style={{ cursor: 'pointer' }}>Name <SortArrow criteria="name" /></th>
-                <th data-name="category" onClick={handleSort} style={{ cursor: 'pointer' }}>Category <SortArrow criteria="category" /></th>
-                <th data-name="price" onClick={handleSort} style={{ cursor: 'pointer' }}>Price <SortArrow criteria="price" /></th>
-                <th data-name="isAvailable" onClick={handleSort} style={{ cursor: 'pointer' }}>Is Available <SortArrow criteria="isAvailable" /></th>
-                <th data-name="isVegetarian" onClick={handleSort} style={{ cursor: 'pointer' }}>Is Vegetarian <SortArrow criteria="isVegetarian" /></th>
-                <th data-name="isGlutenFree" onClick={handleSort} style={{ cursor: 'pointer' }}>Is Gluten Free <SortArrow criteria="isGlutenFree" /></th>
-                <th>Options</th>
+                <th onClick={handleSort} data-name="productNumber">No <SortIcon criteria="productNumber" /></th>
+                <th onClick={handleSort} data-name="name">Name <SortIcon criteria="name" /></th>
+                <th onClick={handleSort} data-name="category">Category <SortIcon criteria="category" /></th>
+                <th onClick={handleSort} data-name="price">Price <SortIcon criteria="price" /></th>
+                <th onClick={handleSort} data-name="isAvailable">Available <SortIcon criteria="isAvailable" /></th>
+                <th onClick={handleSort} data-name="isVegetarian">Vegetarian <SortIcon criteria="isVegetarian" /></th>
+                <th onClick={handleSort} data-name="isGlutenFree">Gluten-Free <SortIcon criteria="isGlutenFree" /></th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {productsList.map((item) => (
-                <tr key={item._id} onClick={() => handleRowClick(item._id)} style={{ cursor: 'pointer' }}>
-                  <td>{item.productNumber}</td>
-                  <td>{item.name}</td>
-                  <td>{item.category?.name || 'N/A'}</td>
-                  <td>{item.price}</td>
-                  <td>{item.isAvailable ? 'Yes' : 'No'}</td>
-                  <td>{item.isVegetarian ? 'Yes' : 'No'}</td>
-                  <td>{item.isGlutenFree ? 'Yes' : 'No'}</td>
-                  <td>
-                    {isVisible.deleteProductButt && (
-                      <Button color="red" size="xs" onClick={(e) => handleDeleteClick(e, item._id)}>
-                        Delete
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </ScrollArea>
+            <tbody>{rows}</tbody>
+          </table>
+        </div>
       ) : (
-        <Text>No products found</Text>
+        <p className="products-list-message">No products found.</p>
       )}
 
-      <Center mt="lg">
-        <Pagination
-          total={totalPages}
-          page={currentPage}
-          onChange={handlePageChange}
-          boundaries={1}
-          siblings={1}
-          size="md"
-          withEdges
-        />
-      </Center>
+      {totalPages > 1 && (
+        <div className="products-list-pagination">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              className={`products-list-pagination-button ${currentPage === page ? 'products-list-pagination-button--active' : ''}`}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      )}
 
-      <Modal opened={showModal} onClose={() => setShowModal(false)} title="Confirm Deletion" centered>
-        <Text>Are you sure you want to delete this product?</Text>
-        <Group mt="md" position="right">
-          <Button variant="default" onClick={() => setShowModal(false)}>Cancel</Button>
-          <Button color="red" onClick={handleConfirmDelete}>Delete</Button>
-        </Group>
-      </Modal>
-    </Container>
+      {showModal && (
+        <div className="products-list-modal">
+          <p>Are you sure you want to delete this product?</p>
+          <div className="products-list-modal-buttons">
+            <button onClick={() => setShowModal(false)}>Cancel</button>
+            <button onClick={handleConfirmDelete} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>Delete</button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

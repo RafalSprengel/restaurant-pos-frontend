@@ -1,67 +1,29 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Group, Text} from "@mantine/core";
-import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
+import { useState } from 'react';
 import { useFetch } from "../../../hooks/useFetch.js";
 import api from '../../../utils/axios.js';
 import "../../../styles/single-table-reservation.scss";
 
 const SingleTableReservation = () => {
   const { id } = useParams();
-
-  const { data, loading, error, refetch } = useFetch(`/tables/reservations/${id}`);
-
-
+  const { data, loading, error } = useFetch(`/tables/reservations/${id}`);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleBack = () => {
-    window.history.back();
+    navigate(-1);
   };
 
-  const openDeleteModal = (id) => {
-    modals.openConfirmModal({
-      title: 'Please confirm your action',
-      size: 'sm',
-      radius: 'md',
-      withCloseButton: false,
-      children: (
-        <Text size="sm">
-          Do you really want to delete this element?.
-        </Text>
-      ),
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onCancel: () => console.log('Cancel'),
-      onConfirm: () => handleDelete(id),
-    });
-  }
-
-  const openSuccessNotification = () => {
-    notifications.show({
-      title: 'Success',
-      message: 'Element deleted!',
-      color: 'green',
-    })
-  }
-
-  const openErrorNotification = () => {
-    notifications.show({
-      title: 'Error',
-      message: 'Cannot delete element!',
-      color: 'red',
-      autoClose: 4000,
-      withCloseButton: true,
-    })
+  const openDeleteModal = () => {
+    setShowModal(true);
   }
 
   const handleDelete = async (id) => {
-    console.log(id);
     try {
-      const response = await api.delete(`/tables/reservations/${id}`);
-      openSuccessNotification()
+      await api.delete(`/tables/reservations/${id}`);
+      navigate(-1);
     } catch (err) {
       console.log(err);
-      openErrorNotification()
-    } finally {
-      handleBack()
     }
   };
 
@@ -107,16 +69,27 @@ const SingleTableReservation = () => {
             </div>
           )}
 
-          <Group justify="center" spacing="md" mt="md">
-            <Button variant="default" onClick={handleBack}>
+          <div className="single-table-reservation__buttons">
+            <button className="single-table-reservation__button" onClick={handleBack}>
               Back
-            </Button>
-            <Button color="red" onClick={() => openDeleteModal(id)}>
+            </button>
+            <button className="single-table-reservation__button single-table-reservation__button--delete" onClick={openDeleteModal}>
               Delete
-            </Button>
-          </Group>
+            </button>
+          </div>
         </>
       }
+      {showModal && (
+        <div className="single-table-reservation__modal">
+          <div className="single-table-reservation__modal-content">
+            <p>Are you sure you want to delete this reservation?</p>
+            <div className="single-table-reservation__modal-buttons">
+              <button className="single-table-reservation__button" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="single-table-reservation__button single-table-reservation__button--delete" onClick={() => handleDelete(id)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
