@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useShoppingCart } from '../context/ShoppingCartContext';
+import { useState, useRef, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import Navi from '../components/Navi';
 import './header.scss';
 
@@ -8,17 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 import { IoPersonSharp } from 'react-icons/io5';
 
-import { IconPhone, IconMail, IconMapPin } from '@tabler/icons-react';
+import { IconPhone, IconMapPin } from '@tabler/icons-react';
 import { useAuth } from '../context/authContext.js';
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [showMobNav, setShowMobNav] = useState(false);
-    const { cartQuantity, openCart } = useShoppingCart();
     const infoBarRef = useRef(null);
-    const navigate = useNavigate();
 
-    const { isAuthenticated, user, login } = useAuth();
+    const { isAuthenticated, user } = useAuth();
 
 
     const handleToggleMobileMenu = () => {

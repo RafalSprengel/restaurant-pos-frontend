@@ -1,10 +1,5 @@
 import { Button, Center, Stack, Text } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import axios from 'axios';
 import { useAuthContext } from '../context/authContext.js';
-
-const apiURL = 'https://api.justcode.uk/v1';
 
 
 export default function NoConnectionPage() {

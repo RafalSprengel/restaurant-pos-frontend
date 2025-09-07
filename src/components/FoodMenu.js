@@ -7,10 +7,9 @@ import ProductCard from '../components/ProductCard.js';
 import { useShoppingCart } from "../context/ShoppingCartContext.js";
 
 
-export default function FoodMenu({ }) {
+export default function FoodMenu() {
     const navigate = useNavigate();
     const location = useLocation();
-    const [searchParams] = new URLSearchParams(location.search);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false)
@@ -18,10 +17,9 @@ export default function FoodMenu({ }) {
     const contentRef = useRef()
     const { cartItems } = useShoppingCart();
 
-    const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
+    const { data: categories} = useFetch('/product-categories/');
     const queryString = location.search;
-    const { data: productsData, isLoading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
-    const prod = productsData;
+    const { data: productsData, isLoading: productsLoading} = useFetch('/products/' + queryString);
 
     let products = productsData?.products || [];
 
@@ -68,7 +66,7 @@ export default function FoodMenu({ }) {
                     <li onClick={() => handleCategoryClick(null)}> All</li>
                     {categories?.categories.map((cat, index) => (
                         <li key={index} className='food-menu__categories-list-item'>
-                            <a onClick={() => handleCategoryClick(cat.name)}>{cat.name}</a>
+                            <span onClick={() => handleCategoryClick(cat.name)}>{cat.name}</span>
                         </li>
                     ))}
                 </ul>
@@ -76,7 +74,7 @@ export default function FoodMenu({ }) {
                 <div className='food-menu__items'>
                     {products?.length > 0 ? (
                         products.map((product, index) => {
-                            const inCartQuantity = cartItems.find((el)=>el._id == product._id)?.quantity
+                            const inCartQuantity = cartItems.find((el)=>el._id === product._id)?.quantity
                             return(
                             <div
                                 key={index}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/authContext.js';
-import { Text, Divider, Space } from '@mantine/core';
+import { Text, Divider } from '@mantine/core';
 import '@mantine/notifications/styles.css';
 import { notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
@@ -11,12 +11,11 @@ import '../../styles/personal-details.scss';
 import { useFetch } from '../../hooks/useFetch.js';
 import { Alert } from '@mantine/core';
 import { IconXboxX } from '@tabler/icons-react';
-import axios from 'axios';
 
 
 const PersonalDetails = () => {
      const navigate = useNavigate();
-     const { data: customer, loading: loadingFetchingCustomer, error: errorFetchingCustomer, refetch: refetchCustomerData } = useFetch('/customers/customer');
+     const { data: customer, refetch: refetchCustomerData } = useFetch('/customers/customer');
      const [details, setDetails] = useState({
           firstName: '',
           surname: '',

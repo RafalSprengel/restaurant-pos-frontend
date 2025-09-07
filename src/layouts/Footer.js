@@ -1,7 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBaseball } from '@fortawesome/free-solid-svg-icons';
 import './footer.scss';
-import logoXL from '../img/logo-white-XL.png';
 import { Link } from 'react-router-dom';
 export default function Footer() {
   return (

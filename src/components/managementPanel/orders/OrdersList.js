@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import './orderList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import { Loader, TextInput } from '@mantine/core';
-import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus, IconEdit } from '@tabler/icons-react';
+import { IconSearch} from '@tabler/icons-react';
 
 
 const OrdersList = () => {

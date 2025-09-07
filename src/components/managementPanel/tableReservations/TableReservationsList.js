@@ -20,7 +20,6 @@ const TableReservationsList = () => {
   const [reservationToDelete, setReservationToDelete] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
 
   const getReservations = async () => {
     const queryString = location.search;

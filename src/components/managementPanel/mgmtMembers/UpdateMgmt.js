@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { TextInput, PasswordInput, Select, Button, Loader, Center } from '@mantine/core';
+import { TextInput, PasswordInput, Select, Loader } from '@mantine/core';
 import api from '../../../utils/axios.js';
 import { useAuth } from '../../../context/authContext.js';
 import './updateMgmt.scss';

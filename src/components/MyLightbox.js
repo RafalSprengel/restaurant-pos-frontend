@@ -16,24 +16,24 @@ const MyLightbox = ({ images }) => {
 
   return (
     <div className="my-lightbox">
-    {images.map((img, index) => (
-      <a
-        href={img.full}
-        className="my-lightbox__image-link"
-        data-gallery="my-gallery"
-        data-aos="fade-up"
-        data-aos-delay={index*100}
-        key={index}
-      >
-        <img
-          src={img.thumb}
-          alt={`Picture ${index + 1}`}
-          className="my-lightbox__image"
-        />
-      </a>
-    ))}
-  </div>
-  
+      {images.map((img, index) => (
+        <a
+          href={img.full}
+          className="my-lightbox__image-link"
+          data-gallery="my-gallery"
+          data-aos="fade-up"
+          data-aos-delay={index * 100}
+          key={index}
+        >
+          <img
+            src={img.thumb}
+            alt={img.description || `Gallery item ${index + 1}`}
+            className="my-lightbox__image"
+          />
+        </a>
+      ))}
+    </div>
+
   );
 };
 

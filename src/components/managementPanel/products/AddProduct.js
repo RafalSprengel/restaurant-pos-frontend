@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
-import { TextInput, Textarea, Select, Checkbox, Button, Notification, Loader } from '@mantine/core'
+import { TextInput, Textarea, Select, Checkbox, Notification, Loader } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
 import api from '../../../utils/axios.js'

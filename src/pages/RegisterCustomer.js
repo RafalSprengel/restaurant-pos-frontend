@@ -34,7 +34,7 @@ const RegisterCustomer = () => {
     setLoading(true);
 
     try {
-      const response = await api.post(
+      await api.post(
         '/auth/register/customer',
         JSON.stringify({ firstName, surname, email, phone, password }),
         {
@@ -54,6 +54,7 @@ const RegisterCustomer = () => {
       setLoading(false);
     }
   };
+
 
   const handleGoogleRegister = () => {
     window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/google`;
@@ -161,23 +162,23 @@ const RegisterCustomer = () => {
             Register with Google
           </button>
         </div>
-         <NavLink to="/customer/login" className="register-customer__link">
-                                 Already registered yet? Login now.
-                            </NavLink>
-                            <NavLink to="/" className="register-customer__link">
-                                 Back to Homepage.
-                            </NavLink>
+        <NavLink to="/customer/login" className="register-customer__link">
+          Already registered yet? Login now.
+        </NavLink>
+        <NavLink to="/" className="register-customer__link">
+          Back to Homepage.
+        </NavLink>
       </div>
-     <Modal isOpen={isSuccessModalOpen} onClose={onCloseSuccessMOdal}>
-  <div className='register-customer__modal'>
-    <IconCircleCheck stroke={1} size={70} className='register-customer__modal-icon' />
-    <span className='register-customer__modal-thank-you'>Congratulations!</span>
-    <span className='register-customer__modal-message'>Your account has been successfully created. Please log in to your account.</span>
-    <div className="register-customer__modal-back" onClick={() => navigate('/customer/login')}>
-      <IconArrowNarrowLeft stroke={1} size={25} style={{ paddingTop: '2px' }} /> &nbsp; BACK TO LOGIN PAGE
-    </div>
-  </div>
-</Modal>
+      <Modal isOpen={isSuccessModalOpen} onClose={onCloseSuccessMOdal}>
+        <div className='register-customer__modal'>
+          <IconCircleCheck stroke={1} size={70} className='register-customer__modal-icon' />
+          <span className='register-customer__modal-thank-you'>Congratulations!</span>
+          <span className='register-customer__modal-message'>Your account has been successfully created. Please log in to your account.</span>
+          <div className="register-customer__modal-back" onClick={() => navigate('/customer/login')}>
+            <IconArrowNarrowLeft stroke={1} size={25} style={{ paddingTop: '2px' }} /> &nbsp; BACK TO LOGIN PAGE
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };

@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
 import Modal from "../components/Modal";
-import { useFetch } from "../hooks/useFetch";
 import { useForm } from "@mantine/form";
 import api from "../utils/axios";
 import {

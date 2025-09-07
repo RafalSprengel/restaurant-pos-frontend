@@ -1,10 +1,8 @@
-import { CheckCheck } from 'lucide-react'; // icons 'check-check'
+import { CheckCheck } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import '../styles/home-page.scss';
 import pizza from '../img/pizza.png';
 import about from '../img/about.jpg';
-import { Link } from 'react-router-dom';
-
 import ImageSlider from '../components/ImageSlider.js';
 import TestimonialsSlider from '../components/TestimonialsSlider.js';
 import MyLightbox from '../components/MyLightbox.js';
@@ -15,7 +13,6 @@ import ContactForm from '../components/ContactForm.js'
 import FloatingCartButton from '../components/FloatingCartButton.jsx';
 
 import '../styles/product-card.scss';
-import { Skeleton } from '@mantine/core';
 
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -417,8 +414,18 @@ export const MainPage = () => {
                               <p>Get in Touch</p>
                          </div>
                          <div>
-                              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2359.0035271970405!2d-0.3157891221863379!3d53.75382027241024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4878be0c0dd1278b%3A0x2e90074e056faac0!2s222%20Holderness%20Rd%2C%20Hull%20HU9%202AA!5e0!3m2!1spl!2suk!4v1755461601635!5m2!1spl!2suk" width="100%" height="450" style={{border:0}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                              <iframe
+                                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2359.0035271970405!2d-0.3157891221863379!3d53.75382027241024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4878be0c0dd1278b%3A0x2e90074e056faac0!2s222%20Holderness%20Rd%2C%20Hull%20HU9%202AA!5e0!3m2!1spl!2suk!4v1755461601635!5m2!1spl!2suk"
+                                   width="100%"
+                                   height="450"
+                                   style={{ border: 0 }}
+                                   allowFullScreen
+                                   loading="lazy"
+                                   referrerPolicy="no-referrer-when-downgrade"
+                                   title="Google Maps location for 222 Holderness Rd, Hull"
+                              ></iframe>
                          </div>
+
                          <div className='contact__content'>
                               <div className='contact__info'>
                                    {contactIcons.map((icon, index) => (

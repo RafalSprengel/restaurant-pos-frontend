@@ -10,7 +10,6 @@ import ConfirmationModal from '../../ConfirmationModal';
 
 const CategoriesList = () => {
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +47,6 @@ const CategoriesList = () => {
 
   const handleConfirmDelete = async () => {
     setShowModal(false);
-    setIsDeleting(true);
     setErrorMessage(null);
     try {
       const response = await api.delete(`/product-categories/${categoryToDelete}`);
@@ -57,7 +55,6 @@ const CategoriesList = () => {
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Failed to delete the category. Please try again.');
     } finally {
-      setIsDeleting(false);
       setCategoryToDelete(null);
     }
   };

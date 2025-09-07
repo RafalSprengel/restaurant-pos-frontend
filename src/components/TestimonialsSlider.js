@@ -132,7 +132,7 @@ export default function TestimonialsSlider({ data }) {
                             <span className="testimonial-slider__slide-profile-name">
                                 {el.name}
                             </span>
-                            <span className="testimonial-slider__slide-profile-profession">
+                            <span alt='image' className="testimonial-slider__slide-profile-profession">
                                 {el.profession}
                             </span>
                         </div>

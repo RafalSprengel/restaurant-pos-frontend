@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
-import { IconCircleCheck, IconArrowBack, IconArrowNarrowLeft  } from '@tabler/icons-react';
+import { IconCircleCheck, IconArrowNarrowLeft  } from '@tabler/icons-react';
 import api from '../utils/axios';
 import '../styles/payment-success.scss';
 

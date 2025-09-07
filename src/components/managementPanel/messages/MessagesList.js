@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
 import { Loader, TextInput } from '@mantine/core';
-import { IconTrash, IconSortAscending, IconPlus, IconSortDescending, IconSearch } from '@tabler/icons-react';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import './MessagesList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 
@@ -21,7 +21,6 @@ const MessagesList = () => {
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const [searchParams] = useSearchParams();
     const { unreadMessageCount, refetchUnreadCount } = useUnreadMessages();
 
     const getMessages = async () => {

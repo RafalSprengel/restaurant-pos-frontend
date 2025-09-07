@@ -22,7 +22,7 @@ const UpdateOrder = () => {
     const navigate = useNavigate();
     const { user } = useAuth('staff');
 
-    const { data: orderTypes, isLoading: loadingOrderTypes, error: errorOrderTypes } = useFetch('/orders/order-types');
+    const { data: orderTypes, isLoading: loadingOrderTypes} = useFetch('/orders/order-types');
 
    const isEditable = user?.role ? ['admin', 'moderator'].includes(user.role) : false;
 
