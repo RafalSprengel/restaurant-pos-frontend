@@ -23,8 +23,6 @@ const LoginCustomer = () => {
           },
      });
 
-     console.log('test 07/09/2025 10:53')
-
      const handleLogin = async (values) => {
           setError(null);
           setLoading(true);
