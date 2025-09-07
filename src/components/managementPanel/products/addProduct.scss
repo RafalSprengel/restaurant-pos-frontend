@@ -17,6 +17,9 @@
   .add-product-form {
     display: flex;
     flex-direction: column;
+    gap: 15px !important;
+    display: flex;
+    flex-direction: column;
     gap: 16px;
 
     &__field {

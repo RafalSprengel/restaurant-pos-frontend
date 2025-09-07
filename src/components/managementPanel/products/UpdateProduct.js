@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import config from "../../../config";
-import { useNavigate, useParams } from 'react-router-dom'
-import { useForm } from '@mantine/form'
-import { TextInput, Textarea, Select, Checkbox, Loader, Center, Notification } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
-import { IconCheck } from '@tabler/icons-react'
-import api from '../../../utils/axios.js'
-import './updateProduct.scss'
+import { useNavigate, useParams } from 'react-router-dom';
+import { useForm } from '@mantine/form';
+import { TextInput, Textarea, Select, Checkbox, Loader, Center, Notification } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
+import { IconCheck } from '@tabler/icons-react';
+import api from '../../../utils/axios.js';
+import './updateProduct.scss';
 
 const UpdateProduct = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const [categories, setCategories] = useState([])
-  const [loadingCategories, setLoadingCategories] = useState(true)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSavingInProgress, setIsSavingInProgress] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [imageFile, setImageFile] = useState(null)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSavingInProgress, setIsSavingInProgress] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [imageFile, setImageFile] = useState(null);
 
   const form = useForm({
     initialValues: {
@@ -37,24 +37,24 @@ const UpdateProduct = () => {
       category: (value) => (value ? null : 'Category is required'),
     },
     validateInputOnBlur: true,
-  })
+  });
 
   const getCategories = async () => {
     try {
-      const res = await api.get('/product-categories')
-      if (res.status === 200) setCategories(res.data.categories)
-      else setErrorMessage(`Failed to load categories (${res.data.error})`)
+      const res = await api.get('/product-categories');
+      if (res.status === 200) setCategories(res.data.categories);
+      else setErrorMessage(`Failed to load categories (${res.data.error})`);
     } catch (err) {
-      setErrorMessage(`Connection error (${err.response?.data?.error || err.message})`)
+      setErrorMessage(`Connection error (${err.response?.data?.error || err.message})`);
     } finally {
-      setLoadingCategories(false)
+      setLoadingCategories(false);
     }
-  }
+  };
 
   const getProduct = async () => {
     try {
-      setIsLoading(true)
-      const res = await api.get(`/products/${id}`)
+      setIsLoading(true);
+      const res = await api.get(`/products/${id}`);
       if (res.status === 200) {
         const product = res.data;
         form.setValues({
@@ -69,68 +69,86 @@ const UpdateProduct = () => {
           isVegetarian: product.isVegetarian,
           isGlutenFree: product.isGlutenFree,
           isAvailable: product.isAvailable,
-        })
-      } else setErrorMessage('Failed to fetch product')
+        });
+      } else setErrorMessage('Failed to fetch product');
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || err.message)
+      setErrorMessage(err.response?.data?.error || err.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    getCategories()
-    getProduct()
-  }, [id])
+    getCategories();
+    getProduct();
+  }, [id]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMessage('Please use only images (jpeg, jpg, png, gif, webp).');
+        setImageFile(null);
+      } else {
+        setErrorMessage('');
+        setImageFile(file);
+      }
+    }
+  };
 
   const handleSubmit = async (values) => {
-    const formData = new FormData()
-    formData.append('name', values.name)
-    formData.append('desc', values.desc)
-    formData.append('price', parseFloat(values.price))
-    formData.append('category', values.category)
-    formData.append('ingredients', values.ingredients.split(',').map(i => i.trim()))
-    formData.append('isFeatured', values.isFeatured)
-    formData.append('isVegetarian', values.isVegetarian)
-    formData.append('isGlutenFree', values.isGlutenFree)
-    formData.append('isAvailable', values.isAvailable)
-    if (imageFile) formData.append('image', imageFile)
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('desc', values.desc);
+    formData.append('price', parseFloat(values.price));
+    formData.append('category', values.category);
+    formData.append('ingredients', values.ingredients.split(',').map(i => i.trim()));
+    formData.append('isFeatured', values.isFeatured);
+    formData.append('isVegetarian', values.isVegetarian);
+    formData.append('isGlutenFree', values.isGlutenFree);
+    formData.append('isAvailable', values.isAvailable);
+    if (imageFile) formData.append('image', imageFile);
 
-    setIsSavingInProgress(true)
-    setErrorMessage('')
+    setIsSavingInProgress(true);
+    setErrorMessage('');
     try {
       const res = await api.put(`/products/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      });
       if (res.status === 200) {
         showNotification({
           title: 'Success',
           message: 'Product updated successfully!',
           color: 'green',
           icon: <IconCheck />,
-        })
-        setTimeout(() => navigate('/management/products'), 1000)
+        });
+        setTimeout(() => navigate('/management/products'), 1000);
       } else {
-        setErrorMessage(res.data?.error || 'Failed to update product')
+        setErrorMessage(res.data?.error || 'Failed to update product');
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || err.message)
+      setErrorMessage(err.response?.data?.error || err.message);
     } finally {
-      setIsSavingInProgress(false)
+      setIsSavingInProgress(false);
     }
-  }
+  };
 
   if (loadingCategories || isLoading)
     return (
       <Center className="update-product__center">
         <Loader size="md" />
       </Center>
-    )
+    );
 
   return (
     <div className="update-product">
       <h2 className="update-product__title">Update Product</h2>
-      {errorMessage && <Notification color="red">{errorMessage}</Notification>}
+      {errorMessage && (
+        <Notification color="red" title="Błąd">
+          {errorMessage}
+        </Notification>
+      )}
 
       <form className="update-product__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
@@ -176,7 +194,7 @@ const UpdateProduct = () => {
               className="update-product__file-input"
               type="file"
               accept="image/*"
-              onChange={(e) => setImageFile(e.target.files[0])}
+              onChange={handleFileChange}
             />
           </div>
 
@@ -185,10 +203,10 @@ const UpdateProduct = () => {
               href={`${config.API_URL}${form.values.thumbnail}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{margin: "auto"}}
+              style={{ margin: "auto" }}
             >
               <img
-                src={`${process.env.REACT_APP_API_URL}${form.values.thumbnail}`}
+                src={`${config.API_URL}${form.values.thumbnail}`}
                 alt="Thumbnail"
                 className="update-product__thumbnail"
                 style={{ cursor: 'pointer' }}
@@ -235,7 +253,7 @@ const UpdateProduct = () => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default UpdateProduct
+export default UpdateProduct;

@@ -1,4 +1,7 @@
 .update-product {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
   max-width: 600px;
   padding: 24px;
   margin: 0 auto;

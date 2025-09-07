@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useForm } from '@mantine/form'
-import { TextInput, Textarea, Select, Checkbox, Notification, Loader } from '@mantine/core'
-import { showNotification } from '@mantine/notifications'
-import { IconCheck } from '@tabler/icons-react'
-import api from '../../../utils/axios.js'
-import './addProduct.scss'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from '@mantine/form';
+import { TextInput, Textarea, Select, Checkbox, Notification, Loader } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
+import { IconCheck } from '@tabler/icons-react';
+import api from '../../../utils/axios.js';
+import './addProduct.scss';
 
 const AddProduct = () => {
-  const [categories, setCategories] = useState([])
-  const [loadingCategories, setLoadingCategories] = useState(true)
-  const [isSavingInProgress, setIsSavingInProgress] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [imageFile, setImageFile] = useState(null)
-  const navigate = useNavigate()
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [isSavingInProgress, setIsSavingInProgress] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -37,62 +37,76 @@ const AddProduct = () => {
       category: (value) => (value ? null : 'Category is required'),
     },
     validateInputOnBlur: true,
-  })
+  });
 
   const getCategories = async () => {
     try {
-      const response = await api.get('/product-categories')
+      const response = await api.get('/product-categories');
       if (response.status === 200) {
-        setCategories(response.data)
+        setCategories(response.data);
       } else {
-        setErrorMessage(`Failed to load categories (${response.data.error})`)
+        setErrorMessage(`Failed to load categories (${response.data.error})`);
       }
     } catch (e) {
-      setErrorMessage(`Connection error (${e.response?.data?.error || e.message})`)
+      setErrorMessage(`Connection error (${e.response?.data?.error || e.message})`);
     } finally {
-      setLoadingCategories(false)
+      setLoadingCategories(false);
     }
-  }
+  };
 
   useEffect(() => {
-    getCategories()
-  }, [])
+    getCategories();
+  }, []);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMessage('Please use only images (jpeg, jpg, png, gif, webp).');
+        setImageFile(null);
+      } else {
+        setErrorMessage('');
+        setImageFile(file);
+      }
+    }
+  };
 
   const handleSubmit = async (values) => {
-    const formData = new FormData()
-    formData.append('name', values.name)
-    formData.append('desc', values.desc)
-    formData.append('price', parseFloat(values.price))
-    formData.append('category', values.category)
-    formData.append('ingredients', values.ingredients.split(',').map(i => i.trim()))
-    formData.append('isFeatured', values.isFeatured)
-    formData.append('isVegetarian', values.isVegetarian)
-    formData.append('isGlutenFree', values.isGlutenFree)
-    formData.append('isAvailable', values.isAvailable)
-    if (imageFile) formData.append('image', imageFile)
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('desc', values.desc);
+    formData.append('price', parseFloat(values.price));
+    formData.append('category', values.category);
+    formData.append('ingredients', values.ingredients.split(',').map(i => i.trim()));
+    formData.append('isFeatured', values.isFeatured);
+    formData.append('isVegetarian', values.isVegetarian);
+    formData.append('isGlutenFree', values.isGlutenFree);
+    formData.append('isAvailable', values.isAvailable);
+    if (imageFile) formData.append('image', imageFile);
 
-    setIsSavingInProgress(true)
+    setIsSavingInProgress(true);
     try {
       const response = await api.post('/products/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       if (response.status === 201) {
         showNotification({
           title: 'Success',
           message: 'Product added successfully!',
           color: 'green',
-          icon: <IconCheck />
-        })
-        setTimeout(() => navigate('/management/products'), 1000)
+          icon: <IconCheck />,
+        });
+        setTimeout(() => navigate('/management/products'), 1000);
       } else {
-        setErrorMessage(`Failed to save product (${response.data.error})`)
+        setErrorMessage(`Failed to save product (${response.data.error})`);
       }
     } catch (e) {
-      setErrorMessage(`Error while saving... (${e.response?.data?.error || e.message})`)
+      setErrorMessage(`Error while saving... (${e.response?.data?.error || e.message})`);
     } finally {
-      setIsSavingInProgress(false)
+      setIsSavingInProgress(false);
     }
-  }
+  };
 
   if (loadingCategories)
     return (
@@ -100,13 +114,17 @@ const AddProduct = () => {
         <Loader size="sm" variant="dots" /> &nbsp;
         <span>Loading...</span>
       </div>
-    )
+    );
 
   return (
     <div className="add-product">
       <div className="add-product__title">Add New Product</div>
       <form className="add-product-form" onSubmit={form.onSubmit(handleSubmit)}>
-        {errorMessage && <Notification color="red">{errorMessage}</Notification>}
+        {errorMessage && (
+          <Notification color="red" title="Błąd">
+            {errorMessage}
+          </Notification>
+        )}
 
         <TextInput
           label="Name"
@@ -114,8 +132,8 @@ const AddProduct = () => {
           {...form.getInputProps('name')}
           error={form.errors.name}
           onChange={(e) => {
-            form.getInputProps('name').onChange(e)
-            if (errorMessage) setErrorMessage('')
+            form.getInputProps('name').onChange(e);
+            if (errorMessage) setErrorMessage('');
           }}
           classNames={{
             root: 'add-product-form__field',
@@ -156,7 +174,7 @@ const AddProduct = () => {
             id="image"
             type="file"
             accept="image/*"
-            onChange={(e) => setImageFile(e.target.files[0])}
+            onChange={handleFileChange}
             className="add-product-form__input add-product-form__input--file"
           />
         </div>
@@ -219,7 +237,7 @@ const AddProduct = () => {
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default AddProduct
+export default AddProduct;
