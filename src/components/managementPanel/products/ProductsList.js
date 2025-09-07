@@ -1,3 +1,4 @@
+import config from "../../../config";
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../../utils/axios';
@@ -7,7 +8,7 @@ import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus,
 import './productsList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import Pagination from '../../Pagination';
-
+ console.log('config to ', config)
 
 const ProductsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -258,7 +259,7 @@ const ProductsList = () => {
                 onClick={() => toggleCardExpand(product._id)}>
                 <div className="products-list__card-row">
                   <span className="products-list__card-title">{product.name}</span>
-                  <img src={`${process.env.REACT_APP_API_URL}${product.thumbnail}`} alt="Thumbnail" className="products-list__card-thumbnail" />
+                  <img src={`${config.API_URL}${product.thumbnail}`} alt="Thumbnail" className="products-list__card-thumbnail" />
                 </div>
                 <div className="products-list__card-row">
                   <span className="products-list__card-label-name">No.:</span>

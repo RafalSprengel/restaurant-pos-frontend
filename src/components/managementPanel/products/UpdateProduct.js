@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import config from "../../../config";
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from '@mantine/form'
 import { TextInput, Textarea, Select, Checkbox, Loader, Center, Notification } from '@mantine/core'
@@ -181,7 +182,7 @@ const UpdateProduct = () => {
 
           {form.values.image && !imageFile && (
             <a
-              href={`${process.env.REACT_APP_API_URL}${form.values.thumbnail}`}
+              href={`${config.API_URL}${form.values.thumbnail}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{margin: "auto"}}
