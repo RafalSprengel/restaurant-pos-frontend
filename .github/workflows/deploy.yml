@@ -9,18 +9,24 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout kodu
       - uses: actions/checkout@v3
+
+      # 2. Instalacja zależności i budowanie aplikacji
       - name: Install Node and Build
         run: |
           npm ci
           npm run build
+
+      # 3. Konfiguracja klucza SSH
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 2222 188.68.242.226 >> ~/.ssh/known_hosts
+
+      # 4. Wgrywanie plików na serwer VPS za pomocą rsync
       - name: Sync build to VPS
-        uses: appleboy/rsync-action@v0.1.7
-        with:
-          host: 188.68.242.226
-          username: rafal
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 2222
-          source: "build/"
-          target: "/var/www/demo1.rafalsprengel.com/react/build/"
-          args: "-avz --delete"
+        run: |
+          rsync -avz --delete -e "ssh -p 2222 -i ~/.ssh/id_rsa" ./build/ rafal@188.68.242.226:/var/www/demo1.rafalsprengel.com/react/build/
