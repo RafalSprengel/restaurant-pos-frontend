@@ -1,34 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useFetch } from '../../../hooks/useFetch.js';
 import api from '../../../utils/axios.js';
 import { useAuth } from '../../../context/authContext.js';
+import { Loader, TextInput } from '@mantine/core';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus } from '@tabler/icons-react';
 import './categoriesList.scss';
+import ConfirmationModal from '../../ConfirmationModal';
 
 const CategoriesList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [sortCriteria, setSortCriteria] = useState('');
-  const [sortOrder, setSortOrder] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const { user } = useAuth();
 
-  const { data: categoriesList, loading: isLoading, error: fetchError, refetch } = useFetch(`/product-categories${location.search}`);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const { data, isLoading, error: fetchError, refetch } = useFetch(`/product-categories${location.search}`);
+  const categoriesList = data?.categories || [];
+
+  useEffect(() => {
+    if (data?.pagination) {
+      setCurrentPage(data.pagination.page);
+      setTotalPages(data.pagination.totalPages);
+    }
+  }, [data]);
 
   const rolePermissions = {
     admin: { addCategoryButt: true, deleteCategoryButt: true },
     moderator: { addCategoryButt: true, deleteCategoryButt: true },
     member: { addCategoryButt: false, deleteCategoryButt: false },
   };
-
-  const isVisible = rolePermissions[user.role] || { addCategoryButt: false, deleteCategoryButt: false };
+  const isVisible = rolePermissions[user?.role] || { addCategoryButt: false, deleteCategoryButt: false };
 
   const handleRowClick = (id) => navigate(`${id}`);
 
@@ -61,7 +69,7 @@ const CategoriesList = () => {
   };
 
   const handleSearchChange = (e) => {
-    const { value } = e.currentTarget;
+    const value = e.currentTarget.value;
     setSearchString(value);
     const params = new URLSearchParams(location.search);
     params.delete('page');
@@ -79,6 +87,9 @@ const CategoriesList = () => {
     navigate('?' + params);
   };
 
+  const [sortCriteria, setSortCriteria] = useState('');
+  const [sortOrder, setSortOrder] = useState('');
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSearchString(params.get('search') || '');
@@ -95,108 +106,94 @@ const CategoriesList = () => {
     );
   };
 
-  const rows = categoriesList?.map((item) => (
-    <tr key={item._id} onClick={() => handleRowClick(item._id)} style={{ cursor: 'pointer' }}>
-      <td>{item.name}</td>
-      <td>
-        <img
-          src={item.image || `https://picsum.photos/200/200?random=${Math.random()}`}
-          alt="Category"
-          className="categories-list__image"
-        />
-      </td>
-      <td>{item.index}</td>
-      <td className="categories-list__table-cell--actions">
-        {isVisible.deleteCategoryButt && (
-          <button
-            className="categories-list__delete-button"
-            onClick={(e) => handleDeleteClick(e, item._id)}
-          >
-            <IconTrash size={16} />
-          </button>
-        )}
-      </td>
-    </tr>
-  ));
-
   return (
     <div className="categories-list__container">
       <div className="categories-list__header">
         <h2 className="categories-list__title">Categories</h2>
         <div className="categories-list__controls">
+          <TextInput
+            placeholder="Search categories..."
+            className="categories-list__search-input"
+            value={searchString}
+            onChange={handleSearchChange}
+            leftSection={<IconSearch size={16} />}
+          />
           {isVisible.addCategoryButt && (
-            <button
-              className="categories-list__add-button"
-              onClick={() => navigate('/management/add-category')}
-            >
-              <IconPlus size={16} />
-              Add New
+            <button className="button-panel" onClick={() => navigate('/management/add-category')}>
+              <IconPlus size={16} /> Add New
             </button>
           )}
-          <div className="categories-list__controls-search">
-            <IconSearch size={16} />
-            <input
-              className="categories-list__controls-search-input"
-              type="text"
-              placeholder="Search categories..."
-              value={searchString}
-              onChange={handleSearchChange}
-            />
-          </div>
         </div>
       </div>
 
-      {errorMessage && (
-        <div className="categories-list__error-message">
-          <p>{errorMessage}</p>
-        </div>
-      )}
-
-      {fetchError && (
-        <div className="categories-list__error-message">
-          <p>{fetchError.toString()}</p>
-        </div>
-      )}
+      {errorMessage && <div className="categories-list__error-message"><p>{errorMessage}</p></div>}
+      {fetchError && <div className="categories-list__error-message"><p>{fetchError.toString()}</p></div>}
 
       {isLoading ? (
-        <div className="categories-list__loader">
-          <p>Loading...</p>
+        <div className="categories-list__loader" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Loader size="sm" variant="dots" />
+          <span>Loading...</span>
         </div>
-      ) : categoriesList?.length > 0 ? (
-        <div className="categories-list__table-wrapper">
-          <table className="categories-list__table">
-            <thead>
-              <tr>
-                <th onClick={handleSort} data-name="name">
-                  Name <SortIcon criteria="name" />
-                </th>
-                <th>Image</th>
-                <th onClick={handleSort} data-name="index">
-                  Index <SortIcon criteria="index" />
-                </th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </table>
-        </div>
+      ) : categoriesList.length > 0 ? (
+        <>
+          <div className="categories-list__table-wrapper">
+            <table className="categories-list__table">
+              <thead>
+                <tr>
+                  <th onClick={handleSort} data-name="name">
+                    Name <SortIcon criteria="name" />
+                  </th>
+                  <th onClick={handleSort} data-name="index">
+                    Index <SortIcon criteria="index" />
+                  </th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categoriesList.map(item => (
+                  <tr key={item._id} onClick={() => handleRowClick(item._id)} style={{ cursor: 'pointer' }}>
+                    <td>{item.name}</td>
+                    <td>{item.index}</td>
+                    <td className="categories-list__table-cell--actions">
+                      {isVisible.deleteCategoryButt && (
+                        <button
+                          className="categories-list__delete-button"
+                          onClick={(e) => handleDeleteClick(e, item._id)}
+                        >
+                          <IconTrash size={16} />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="categories-list__pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => handlePageChange(i + 1)}
+                className={`categories-list__pagination__button ${i + 1 === currentPage ? 'categories-list__pagination__button--active' : ''
+                  }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </>
       ) : (
         <p className="categories-list__message">No categories found.</p>
       )}
 
       {showModal && (
-        <div className="categories-list__modal">
-          <p>Are you sure you want to delete this category?</p>
-          <div className="categories-list__modal-buttons">
-            <button onClick={() => setShowModal(false)}>Cancel</button>
-            <button
-              onClick={handleConfirmDelete}
-              style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
+        <ConfirmationModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={handleConfirmDelete}
+          message="Are you sure you want to delete this category?"
+        />
       )}
     </div>
   );

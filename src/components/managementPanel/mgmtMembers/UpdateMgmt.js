@@ -10,7 +10,7 @@ export default function UpdateMgmt() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth('staff');
-  const isEditable = ['admin', 'moderator'].includes(user.role);
+  const isEditable = ['admin', 'moderator'].includes(user?.role);
   const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -33,7 +33,7 @@ export default function UpdateMgmt() {
       try {
         const res = await api.get('/staff/roles');
         setRoles(res.data || []);
-      } catch (err) {}
+      } catch (err) { }
     };
 
     const fetchUser = async () => {
@@ -76,9 +76,10 @@ export default function UpdateMgmt() {
 
   if (isLoading) {
     return (
-      <Center className="update-mgmt__center">
-        <Loader size="md" />
-      </Center>
+      <div className="update-mgmt__loading">
+        <Loader size="sm" variant="dots" />
+        <span>Loading...</span>
+      </div>
     );
   }
 
@@ -148,12 +149,14 @@ export default function UpdateMgmt() {
             label: 'update-mgmt__label',
           }}
         />
-
-        {isEditable && (
-          <Button type="submit" className="update-mgmt__button" disabled={isLoading}>
-            {isLoading ? 'Updating...' : 'Update User'}
-          </Button>
-        )}
+        <div className="buttons-group">
+          {isEditable && (
+            <button type="submit" className="button-panel" disabled={isLoading}>
+              {isLoading ? 'Saving...' : 'Save'}
+            </button>
+          )}
+          <button className="button-panel" onClick={() => navigate('/management/mgnts')} >Cancel</button>
+        </div>
       </form>
     </div>
   );

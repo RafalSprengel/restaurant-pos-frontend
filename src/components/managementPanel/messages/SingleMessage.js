@@ -3,9 +3,10 @@ import { useFetch } from "../../../hooks/useFetch.js";
 import api from "../../../utils/axios.js";
 import { useEffect, useState } from "react";
 import { useUnreadMessages } from "../../../context/UnreadMessagesProvider";
-import { Button, TextInput, Textarea } from "@mantine/core";
+import { TextInput, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import "./singleMessage.scss";
+import ConfirmationModal from '../../ConfirmationModal';
 
 const SingleMessage = () => {
   const { id } = useParams();
@@ -99,22 +100,23 @@ const SingleMessage = () => {
             <p className="single-message__value">{data.body}</p>
           </div>
 
-          <div className="single-message__buttons">
-            <Button variant="default" onClick={handleBack}>
-              Back
-            </Button>
-            <Button color="red" onClick={() => setShowModal(true)}>
+          <div className="buttons-group">
+            <button className="button-panel button-panel--delete" onClick={() => setShowModal(true)}>
               Delete
-            </Button>
+            </button>
+              <button className="button-panel" variant="default" onClick={handleBack}>
+              Back
+            </button>
             {data.type === "received" && (
-              <Button
+              <button
+                className="button-panel"
                 onClick={() => {
                   setShowReply(!showReply);
                   replyForm.setFieldValue("subject", `Re: ${data.subject}`);
                 }}
               >
                 {showReply ? "Cancel" : "Reply"}
-              </Button>
+              </button>
             )}
           </div>
 
@@ -147,26 +149,19 @@ const SingleMessage = () => {
               />
 
 
-              <Button type="submit">Send</Button>
+              <button className="button-panel" type="submit">Send</button>
             </form>
           )}
         </>
       )}
 
       {showModal && (
-        <div className="single-message__modal">
-          <div className="single-message__modal-content">
-            <p>Are you sure you want to delete this message?</p>
-            <div className="single-message__modal-buttons">
-              <Button variant="default" onClick={() => setShowModal(false)}>
-                Cancel
-              </Button>
-              <Button color="red" onClick={() => handleDelete(id)}>
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={() => handleDelete(id)}
+          message="Are you sure you want to delete this message?"
+        />
       )}
     </div>
   );

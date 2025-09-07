@@ -1,5 +1,5 @@
 .single-message {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 20px;
 
@@ -22,6 +22,7 @@
 
   &__value {
     flex: 1;
+    text-align: end;
   }
 
   &__body {
@@ -44,30 +45,6 @@
   &__input--error {
     background-color: #ffe6e6;
     border: 1px solid #e63946;
-  }
-
-  &__modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &__modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 6px;
-    max-width: 400px;
-    text-align: center;
-  }
-
-  &__modal-buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
   }
 
   &__loading {

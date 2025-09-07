@@ -18,9 +18,9 @@ export default function FoodMenu({ }) {
     const contentRef = useRef()
     const { cartItems } = useShoppingCart();
 
-    const { data: categories, loading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
+    const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useFetch('/product-categories/');
     const queryString = location.search;
-    const { data: productsData, loading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
+    const { data: productsData, isLoading: productsLoading, error: productsError } = useFetch('/products/' + queryString);
     const prod = productsData;
 
     let products = productsData?.products || [];
@@ -66,7 +66,7 @@ export default function FoodMenu({ }) {
             <div className="food-menu__content" ref={contentRef} >
                 <ul className='food-menu__categories-list'>
                     <li onClick={() => handleCategoryClick(null)}> All</li>
-                    {categories?.map((cat, index) => (
+                    {categories?.categories.map((cat, index) => (
                         <li key={index} className='food-menu__categories-list-item'>
                             <a onClick={() => handleCategoryClick(cat.name)}>{cat.name}</a>
                         </li>

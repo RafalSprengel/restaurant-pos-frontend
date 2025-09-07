@@ -5,6 +5,8 @@ import api from '../../../utils/axios';
 import { useAuth } from '../../../context/authContext';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus } from '@tabler/icons-react';
 import './MgmtsList.scss';
+import { Loader, TextInput } from '@mantine/core';
+import ConfirmationModal from '../../ConfirmationModal';
 
 const MgmtsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +32,7 @@ const MgmtsList = () => {
     member: { addStaffButt: false, deleteStaffButt: false },
   };
 
-  const isVisible = rolePermissions[user.role] || { addStaffButt: false, deleteStaffButt: false };
+  const isVisible = rolePermissions[user?.role] || { addStaffButt: false, deleteStaffButt: false };
 
   const getStaff = async () => {
     setIsLoading(true);
@@ -148,22 +150,22 @@ const MgmtsList = () => {
       <div className="mgmts-list__header">
         <h2 className="mgmts-list__header__title">Staff</h2>
         <div className="mgmts-list__controls">
+
+          <TextInput
+            placeholder="Search staff..."
+            className="mgmts-list__search-input"
+            value={searchString}
+            onChange={handleSearchChange}
+            leftSection={<IconSearch size={16} />}
+          />
+
           {isVisible.addStaffButt && (
-            <button className="mgmts-list__add-button" onClick={() => navigate('/management/add-mgmt')}>
+            <button className="button-panel" onClick={() => navigate('/management/add-mgmt')}>
               <IconPlus size={16} />
               Add New
             </button>
           )}
-          <div className="mgmts-list__controls__search">
-            <IconSearch size={16} />
-            <input
-              className="mgmts-list__controls__search-input"
-              type="text"
-              placeholder="Search staff..."
-              value={searchString}
-              onChange={handleSearchChange}
-            />
-          </div>
+
         </div>
       </div>
 
@@ -174,8 +176,9 @@ const MgmtsList = () => {
       )}
 
       {isLoading ? (
-        <div className="mgmts-list__loader">
-          <p>Loading...</p>
+        <div className="mgmts-list__loading">
+          <Loader size="sm" variant="dots" />
+          <span>Loading...</span>
         </div>
       ) : staffList?.length > 0 ? (
         <div className="mgmts-list__table-wrapper">
@@ -212,13 +215,12 @@ const MgmtsList = () => {
       )}
 
       {showModal && (
-        <div className="mgmts-list__modal">
-          <p>Are you sure you want to delete this staff member?</p>
-          <div className="mgmts-list__modal-buttons">
-            <button onClick={() => setShowModal(false)}>Cancel</button>
-            <button onClick={handleConfirmDelete} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>Delete</button>
-          </div>
-        </div>
+        <ConfirmationModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={handleConfirmDelete}
+          message="Are you sure you want to delete this staff member?"
+        />
       )}
     </div>
   );

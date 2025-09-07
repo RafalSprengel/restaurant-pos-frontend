@@ -1,10 +1,12 @@
-import { useEffect } from "react";
-import { TextInput, NumberInput, Checkbox, Button } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { TextInput, NumberInput, Checkbox, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import api from "../../../utils/axios";
 import "./Settings.scss";
 
 export default function Settings() {
+
+  const [isLoading, setIsLoading] = useState(true);
   const form = useForm({
     initialValues: {
       startHour: 10,
@@ -36,16 +38,19 @@ export default function Settings() {
     const fetchSettings = async () => {
       try {
         const res = await api.get("/settings");
-        if(res.data.reservationSettings) form.setValues(res.data.reservationSettings);
-        if(res.data.smtpSettings) form.setValues((v) => ({ ...v, ...res.data.smtpSettings }));
+        if (res.data.reservationSettings) form.setValues(res.data.reservationSettings);
+        if (res.data.smtpSettings) form.setValues((v) => ({ ...v, ...res.data.smtpSettings }));
       } catch (err) {
         console.error("Error fetching settings:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchSettings();
   }, []);
 
   const saveSettings = async (values) => {
+    setIsLoading(true);
     try {
       await api.put("/settings", {
         reservationSettings: {
@@ -65,8 +70,17 @@ export default function Settings() {
       });
     } catch (err) {
       console.error("Error saving settings:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) return (
+    <div className="settings__loading">
+      <Loader size="sm" variant="dots" />
+      <span>Loading...</span>
+    </div>
+  );
 
   return (
     <form className="settings" onSubmit={form.onSubmit(saveSettings)}>
@@ -175,9 +189,9 @@ export default function Settings() {
         />
       </div>
 
-      <div className="settings__buttons">
-        <Button type="button" variant="default" onClick={() => window.history.back()}>Back</Button>
-        <Button type="submit">Save Settings</Button>
+      <div className="buttons-group">
+        <button type="submit" className="button-panel">Save Settings</button>
+        <button type="button" className="button-panel"variant="default" onClick={() => window.history.back()}>Back</button>
       </div>
     </form>
   );

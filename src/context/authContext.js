@@ -59,11 +59,11 @@ export const AuthProvider = ({ children }) => {
      const login = (userData) => {
           setIsAuthenticated(true);
           setUser(userData);
+          checkAuthStatus();
      };
 
      const logout = async () => {
           try {
-               console.log('wykonuje logout w authcontext.js');
                await api.post('/auth/logout');
           } catch (err) {
                console.error('Error during logout:', err.message);

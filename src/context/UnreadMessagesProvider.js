@@ -4,7 +4,7 @@ import { useFetch } from '../hooks/useFetch';
 const UnreadMessagesContext = createContext();
 
 export const UnreadMessagesProvider = ({ children }) => {
-    const { data, loading, error, refetch: refetchUnreadCount } = useFetch('/messages/unread-count', 0)
+    const { data, isLoading, error, refetch: refetchUnreadCount } = useFetch('/messages/unread-count', 0)
     return (
         <UnreadMessagesContext.Provider value={{
             unreadMessageCount: data?.count || 0,

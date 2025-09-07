@@ -15,19 +15,11 @@
     margin-bottom: 24px;
   }
 
-  &__heading {
-    &--main {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    &--card {
-      font-size: 1.5rem;
-      font-weight: 500;
-      margin-top: 0;
-      margin-bottom: 16px;
-    }
+  &__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
   }
 
   &__info {

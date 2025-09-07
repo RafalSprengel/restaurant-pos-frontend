@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
-import { TextInput, NumberInput, Button, Loader, Center } from '@mantine/core'
+import { TextInput, NumberInput, Loader, Center } from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { IconCheck } from '@tabler/icons-react'
 import api from '../../../utils/axios.js'
 import { useAuth } from '../../../context/authContext.js'
 import './updateCategory.scss'
@@ -10,11 +12,10 @@ const UpdateCategory = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth('staff')
-  const isEditable = ['admin', 'moderator'].includes(user.role)
+  const isEditable = ['admin', 'moderator'].includes(user?.role)
   const [isLoading, setIsLoading] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [imageFile, setImageFile] = useState(null)
 
   const form = useForm({
     initialValues: { name: '', index: '' },
@@ -47,22 +48,23 @@ const UpdateCategory = () => {
     getCategory()
   }, [])
 
-  const handleFileChange = (e) => {
-    setImageFile(e.target.files[0])
-  }
-
   const handleSubmit = async (values) => {
     setIsLoading(true)
     setShowErrorAlert(false)
     try {
-      const formDataToSend = new FormData()
-      formDataToSend.append('name', values.name)
-      formDataToSend.append('index', values.index)
-      if (imageFile) formDataToSend.append('image', imageFile)
+      const res = await api.put(`/product-categories/${id}`, {
+        name: values.name,
+        index: values.index,
+      })
 
-      const res = await api.put(`/product-categories/${id}`, formDataToSend)
-      if (res.status === 200) navigate('/management/categories')
-      else {
+      if (res.status === 200) {
+        showNotification({
+          title: 'Success',
+          message: 'Category updated successfully!',
+          color: 'green',
+          icon: <IconCheck />,
+        })
+      } else {
         setShowErrorAlert(true)
         setErrorMessage(res.data?.error || 'Failed to update category')
       }
@@ -92,12 +94,6 @@ const UpdateCategory = () => {
       )}
 
       <form className="update-category__form" onSubmit={form.onSubmit(handleSubmit)}>
-        {showErrorAlert && (
-          <div className="update-category__form-notification">
-            <p>{errorMessage}</p>
-          </div>
-        )}
-
         <TextInput
           label="Name"
           placeholder="Category name"
@@ -123,28 +119,22 @@ const UpdateCategory = () => {
           }}
         />
 
-        <div className="update-category__form-field">
-          <label className="update-category__form-label" htmlFor="image">
-            Image:
-          </label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            disabled={!isEditable || isLoading}
-            className="update-category__form-input update-category__form-input--file"
-          />
-        </div>
-
         {isEditable && (
-          <Button
-            type="submit"
-            className="update-category__form-submit"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Saving...' : 'Save Category'}
-          </Button>
+          <div className="update-category__buttons-group">
+            <button
+              type="submit"
+              className="button-panel"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Saving...' : 'Save Category'}
+            </button>
+            <button
+              className="button-panel"
+              onClick={() => navigate('/management/categories')}
+            >
+              Back
+            </button>
+          </div>
         )}
       </form>
     </div>

@@ -1,5 +1,5 @@
 .update-category {
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 24px;
   font-family: Arial, sans-serif;
@@ -59,21 +59,14 @@
     padding: 4px;
   }
 
-  &__form-submit {
-    padding: 10px;
-    background-color: #228be6;
-    color: white;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
 
-    &:hover {
-      background-color: #1c7ed6;
-    }
+  &__buttons-group {
+    padding-top: 25px;
+    display: flex;
+    gap: 10px;
 
-    &:disabled {
-      background-color: #ced4da;
-      cursor: not-allowed;
+    & button {
+      flex: 1;
     }
   }
 

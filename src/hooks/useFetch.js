@@ -3,11 +3,11 @@ import api from '../utils/axios';
 
 export function useFetch(initialUrl, initialData = null) {
      const [data, setData] = useState(initialData);
-     const [loading, setLoading] = useState(false);
+     const [isLoading, setIsLoading] = useState(false);
      const [error, setError] = useState(null);
 
      const fetchData = async () => {
-          setLoading(true);
+          setIsLoading(true);
           setError(null);
           try {
                const response = await api(initialUrl);
@@ -15,7 +15,7 @@ export function useFetch(initialUrl, initialData = null) {
           } catch {
                setError('Network connection error');
           } finally {
-               setLoading(false);
+               setIsLoading(false);
           }
      };
 
@@ -25,5 +25,5 @@ export function useFetch(initialUrl, initialData = null) {
           }
      }, [initialUrl]);
 
-     return { data, loading, error, refetch: fetchData };
+     return { data, isLoading, error, refetch: fetchData };
 }

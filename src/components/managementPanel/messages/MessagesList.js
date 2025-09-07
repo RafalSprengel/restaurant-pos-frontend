@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
-import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
+import { Loader, TextInput } from '@mantine/core';
+import { IconTrash, IconSortAscending, IconPlus, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import './MessagesList.scss';
+import ConfirmationModal from '../../ConfirmationModal';
 
 const MessagesList = () => {
     const [messages, setMessages] = useState([]);
@@ -37,7 +39,7 @@ const MessagesList = () => {
             setIsLoading(false);
         }
     };
-    
+
     const handleSearchChange = (e) => {
         const { value } = e.currentTarget;
         setSearchString(value);
@@ -95,11 +97,11 @@ const MessagesList = () => {
     const SortIcon = ({ criteria }) => {
         if (criteria !== sortCriteria) return null;
         return sortOrder === 'desc' ? (
-          <IconSortDescending size={16} className="messages-list-sort-icon" />
+            <IconSortDescending size={16} className="messages-list-sort-icon" />
         ) : (
-          <IconSortAscending size={16} className="messages-list-sort-icon" />
+            <IconSortAscending size={16} className="messages-list-sort-icon" />
         );
-      };
+    };
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -112,10 +114,10 @@ const MessagesList = () => {
 
     useEffect(() => {
         refetchUnreadCount();
-    },[unreadMessageCount]);
+    }, [unreadMessageCount]);
 
     const rows = messages.map((msg) => (
-        <tr key={msg._id} onClick={() => handleRowClick(msg._id)} style={{ cursor: 'pointer' , fontWeight: msg.isRead ? 'normal' : 'bold'  }}>
+        <tr key={msg._id} onClick={() => handleRowClick(msg._id)} style={{ cursor: 'pointer', fontWeight: msg.isRead ? 'normal' : 'bold' }}>
             <td>
                 <input
                     type="checkbox"
@@ -138,13 +140,12 @@ const MessagesList = () => {
                 <h2 className="messages-list-header__title">Messages</h2>
                 <div className="messages-list-controls">
                     <div className="messages-list-controls__search-group">
-                        <IconSearch size={16} />
-                        <input
-                            className="messages-list-controls__search-input"
-                            type="text"
+                        <TextInput
                             placeholder="Search messages..."
+                            className=""
                             value={searchString}
                             onChange={handleSearchChange}
+                            leftSection={<IconSearch size={16} />}
                         />
                     </div>
                     <select className="messages-list-controls__select" value={typeFilter} onChange={(e) => handleTypeFilter(e.target.value)}>
@@ -160,8 +161,9 @@ const MessagesList = () => {
             </div>
 
             {isLoading ? (
-                <div className="messages-list-loader">
-                    <p>Loading...</p>
+                <div className="messages-list-loading">
+                    <Loader size="sm" variant="dots" />
+                    <span>Loading...</span>
                 </div>
             ) : errorMessage ? (
                 <div className="messages-list-error-message">
@@ -206,15 +208,12 @@ const MessagesList = () => {
             )}
 
             {showModal && (
-                <div className="messages-list-modal">
-                    <div className="messages-list-modal-content">
-                        <p>Do you really want to delete the selected messages?</p>
-                        <div className="messages-list-modal-buttons">
-                            <button onClick={() => setShowModal(false)}>Cancel</button>
-                            <button onClick={deleteSelected} style={{ backgroundColor: '#fa5252', color: 'white', border: 'none' }}>Delete</button>
-                        </div>
-                    </div>
-                </div>
+                <ConfirmationModal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                    onConfirm={deleteSelected}
+                    message="Do you really want to delete the selected messages?"
+                />
             )}
         </div>
     );

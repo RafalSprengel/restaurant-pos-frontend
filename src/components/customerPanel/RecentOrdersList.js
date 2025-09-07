@@ -8,7 +8,7 @@ const RecentOrdersList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const { data, loading: loadingOrders, error: fetchError, refetch: refetchOrders } = useFetch('/orders/customer');
+  const { data, isLoading: loadingOrders, error: fetchError, refetch: refetchOrders } = useFetch('/orders/customer');
   const orders = data || [];
 
   const handleDeleteClick = (id) => setOrderToDelete(id);

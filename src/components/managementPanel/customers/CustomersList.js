@@ -4,6 +4,9 @@ import dayjs from 'dayjs';
 import api from '../../../utils/axios.js';
 import { useAuth } from '../../../context/authContext.js';
 import './customersList.scss';
+import { Loader, TextInput } from '@mantine/core';
+import { IconSearch, IconPlus } from '@tabler/icons-react';
+import ConfirmationModal from '../../ConfirmationModal';
 
 const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
@@ -26,7 +29,7 @@ const CustomersList = () => {
     moderator: { addNewButt: true, deleteButt: true },
     member: { addNewButt: false, deleteButt: false },
   };
-  const isVisible = rolePermissions[user.role] || { deleteButt: false };
+  const isVisible = rolePermissions[user?.role] || { deleteButt: false };
 
   const fetchCustomers = async () => {
     const queryString = location.search;
@@ -132,8 +135,9 @@ const CustomersList = () => {
 
   if (loading) {
     return (
-      <div className="customers-list-loader">
-        <p>Loading...</p>
+      <div className="customers-list__loading">
+        <Loader size="sm" variant="dots" />
+        <span>Loading...</span>
       </div>
     );
   }
@@ -144,24 +148,23 @@ const CustomersList = () => {
       <h2 className="customers-list__title">Customers</h2>
 
       <div className="customers-list__controls">
+        <TextInput
+          className="customers-list__search-input"
+          type="text"
+          placeholder="Search..."
+          value={searchString}
+          onChange={handleSearchChange}
+          leftSection={<IconSearch size={16} />}
+        />
         {isVisible.addNewButt && (
           <button
-            className="customers-list__add-btn"
+            className="button-panel"
             onClick={() => navigate('/management/add-customer')}
           >
+            <IconPlus size={16} />
             Add customer
           </button>
         )}
-        <div className="customers-list__search">
-          <span>Find customer:</span>
-          <input
-            className="customers-list__search-input"
-            type="text"
-            placeholder="Search..."
-            value={searchString}
-            onChange={handleSearchChange}
-          />
-        </div>
       </div>
 
       {/* Error Notification */}
@@ -237,9 +240,8 @@ const CustomersList = () => {
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                className={`customers-list__pagination-btn ${
-                  currentPage === page ? 'customers-list__pagination-btn--active' : ''
-                }`}
+                className={`customers-list__pagination-btn ${currentPage === page ? 'customers-list__pagination-btn--active' : ''
+                  }`}
                 onClick={() => handlePageChange(page)}
               >
                 {page}
@@ -255,27 +257,14 @@ const CustomersList = () => {
 
       {/* Delete Confirmation Modal */}
       {showModal && (
-        <div className="customers-list__modal">
-          <div className="customers-list__modal-content">
-            <h3 className="customers-list__modal-title">Confirm Deletion</h3>
-            <p>Are you sure you want to delete this customer?</p>
-            <div className="customers-list__modal-actions">
-              <button
-                className="customers-list__modal-btn customers-list__modal-btn--cancel"
-                onClick={() => setShowModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="customers-list__modal-btn customers-list__modal-btn--delete"
-                onClick={deleteCustomer}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={deleteCustomer}
+          message="Are you sure you want to delete this customer?"
+        />
       )}
+
     </div>
   );
 };

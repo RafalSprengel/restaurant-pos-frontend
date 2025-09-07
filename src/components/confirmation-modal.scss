@@ -1,12 +1,15 @@
 .confirmation-modal {
      display: flex;
      flex-direction: column;
+     gap: 10px;
+     padding: 30px;
      align-items: center;
      justify-content: center;
-     max-width: 95vw;;
+     max-width: 95vw;
 
      &__header {
           font-size: 20px;
+          text-align: center;;
      }
 
      &__buttons {
@@ -15,8 +18,20 @@
           margin: 20px 0;
           gap: 20px;
 
-          & button {
+           & button {
                padding: 5px 50px;
+               border-radius: 4px;
+          }
+     }
+
+     @media(max-width: 768px) {
+          gap: 15px;
+          &__header {
+               font-size: 15px;
+          }
+
+          &__buttons {
+               margin: 10px 0;
           }
      }
 }

@@ -1,5 +1,5 @@
 .add-customer {
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 24px;
   font-family: Arial, sans-serif;
@@ -11,10 +11,11 @@
   }
 
   &__title {
-    font-size: 1.5rem;
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 24px;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 12px;
   }
 
   &__notification {
@@ -58,25 +59,5 @@
     background-color: #ffe6e6;
     border-color: #c92a2a;
     color: #c92a2a;
-  }
-
-  &__submit {
-    padding: 10px;
-    background-color: #228be6;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background-color: #1c7ed6;
-    }
-
-    &:disabled {
-      background-color: #ced4da;
-      cursor: not-allowed;
-    }
   }
 }

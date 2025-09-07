@@ -1,22 +1,24 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
-import { TextInput, Button } from '@mantine/core'
+import { TextInput } from '@mantine/core'
 import api from '../../../utils/axios.js'
 import { useAuth } from '../../../context/authContext.js'
 import './addCustomer.scss'
+import { showNotification } from '@mantine/notifications';
+import { IconCheck } from '@tabler/icons-react';
 
 const AddCustomer = () => {
   const navigate = useNavigate()
-  const { user } = useAuth('staff')
-  const isEditable = ['admin', 'moderator'].includes(user.role)
-  const [isLoading, setIsLoading] = useState(false)
+  const { user } = useAuth()
+  const isEditable = ['admin', 'moderator'].includes(user?.role)
+  const [isSavingInProgress, setIsSavingInProgress] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const form = useForm({
-    initialValues: { name: '', surname: '', email: '', phone: '', password: '' },
+    initialValues: { firstName: '', surname: '', email: '', phone: '', password: '' },
     validate: {
-      name: (value) => (value.trim() === '' ? 'Name is required' : null),
+      firstName: (value) => (value.trim() === '' ? 'First name is required' : null),
       surname: (value) => (value.trim() === '' ? 'Surname is required' : null),
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : 'Invalid email',
@@ -31,16 +33,23 @@ const AddCustomer = () => {
   })
 
   const handleSubmit = async (values) => {
-    setIsLoading(true)
+    setIsSavingInProgress(true)
     setErrorMessage('')
     try {
       const response = await api.post('/auth/register/customer/', values)
-      if (response.status === 201) navigate('/management/customers')
-      else setErrorMessage(response.data?.error || 'Failed to add customer')
+      if (response.status === 201) {
+        showNotification({
+          title: 'Success',
+          message: 'Customer added successfully!',
+          color: 'green',
+          icon: <IconCheck />,
+        });
+        setTimeout(() => navigate('/management/customers'), 1000);
+      } else setErrorMessage(response.data?.error || 'Failed to add customer')
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'An error occurred')
+      setErrorMessage(err.response?.data?.error || err.message || 'An error occurred')
     } finally {
-      setIsLoading(false)
+      setIsSavingInProgress(false)
     }
   }
 
@@ -56,13 +65,13 @@ const AddCustomer = () => {
         )}
 
         <TextInput
-          label="Name"
-          placeholder="Customer name"
-          {...form.getInputProps('name')}
-          disabled={!isEditable || isLoading}
+          label="First name"
+          placeholder="First name"
+          {...form.getInputProps('firstName')}
+          disabled={!isEditable || isSavingInProgress}
           classNames={{
             root: 'add-customer__field',
-            input: `add-customer__input ${form.errors.name ? 'add-customer__input--error' : ''}`,
+            input: `add-customer__input ${form.errors.firstName ? 'add-customer__input--error' : ''}`,
             label: 'add-customer__label',
           }}
         />
@@ -71,7 +80,7 @@ const AddCustomer = () => {
           label="Surname"
           placeholder="Customer surname"
           {...form.getInputProps('surname')}
-          disabled={!isEditable || isLoading}
+          disabled={!isEditable || isSavingInProgress}
           classNames={{
             root: 'add-customer__field',
             input: `add-customer__input ${form.errors.surname ? 'add-customer__input--error' : ''}`,
@@ -83,7 +92,7 @@ const AddCustomer = () => {
           label="Email"
           placeholder="Customer email"
           {...form.getInputProps('email')}
-          disabled={!isEditable || isLoading}
+          disabled={!isEditable || isSavingInProgress}
           classNames={{
             root: 'add-customer__field',
             input: `add-customer__input ${form.errors.email ? 'add-customer__input--error' : ''}`,
@@ -95,7 +104,7 @@ const AddCustomer = () => {
           label="Phone"
           placeholder="Customer phone"
           {...form.getInputProps('phone')}
-          disabled={!isEditable || isLoading}
+          disabled={!isEditable || isSavingInProgress}
           classNames={{
             root: 'add-customer__field',
             input: `add-customer__input ${form.errors.phone ? 'add-customer__input--error' : ''}`,
@@ -107,23 +116,33 @@ const AddCustomer = () => {
           label="Password"
           placeholder="Customer password"
           {...form.getInputProps('password')}
-          disabled={!isEditable || isLoading}
+          disabled={!isEditable || isSavingInProgress}
           classNames={{
             root: 'add-customer__field',
             input: `add-customer__input ${form.errors.password ? 'add-customer__input--error' : ''}`,
             label: 'add-customer__label',
           }}
         />
+        <div className="buttons-group">
+          {isEditable && (
+            <button
+              type="submit"
+             className="button-panel"
+              disabled={isSavingInProgress}
+            >
+              {isSavingInProgress ? 'Saving...' : 'Save'}
+            </button>
+          )}
 
-        {isEditable && (
-          <Button
-            type="submit"
-            className="add-customer__submit"
-            disabled={isLoading}
+          <button
+            type="button"
+            className="button-panel"
+            onClick={() => navigate('/management/customers')}
           >
-            {isLoading ? 'Adding...' : 'Add Customer'}
-          </Button>
-        )}
+            Cancel
+          </button>
+        </div>
+
       </form>
     </div>
 

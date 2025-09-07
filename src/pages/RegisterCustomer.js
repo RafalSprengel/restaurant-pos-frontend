@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
-import '../styles/register-customer.scss';
+import './register-customer.scss';
 import api from '../utils/axios';
 import Modal from '../components/Modal.js';
 import { IconCircleCheck, IconArrowNarrowLeft } from '@tabler/icons-react';
+import { Alert } from '@mantine/core';
+import { IconXboxX } from '@tabler/icons-react';
 
 const RegisterCustomer = () => {
   const [firstName, setFirstName] = useState('');
@@ -15,7 +17,7 @@ const RegisterCustomer = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(true);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -66,7 +68,7 @@ const RegisterCustomer = () => {
     <>
       <div className="register-customer">
         <h1 className="register-customer__title">Register</h1>
-        {error && <p className="register-customer__error">{error}</p>}
+        {error && <Alert variant="light" color="red" radius="md" title={error} icon={<IconXboxX />} />}
         <form onSubmit={handleRegister} className="register-customer__form">
           <div className="register-customer__input-group">
             <label htmlFor="firstName" className="register-customer__label">First name:</label>

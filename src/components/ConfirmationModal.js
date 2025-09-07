@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from './Modal.js';
-import '../styles/confirmation-modal.scss';
+import './confirmation-modal.scss';
 
 export default function ConfirmationModal({ isOpen, onClose, onConfirm, message }) {
     function handleOnConfirm() {
@@ -12,8 +12,8 @@ export default function ConfirmationModal({ isOpen, onClose, onConfirm, message 
             <div className="confirmation-modal">
                 <h5 className='confirmation-modal__header'>{message}</h5>
                 <div className="confirmation-modal__buttons">
-                    <button onClick={handleOnConfirm}>Tak</button>
-                    <button onClick={onClose}>Nie</button>
+                    <button onClick={handleOnConfirm}>Yes</button>
+                    <button onClick={onClose}>No</button>
                 </div>
             </div>
         </Modal>

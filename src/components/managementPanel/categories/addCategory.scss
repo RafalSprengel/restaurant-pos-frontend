@@ -11,69 +11,69 @@
     margin-bottom: 24px;
   }
 
-  &-form {
+  &__form {
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
 
-    &__notification {
-      background-color: #fff5f5;
-      border: 1px solid #c92a2a;
-      border-radius: 4px;
-      padding: 12px;
-      color: #c92a2a;
-      margin-bottom: 24px;
+  &__form-notification {
+    background-color: #fff5f5;
+    border: 1px solid #c92a2a;
+    border-radius: 4px;
+    padding: 12px;
+    color: #c92a2a;
+    margin-bottom: 24px;
+  }
+
+  &__form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+  }
+
+  &__form-input {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+
+    &:disabled {
+      background-color: #f8f9fa;
+      cursor: not-allowed;
     }
+  }
 
-    &__field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+  &__form-input--error {
+    background-color: #ffe6e6;
+    border-color: #c92a2a;
+  }
+
+  &__form-input--file {
+    padding: 4px;
+  }
+
+  &__form-buttons-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+
+    button {
+      flex: 1;
     }
+  }
 
-    &__label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #495057;
-    }
-
-    &__input {
-      padding: 8px;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      font-size: 1rem;
-
-      &:disabled {
-        background-color: #f8f9fa;
-        cursor: not-allowed;
-      }
-
-      &--error {
-        background-color: #ffe6e6;
-        border-color: #c92a2a;
-      }
-
-      &--file {
-        padding: 4px;
-      }
-    }
-
-    &__submit {
-      padding: 10px;
-      background-color: #228be6;
-      color: white;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #1c7ed6;
-      }
-
-      &:disabled {
-        background-color: #ced4da;
-        cursor: not-allowed;
-      }
-    }
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
   }
 }

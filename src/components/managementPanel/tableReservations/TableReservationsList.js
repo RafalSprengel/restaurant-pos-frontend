@@ -3,6 +3,8 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import api from '../../../utils/axios';
 import './tableReservationsList.scss';
+import ConfirmationModal from '../../ConfirmationModal';
+import { Loader } from '@mantine/core';
 
 const TableReservationsList = () => {
   const [reservations, setReservations] = useState([]);
@@ -59,7 +61,6 @@ const TableReservationsList = () => {
     setReservationToDelete(_id);
     setShowModal(true);
   };
-
   const handleSearchChange = (e) => {
     const value = e.currentTarget.value;
     setSearchString(value);
@@ -149,8 +150,9 @@ const TableReservationsList = () => {
       )}
 
       {isLoading ? (
-        <div className="table-reservations-list-loader">
-          <p>Loading...</p>
+        <div className="table-reservations-list-loading">
+          <Loader size="sm" variant="dots" />
+          <span>Loading...</span>
         </div>
       ) : reservations?.length > 0 ? (
         <div className="table-reservations-list-table-wrapper">
@@ -186,15 +188,13 @@ const TableReservationsList = () => {
       )}
 
       {showModal && (
-        <div className="table-reservations-list-modal">
-          <div className="table-reservations-list-modal-content">
-            <p>Do you really want to delete this reservation?</p>
-            <div className="table-reservations-list-modal-buttons">
-              <button className="table-reservations-list-modal-button" onClick={() => setShowModal(false)}>Cancel</button>
-              <button className="table-reservations-list-modal-button table-reservations-list-modal-button--delete" onClick={() => handleDelete(reservationToDelete)}>Delete</button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          title="Delete Reservation"
+          message="Do you really want to delete this reservation?"
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={() => handleDelete(reservationToDelete)}
+        />
       )}
     </div>
   );

@@ -1,24 +1,18 @@
 .register-customer {
   width: 100%;
   display: flex;
+  gap: 10px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  padding: 10px;
   background-color: #f0f4f8;
   color: #333;
   font-family: Arial, sans-serif;
 
   &__title {
     font-size: 2rem;
-    margin-bottom: 1.5rem;
     color: #333;
-  }
-
-  &__error {
-    color: red;
-    margin-bottom: 1rem;
-    font-weight: bold;
   }
 
   &__form {

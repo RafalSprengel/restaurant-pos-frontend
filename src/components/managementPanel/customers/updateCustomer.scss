@@ -1,5 +1,5 @@
 .update-customer {
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 24px;
   font-family: Arial, sans-serif;
@@ -53,23 +53,12 @@
         border-color: #c92a2a;
       }
     }
+  }
 
-    &__submit {
-      padding: 10px;
-      background-color: #228be6;
-      color: white;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #1c7ed6;
-      }
-
-      &:disabled {
-        background-color: #ced4da;
-        cursor: not-allowed;
-      }
-    }
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
   }
 }

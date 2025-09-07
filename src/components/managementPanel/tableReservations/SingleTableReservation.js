@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useFetch } from "../../../hooks/useFetch.js";
 import api from '../../../utils/axios.js';
 import "./singleTableReservation.scss";
+import ConfirmationModal from '../../ConfirmationModal';
 
 const SingleTableReservation = () => {
   const { id } = useParams();
@@ -69,26 +70,24 @@ const SingleTableReservation = () => {
             </div>
           )}
 
-          <div className="single-table-reservation__buttons">
-            <button className="single-table-reservation__button" onClick={handleBack}>
-              Back
-            </button>
-            <button className="single-table-reservation__button single-table-reservation__button--delete" onClick={openDeleteModal}>
+          <div className="buttons-group">
+            <button className="button-panel button-panel--delete" onClick={openDeleteModal}>
               Delete
+            </button>
+            <button className="button-panel" onClick={handleBack}>
+              Back
             </button>
           </div>
         </>
       }
       {showModal && (
-        <div className="single-table-reservation__modal">
-          <div className="single-table-reservation__modal-content">
-            <p>Are you sure you want to delete this reservation?</p>
-            <div className="single-table-reservation__modal-buttons">
-              <button className="single-table-reservation__button" onClick={() => setShowModal(false)}>Cancel</button>
-              <button className="single-table-reservation__button single-table-reservation__button--delete" onClick={() => handleDelete(id)}>Delete</button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={() => handleDelete(id)}
+          title="Delete Reservation"
+          message="Are you sure you want to delete this reservation?"
+        />
       )}
     </div>
   );

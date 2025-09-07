@@ -56,10 +56,11 @@
     margin-bottom: 16px;
   }
 
-  &__buttons {
+  &__loading {
     display: flex;
+    gap: 10px;
     justify-content: center;
-    gap: 16px;
-    margin-top: 32px;
+    align-items: center;
+    height: 70vh;
   }
 }

@@ -4,6 +4,10 @@ import { useAuth } from '../../../context/authContext';
 import api from '../../../utils/axios';
 import dayjs from 'dayjs';
 import './orderList.scss';
+import ConfirmationModal from '../../ConfirmationModal';
+import { Loader, TextInput } from '@mantine/core';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus, IconEdit } from '@tabler/icons-react';
+
 
 const OrdersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -141,16 +145,15 @@ const OrdersList = () => {
             <h1 className="orders-list__title">Orders</h1>
 
             <div className="orders-list__header">
-                <div className="orders-list__search-wrapper">
-                    <span className="orders-list__search-icon">🔍</span>
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchString}
-                        onChange={handleSearchChange}
-                        className="orders-list__search-input"
-                    />
-                </div>
+
+                <TextInput
+                    placeholder="Search products..."
+                    className="orders-list__search-input"
+                    value={searchString}
+                    onChange={handleSearchChange}
+                    leftSection={<IconSearch size={16} />}
+                />
+
             </div>
 
             {errorMessage && (
@@ -161,8 +164,9 @@ const OrdersList = () => {
             )}
 
             {isLoading ? (
-                <div className="orders-list__loader-wrapper">
-                    <div className="orders-list__loader"></div>
+                <div className="orders-list__loading">
+                    <Loader size="sm" variant="dots" />
+                    <span>Loading...</span>
                 </div>
             ) : !ordersList?.length ? (
                 <h4 className="orders-list__no-orders">No data to display</h4>
@@ -231,15 +235,22 @@ const OrdersList = () => {
             )}
 
             {showModal && (
-                <div className="orders-list__modal-overlay">
-                    <div className="orders-list__modal">
-                        <p className="orders-list__modal-text">Are you sure you want to delete this order?</p>
-                        <div className="orders-list__modal-buttons">
-                            <button className="orders-list__button orders-list__button--cancel" onClick={() => setShowModal(false)}>Cancel</button>
-                            <button className="orders-list__button orders-list__button--delete-confirm" onClick={handleConfirmDelete}>Delete</button>
-                        </div>
-                    </div>
-                </div>
+                // <div className="orders-list__modal-overlay">
+                //     <div className="orders-list__modal">
+                //         <p className="orders-list__modal-text">Are you sure you want to delete this order?</p>
+                //         <div className="orders-list__modal-buttons">
+                //             <button className="orders-list__button orders-list__button--cancel" onClick={() => setShowModal(false)}>Cancel</button>
+                //             <button className="orders-list__button orders-list__button--delete-confirm" onClick={handleConfirmDelete}>Delete</button>
+                //         </div>
+                //     </div>
+                // </div>
+
+                <ConfirmationModal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                    onConfirm={handleConfirmDelete}
+                    message="Are you sure you want to delete this order?"
+                />
             )}
         </div>
     );

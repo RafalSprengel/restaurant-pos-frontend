@@ -22,7 +22,7 @@ const UpdateOrder = () => {
     const navigate = useNavigate();
     const { user } = useAuth('staff');
 
-    const { data: orderTypes, loading: loadingOrderTypes, error: errorOrderTypes } = useFetch('/orders/order-types');
+    const { data: orderTypes, isLoading: loadingOrderTypes, error: errorOrderTypes } = useFetch('/orders/order-types');
 
    const isEditable = user?.role ? ['admin', 'moderator'].includes(user.role) : false;
 
@@ -97,7 +97,7 @@ const UpdateOrder = () => {
     return (
         <div className="update-order__wrapper">
             <form className="update-order__form" onSubmit={handleSubmit}>
-                <h2 className="update-order__heading--main">Update Order</h2>
+                <h2 className="update-order__title">Update Order</h2>
 
                 {showErrorAlert && (
                     <div className="update-order__notification">

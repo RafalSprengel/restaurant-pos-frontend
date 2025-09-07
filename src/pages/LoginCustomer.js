@@ -4,9 +4,10 @@ import './login-customer.scss';
 import { useAuth } from '../context/authContext';
 import api from '../utils/axios';
 import { handleApiError } from '../utils/handleApiError';
-import { Alert, TextInput, PasswordInput, Button } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { Alert, TextInput, PasswordInput } from '@mantine/core';
 import { IconXboxX, IconAt, IconLock } from '@tabler/icons-react';
+import { useForm } from '@mantine/form';
+
 
 const LoginCustomer = () => {
      const navigate = useNavigate();
@@ -21,6 +22,8 @@ const LoginCustomer = () => {
                password: (value) => (value ? null : 'Password is required'),
           },
      });
+
+     console.log('test 07/09/2025 10:53')
 
      const handleLogin = async (values) => {
           setError(null);
@@ -78,27 +81,27 @@ const LoginCustomer = () => {
                          }}
                     />
 
-                    <Button
+                    <button
                          type="submit"
-                         className={`login-customer__button ${loading ? 'login-customer__button--loading' : ''}`}
+                         className={`login-customer__button button-panel ${loading ? 'login-customer__button--loading' : ''}`}
                          disabled={loading}
                     >
                          {loading ? 'Loading...' : 'Login'}
-                    </Button>
+                    </button>
                </form>
 
                <div className="login-customer__alt-login">
                     <p>Or log in with:</p>
 
-                    <Button onClick={handleGoogleLogin} className="login-customer__social-btn login-customer__social-btn--google">
+                    <button onClick={handleGoogleLogin} className="login-customer__social-btn login-customer__social-btn--google">
                          <span className="login-customer__icon login-customer__icon--google" />
                          &nbsp; Login with Google
-                    </Button>
+                    </button>
 
-                    <Button onClick={handleFacebookLogin} className="login-customer__social-btn login-customer__social-btn--facebook">
+                    <button onClick={handleFacebookLogin} className="login-customer__social-btn login-customer__social-btn--facebook">
                          <span className="login-customer__icon login-customer__icon--facebook" />
                          &nbsp; Login with Facebook
-                    </Button>
+                    </button>
 
                     <NavLink to="/customer/register" className="login-customer__link">
                          Not registered yet? Register now.
