@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
+import config from "../config";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
-import "../styles/food-menu.scss";
-import pizza from '../img/pizza.png';
+import "./foodMenu.scss";
 import ProductCard from '../components/ProductCard.js';
 import { useShoppingCart } from "../context/ShoppingCartContext.js";
 
@@ -88,7 +88,7 @@ export default function FoodMenu() {
                             >
                                 <div className='food-menu__item-image-container'>
                                     <div className="food-menu__item-quantity-in-cart">{inCartQuantity}</div>
-                                    <img src={pizza} alt={product.name} className="food-menu__item-image" />
+                                    <img  src={`${config.API_URL}${product.thumbnail}`}  alt={product.name} className="food-menu__item-image" />
                                 </div>
                                 <div className='food-menu__item-content'>
                                     <div className='food-menu__item-title-container'>

@@ -1,3 +1,4 @@
+import config from "../config";
 import Modal from '../components/Modal.js';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import '../styles/product-card.scss';
@@ -22,7 +23,7 @@ export default function ProductCard({ currentProduct: product, isOpen, close }) 
         <Modal isOpen={isOpen} onClose={close}>
             <div className="product-card">
                 <LazyLoadImage
-                    src='/img/products/roma.jpg'
+                    src={`${config.API_URL}${product.thumbnail}`} 
                     alt={product.name}
                     className="product-card__image"
                     placeholder={

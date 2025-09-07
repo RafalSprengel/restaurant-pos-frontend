@@ -8,7 +8,6 @@ import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus,
 import './productsList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import Pagination from '../../Pagination';
- console.log('config to ', config)
 
 const ProductsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
