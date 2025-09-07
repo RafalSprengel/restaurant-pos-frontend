@@ -16,7 +16,7 @@ const LoginCustomer = () => {
      const [loading, setLoading] = React.useState(false);
 
      const form = useForm({
-          initialValues: { email: 'test@wp.pl', password: '1' },
+          initialValues: { email: 'test@test.com', password: '123456' },
           validate: {
                email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email'),
                password: (value) => (value ? null : 'Password is required'),

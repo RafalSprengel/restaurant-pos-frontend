@@ -15,8 +15,8 @@ export default function StaffLogin() {
 
      const form = useForm({
           initialValues: {
-               email: 'admin@wp.pl',
-               password: '123',
+               email: 'admin@admin.com',
+               password: '123456',
           },
           validate: {
                email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
