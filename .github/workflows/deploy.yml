@@ -15,7 +15,7 @@ jobs:
           npm ci
           npm run build
       - name: Sync build to VPS
-        uses: appleboy/rsync-action@v0.1.3
+        uses: appleboy/rsync-action@v0.1.7
         with:
           host: 188.68.242.226
           username: rafal
