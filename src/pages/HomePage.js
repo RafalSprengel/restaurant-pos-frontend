@@ -11,16 +11,10 @@ import FoodMenu from '../components/FoodMenu.js';
 import TableBookingForm from '../components/TableBookingForm.js'
 import ContactForm from '../components/ContactForm.js'
 import FloatingCartButton from '../components/FloatingCartButton.jsx';
-
-import '../styles/product-card.scss';
-
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
-
 import heroBg from '../img/homePage/hero-bg.jpg';
-
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
-
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
