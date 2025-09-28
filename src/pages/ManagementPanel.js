@@ -62,7 +62,7 @@ export const ManagementPanel = () => {
     if (!isLoading) {
       if (!isAuthenticated) {
         navigate('login', { replace: true });
-      } else if (user && !['member', 'moderator', 'admin'].includes(user.role)) {
+      } else if (user && !['guest', 'member', 'moderator', 'admin'].includes(user.role)) {
         navigate('/customer/', { replace: true });
       }
     }
