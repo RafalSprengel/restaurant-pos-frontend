@@ -4,6 +4,7 @@ import api from '../../../utils/axios';
 import { useFetch } from '../../../hooks/useFetch.js';
 import { format } from 'date-fns';
 import './updateOrder.scss';
+import ErrorMessage from '../../ErrorMessage';
 
 const UpdateOrder = () => {
   const { id } = useParams();
@@ -16,8 +17,7 @@ const UpdateOrder = () => {
   });
   const [message, setMessage] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorAlert, setShowErrorAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const { data: orderTypes, isLoading: loadingOrderTypes } = useFetch('/orders/order-types');
@@ -27,8 +27,7 @@ const UpdateOrder = () => {
       const response = await api.get(`/orders/${id}`);
       setOrder(response.data);
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || 'Failed to fetch order data. Please try again later.');
-      setShowErrorAlert(true);
+      setError(error.response?.data?.error || 'Failed to fetch order data. Please try again later.');
     }
   };
 
@@ -75,13 +74,12 @@ const UpdateOrder = () => {
       if (response.status === 200) {
         setMessage('Order updated successfully!');
         setShowSuccessModal(true);
+        setError('');
       } else {
-        setErrorMessage(response.data?.error || 'Failed to update order. Please check your input.');
-        setShowErrorAlert(true);
+        setError(response.data?.error || 'Failed to update order. Please check your input.');
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || 'Error saving order. Please try again later.');
-      setShowErrorAlert(true);
+      setError(error.response?.data?.error || 'Error saving order. Please try again later.');
     }
   };
 
@@ -90,11 +88,7 @@ const UpdateOrder = () => {
       <form className="update-order__form" onSubmit={handleSubmit}>
         <h2 className="update-order__title">Update Order</h2>
 
-        {showErrorAlert && (
-          <div className="update-order__notification">
-            <p>{errorMessage}</p>
-          </div>
-        )}
+        {error && <ErrorMessage message={error} />}
 
         <div className="update-order__section">
           <div className="update-order__group">

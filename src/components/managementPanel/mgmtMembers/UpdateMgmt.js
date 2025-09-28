@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { TextInput, PasswordInput, Select, Loader } from '@mantine/core';
 import api from '../../../utils/axios.js';
+import ErrorMessage from '../../ErrorMessage';
 import './updateMgmt.scss';
 
 export default function UpdateMgmt() {
@@ -11,7 +12,7 @@ export default function UpdateMgmt() {
   const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
 
   const form = useForm({
     initialValues: { name: '', surname: '', email: '', role: '', password: '' },
@@ -46,7 +47,7 @@ export default function UpdateMgmt() {
         });
       } catch (err) {
         setShowError(true);
-        setErrorMessage(err.response?.data?.error || err.message);
+        setError(err.response?.data?.error || err.message);
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +66,7 @@ export default function UpdateMgmt() {
       else throw new Error(res.data?.error || 'Failed to update user');
     } catch (err) {
       setShowError(true);
-      setErrorMessage(err.response?.data?.error || err.message);
+      setError(err.response?.data?.error || err.message);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +85,7 @@ export default function UpdateMgmt() {
     <div className="update-mgmt">
       <h2 className="update-mgmt__title">Update User</h2>
 
-      {showError && <div className="update-mgmt__error">{errorMessage}</div>}
+      {showError && <ErrorMessage message={error} />}
 
       <form className="update-mgmt__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput

@@ -6,9 +6,10 @@ import { Loader, TextInput } from '@mantine/core';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus } from '@tabler/icons-react';
 import './categoriesList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
+import ErrorMessage from '../../ErrorMessage';
 
 const CategoriesList = () => {
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [error, setError] = useState(null); // zmiana nazwy
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -38,13 +39,13 @@ const CategoriesList = () => {
 
   const handleConfirmDelete = async () => {
     setShowModal(false);
-    setErrorMessage(null);
+    setError(null);
     try {
       const response = await api.delete(`/product-categories/${categoryToDelete}`);
       if (response.status === 200) refetch();
-      else setErrorMessage(response.data?.error || 'Failed to delete the category.');
+      else setError(response.data?.error || 'Failed to delete the category.');
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || 'Failed to delete the category.');
+      setError(error.response?.data?.error || 'Failed to delete the category.');
     } finally {
       setCategoryToDelete(null);
     }
@@ -112,7 +113,7 @@ const CategoriesList = () => {
         </div>
       </div>
 
-      {errorMessage && <div className="categories-list__error-message">{errorMessage}</div>}
+      {error && <ErrorMessage message={error} />}
       {fetchError && <div className="categories-list__error-message"><p>{fetchError.toString()}</p></div>}
 
       {isLoading ? (

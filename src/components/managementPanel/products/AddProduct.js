@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { TextInput, Textarea, Select, Checkbox, Notification, Loader } from '@mantine/core';
+import { TextInput, Textarea, Select, Checkbox, Loader } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import api from '../../../utils/axios.js';
+import ErrorMessage from '../../ErrorMessage';
 import './addProduct.scss';
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const navigate = useNavigate();
 
@@ -43,9 +44,9 @@ const AddProduct = () => {
     try {
       const response = await api.get('/product-categories');
       if (response.status === 200) setCategories(response.data);
-      else setErrorMessage(response.data?.error || 'Failed to load categories');
+      else setError(response.data?.error || 'Failed to load categories');
     } catch (e) {
-      setErrorMessage(e.response?.data?.error || 'Connection error');
+      setError(e.response?.data?.error || 'Connection error');
     } finally {
       setLoadingCategories(false);
     }
@@ -58,10 +59,10 @@ const AddProduct = () => {
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
-        setErrorMessage('Please use only images (jpeg, jpg, png, gif, webp).');
+        setError('Please use only images (jpeg, jpg, png, gif, webp).');
         setImageFile(null);
       } else {
-        setErrorMessage('');
+        setError('');
         setImageFile(file);
       }
     }
@@ -81,7 +82,7 @@ const AddProduct = () => {
     if (imageFile) formData.append('image', imageFile);
 
     setIsSavingInProgress(true);
-    setErrorMessage('');
+    setError('');
     try {
       const response = await api.post('/products/', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       if (response.status === 201) {
@@ -93,10 +94,10 @@ const AddProduct = () => {
         });
         setTimeout(() => navigate('/management/products'), 1000);
       } else {
-        setErrorMessage(response.data?.error || 'Failed to save product');
+        setError(response.data?.error || 'Failed to save product');
       }
     } catch (e) {
-      setErrorMessage(e.response?.data?.error || 'An error occurred while saving the product');
+      setError(e.response?.data?.error || 'An error occurred while saving the product');
     } finally {
       setIsSavingInProgress(false);
     }
@@ -114,7 +115,7 @@ const AddProduct = () => {
     <div className="add-product">
       <div className="add-product__title">Add New Product</div>
       <form className="add-product-form" onSubmit={form.onSubmit(handleSubmit)}>
-        {errorMessage && <Notification color="red" title="Error">{errorMessage}</Notification>}
+        {error && <ErrorMessage message={error} />}
 
         <TextInput
           label="Name"
@@ -122,7 +123,7 @@ const AddProduct = () => {
           {...form.getInputProps('name')}
           onChange={(e) => {
             form.getInputProps('name').onChange(e);
-            if (errorMessage) setErrorMessage('');
+            if (error) setError('');
           }}
           classNames={{
             root: 'add-product-form__field',
@@ -189,7 +190,7 @@ const AddProduct = () => {
         <Checkbox label="Is Available" {...form.getInputProps('isAvailable', { type: 'checkbox' })} classNames={{ root: 'add-product-form__field' }} />
 
         <div className="buttons-group">
-          <button type="submit" className="button-panel" disabled={isSavingInProgress || errorMessage.toLowerCase().includes('rights')}>
+          <button type="submit" className="button-panel" disabled={isSavingInProgress || (error && error.toLowerCase().includes('rights'))}>
             {isSavingInProgress ? 'Saving...' : 'Save Product'}
           </button>
           <button type="button" className="button-panel" onClick={() => navigate('/management/products')}>Cancel</button>

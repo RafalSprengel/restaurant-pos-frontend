@@ -6,13 +6,14 @@ import './updateCustomer.scss'
 import { TextInput } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
+import ErrorMessage from '../../ErrorMessage'
 
 const UpdateCustomer = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdatingInProgress, setIsUpdatingInProgress] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [error, setError] = useState('')
 
   const form = useForm({
     initialValues: { firstName: '', surname: '', email: '', phone: '', password: '' },
@@ -44,7 +45,7 @@ const UpdateCustomer = () => {
         })
       } else throw new Error(res.data?.error || 'Failed to fetch customer')
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || err.message || 'Unable to fetch customer. You might not have enough rights.')
+      setError(err.response?.data?.error || err.message || 'Unable to fetch customer. You might not have enough rights.')
     } finally {
       setIsLoading(false)
     }
@@ -56,7 +57,7 @@ const UpdateCustomer = () => {
 
   const handleSubmit = async (values) => {
     setIsUpdatingInProgress(true)
-    setErrorMessage('')
+    setError('')
     try {
       const res = await api.put(`/customers/${id}`, values)
       if (res.status === 200) {
@@ -68,10 +69,10 @@ const UpdateCustomer = () => {
         })
         setTimeout(() => navigate('/management/customers'), 1000)
       } else {
-        setErrorMessage(res.data?.error || 'Failed to update customer. You might not have enough rights.')
+        setError(res.data?.error || 'Failed to update customer. You might not have enough rights.')
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'Failed to update customer. You might not have enough rights.')
+      setError(err.response?.data?.error || 'Failed to update customer. You might not have enough rights.')
     } finally {
       setIsUpdatingInProgress(false)
     }
@@ -84,11 +85,7 @@ const UpdateCustomer = () => {
     <div className="update-customer">
       <h2 className="update-customer__title">Update Customer</h2>
 
-      {errorMessage && (
-        <div className="update-customer-form__notification update-customer-form__notification--error">
-          <p>{errorMessage}</p>
-        </div>
-      )}
+      {error && <ErrorMessage message={error} />}
 
       <form className="update-customer-form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput

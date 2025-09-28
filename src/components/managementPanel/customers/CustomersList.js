@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import api from '../../../utils/axios.js';
-import { useAuth } from '../../../context/authContext.js';
 import './customersList.scss';
 import { Loader, TextInput } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import { IconSearch, IconPlus, IconX } from '@tabler/icons-react';
+import { IconSearch, IconPlus } from '@tabler/icons-react';
 import ConfirmationModal from '../../ConfirmationModal';
+import ErrorMessage from '../../ErrorMessage';
 
 const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
   const [customerIdToDelete, setCustomerIdToDelete] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [errorFetchCustomers, setErrorFetchCustomers] = useState(null);
+  const [errorDeleteCustomer, setErrorDeleteCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchString, setSearchString] = useState('');
   const [sortCriteria, setSortCriteria] = useState('');
   const [sortOrder, setSortOrder] = useState('');
-  const { user } = useAuth('staff');
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -34,17 +34,16 @@ const CustomersList = () => {
         setCustomers(data.customers);
         setTotalPages(data.totalPages);
         setCurrentPage(data.currentPage);
+        setErrorFetchCustomers(null);
+      } else {
+        setErrorFetchCustomers(response.data?.error || 'Failed to fetch customers');
       }
     } catch (err) {
-      showNotification({
-        title: 'Error',
-        message: err.response?.data?.error || err.message,
-        color: 'red',
-        icon: <IconX />,
-      });
+      setErrorFetchCustomers(err.response?.data?.error || err.message || 'Unexpected error');
     } finally {
       setLoading(false);
     }
+
   };
 
   const handleRowClick = (id) => {
@@ -55,22 +54,15 @@ const CustomersList = () => {
     try {
       const res = await api.delete(`/customers/${customerIdToDelete}`);
       if (res.status !== 200) {
-        showNotification({
-          title: 'Error',
-          message: res.data?.error || 'Unable to delete customer',
-          color: 'red',
-          icon: <IconX />,
-        });
+        setErrorDeleteCustomer(res.data?.error || 'Unable to delete customer');
+      } else {
+        setErrorDeleteCustomer('');
       }
     } catch (e) {
-      showNotification({
-        title: 'Error',
-        message:
-          e.response?.data?.error ||
-          "You don't have enough rights to perform this action",
-        color: 'red',
-        icon: <IconX />,
-      });
+      setErrorDeleteCustomer(
+        e.response?.data?.error ||
+        "You don't have enough rights to perform this action"
+      );
     } finally {
       setShowModal(false);
       fetchCustomers();
@@ -154,7 +146,9 @@ const CustomersList = () => {
           Add customer
         </button>
       </div>
-
+      {errorDeleteCustomer && <ErrorMessage message={errorDeleteCustomer} />}
+      {errorFetchCustomers && <ErrorMessage message={errorFetchCustomers} />}
+      
       {customers.length > 0 ? (
         <>
           <table className="customers-list__table">
@@ -218,11 +212,10 @@ const CustomersList = () => {
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                className={`customers-list__pagination-btn ${
-                  currentPage === page
-                    ? 'customers-list__pagination-btn--active'
-                    : ''
-                }`}
+                className={`customers-list__pagination-btn ${currentPage === page
+                  ? 'customers-list__pagination-btn--active'
+                  : ''
+                  }`}
                 onClick={() => handlePageChange(page)}
               >
                 {page}

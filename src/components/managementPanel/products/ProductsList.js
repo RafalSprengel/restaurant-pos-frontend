@@ -8,10 +8,11 @@ import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus,
 import './productsList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import Pagination from '../../Pagination';
+import ErrorMessage from "../../ErrorMessage";
 
 const ProductsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [productToDelete, setProductToDelete] = useState(null);
@@ -31,7 +32,6 @@ const ProductsList = () => {
   const getProducts = async () => {
     const queryString = location.search;
     try {
-      setErrorMessage(null);
       setIsLoading(true);
       const response = await api.get(`/products/${queryString}`);
       if (response.status === 200) {
@@ -39,11 +39,9 @@ const ProductsList = () => {
         setProductsList(data?.products || []);
         setTotalPages(data?.totalPages || 1);
         setCurrentPage(data?.currentPage || 1);
-      } else {
-        setErrorMessage(response.data?.error || "You don't have enough rights to do this action");
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || error.message || "You don't have enough rights to do this action");
+      setError(error.response?.data?.error || error.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -62,16 +60,11 @@ const ProductsList = () => {
   const handleConfirmDelete = async () => {
     setShowModal(false);
     setIsDeleting(true);
-    setErrorMessage(null);
     try {
-      const response = await api.delete(`/products/${productToDelete}`);
-      if (response.status === 200) {
-        getProducts();
-      } else {
-        setErrorMessage(response.data?.error || "You don't have enough rights to do this action");
-      }
+      await api.delete(`/products/${productToDelete}`);
+      await getProducts();
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || "You don't have enough rights to do this action");
+      setError(error.response?.data?.error || error.message || "An unexpected error occurred");
     } finally {
       setIsDeleting(false);
       setProductToDelete(null);
@@ -168,7 +161,7 @@ const ProductsList = () => {
         </div>
       </div>
 
-      {errorMessage && <div className="products-list__error-message"><p>{errorMessage}</p></div>}
+      {error && <ErrorMessage message={error} />}
 
       {isLoading ? (
         <div className="products-list__loading">

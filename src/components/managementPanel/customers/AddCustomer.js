@@ -6,11 +6,12 @@ import api from '../../../utils/axios.js'
 import './addCustomer.scss'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
+import ErrorMessage from '../../ErrorMessage'
 
 const AddCustomer = () => {
   const navigate = useNavigate()
   const [isSavingInProgress, setIsSavingInProgress] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [error, setError] = useState('')
 
   const form = useForm({
     initialValues: { firstName: '', surname: '', email: '', phone: '', password: '' },
@@ -30,7 +31,7 @@ const AddCustomer = () => {
 
   const handleSubmit = async (values) => {
     setIsSavingInProgress(true)
-    setErrorMessage('')
+    setError('')
     try {
       const response = await api.post('/auth/register/customer/', values)
       if (response.status === 201) {
@@ -42,10 +43,10 @@ const AddCustomer = () => {
         })
         setTimeout(() => navigate('/management/customers'), 1000)
       } else {
-        setErrorMessage(response.data?.error || 'Failed to add customer')
+        setError(response.data?.error || 'Failed to add customer')
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || err.message || 'An error occurred')
+      setError(err.response?.data?.error || err.message || 'An error occurred')
     } finally {
       setIsSavingInProgress(false)
     }
@@ -56,11 +57,7 @@ const AddCustomer = () => {
       <form className="add-customer__form" onSubmit={form.onSubmit(handleSubmit)}>
         <h2 className="add-customer__title">Add Customer</h2>
 
-        {errorMessage && (
-          <div className="add-customer__notification add-customer__notification--error">
-            <p>{errorMessage}</p>
-          </div>
-        )}
+        {error && <ErrorMessage message={error} />}
 
         <TextInput
           label="First name"

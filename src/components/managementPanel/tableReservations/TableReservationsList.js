@@ -5,6 +5,8 @@ import api from '../../../utils/axios';
 import './tableReservationsList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import { Loader } from '@mantine/core';
+import ErrorMessage from '../../ErrorMessage';
+
 
 export default function TableReservationsList() {
   const [reservations, setReservations] = useState([]);
@@ -15,7 +17,7 @@ export default function TableReservationsList() {
   const [sortOrder, setSortOrder] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState(null);
   const navigate = useNavigate();
@@ -25,15 +27,13 @@ export default function TableReservationsList() {
     const queryString = location.search;
     try {
       setIsLoading(true);
-      setErrorMessage(null);
+      setError(null);
       const res = await api.get(`/tables/reservations${queryString}`);
-      if (res.status === 200) {
-        setReservations(res.data.reservations);
-        setTotalPages(res.data.totalPages);
-        setCurrentPage(res.data.currentPage);
-      }
+      setReservations(res.data.reservations);
+      setTotalPages(res.data.totalPages);
+      setCurrentPage(res.data.currentPage);
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'Error fetching reservations');
+      setError(err.response?.data?.error || err.message || "Error fetching reservations");
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,9 @@ export default function TableReservationsList() {
       setShowModal(false);
       getReservations();
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'You don\'t have enough rights to perform this action');
+      setError(
+        err.response?.data?.error || err.message || "Unexpected error"
+      );
     } finally {
       setDeletingId(null);
     }
@@ -144,10 +146,8 @@ export default function TableReservationsList() {
         </div>
       </div>
 
-      {errorMessage && (
-        <div className="table-reservations-list-error-message">
-          <p>{errorMessage}</p>
-        </div>
+      {error && (
+        <ErrorMessage message={error}/ >
       )}
 
       {isLoading ? (

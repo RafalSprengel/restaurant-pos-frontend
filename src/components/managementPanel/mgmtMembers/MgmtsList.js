@@ -7,10 +7,11 @@ import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus 
 import './MgmtsList.scss';
 import { Loader, TextInput } from '@mantine/core';
 import ConfirmationModal from '../../ConfirmationModal';
+import ErrorMessage from '../../ErrorMessage';
 
 const MgmtsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [staffList, setStaffList] = useState([]);
@@ -29,7 +30,7 @@ const MgmtsList = () => {
     setIsLoading(true);
     const queryString = location.search;
     try {
-      setErrorMessage(null);
+      setError(null);
       const response = await api.get(`/staff${queryString}`);
       if (response.status === 200) {
         const { staff, totalPages, currentPage } = response.data;
@@ -37,10 +38,10 @@ const MgmtsList = () => {
         setTotalPages(totalPages);
         setCurrentPage(currentPage);
       } else {
-        setErrorMessage(`Server error: ${response.data.error}`);
+        setError(`Server error: ${response.data.error}`);
       }
     } catch (error) {
-      setErrorMessage(error.response ? error.response.data.error : error.message);
+      setError(error.response ? error.response.data.error : error.message);
     } finally {
       setIsLoading(false);
     }
@@ -59,16 +60,16 @@ const MgmtsList = () => {
   const handleConfirmDelete = async () => {
     setShowModal(false);
     setIsDeleting(true);
-    setErrorMessage(null);
+    setError(null);
     try {
       const response = await api.delete(`/staff/${staffToDelete}`);
       if (response.status !== 200) {
-        setErrorMessage('Unable to delete this staff member');
+        setError('Unable to delete this staff member');
       } else {
         getStaff();
       }
     } catch (error) {
-      setErrorMessage('Failed to delete staff member. Please try again.');
+      setError('Failed to delete staff member. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -157,11 +158,7 @@ const MgmtsList = () => {
         </div>
       </div>
 
-      {errorMessage && (
-        <div className="mgmts-list__error-message">
-          <p>{errorMessage}</p>
-        </div>
-      )}
+      {error && <ErrorMessage message={error} />}
 
       {isLoading ? (
         <div className="mgmts-list__loading">

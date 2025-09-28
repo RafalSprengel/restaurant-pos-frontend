@@ -6,6 +6,7 @@ import { Loader, TextInput } from '@mantine/core';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import './MessagesList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
+import ErrorMessage from "../../ErrorMessage";
 
 const MessagesList = () => {
     const [messages, setMessages] = useState([]);
@@ -17,7 +18,7 @@ const MessagesList = () => {
     const [typeFilter, setTypeFilter] = useState('received');
     const [selectedMessages, setSelectedMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
@@ -33,9 +34,9 @@ const MessagesList = () => {
             setMessages(data.messages);
             setTotalPages(data.totalPages);
             setCurrentPage(data.currentPage);
-            setErrorMessage(null);
+            setError(null);
         } catch (err) {
-            setErrorMessage(err.response?.data?.error || 'Error fetching messages');
+            setError(err.response?.data?.error || 'Error fetching messages');
         } finally {
             setIsLoading(false);
         }
@@ -85,7 +86,7 @@ const MessagesList = () => {
             setShowModal(false);
             getMessages();
         } catch (err) {
-            setErrorMessage(err.response?.data?.error || 'Failed to delete messages');
+            setError(err.response?.data?.error || 'Failed to delete messages');
         }
     };
 
@@ -161,10 +162,8 @@ const MessagesList = () => {
                     <Loader size="sm" variant="dots" />
                     <span>Loading...</span>
                 </div>
-            ) : errorMessage ? (
-                <div className="messages-list-error-message">
-                    <p>{errorMessage}</p>
-                </div>
+            ) : error ? (
+                <ErrorMessage message={error} />
             ) : messages.length ? (
                 <div className="messages-list-table-wrapper">
                     <table className="messages-list-table">

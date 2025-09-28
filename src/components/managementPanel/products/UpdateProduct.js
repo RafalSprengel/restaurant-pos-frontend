@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import config from "../../../config";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { TextInput, Textarea, Select, Checkbox, Loader, Center, Notification } from '@mantine/core';
+import { TextInput, Textarea, Select, Checkbox, Loader, Center } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import api from '../../../utils/axios.js';
+import ErrorMessage from '../../ErrorMessage';
 import './updateProduct.scss';
 
 const UpdateProduct = () => {
@@ -15,7 +16,7 @@ const UpdateProduct = () => {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
   const [imageFile, setImageFile] = useState(null);
 
   const form = useForm({
@@ -43,9 +44,9 @@ const UpdateProduct = () => {
     try {
       const res = await api.get('/product-categories');
       if (res.status === 200) setCategories(res.data.categories);
-      else setErrorMessage(`Failed to load categories (${res.data.error})`);
+      else setError(`Failed to load categories (${res.data.error})`);
     } catch (err) {
-      setErrorMessage(`Connection error (${err.response?.data?.error || err.message})`);
+      setError(`Connection error (${err.response?.data?.error || err.message})`);
     } finally {
       setLoadingCategories(false);
     }
@@ -70,9 +71,9 @@ const UpdateProduct = () => {
           isGlutenFree: product.isGlutenFree,
           isAvailable: product.isAvailable,
         });
-      } else setErrorMessage('Failed to fetch product');
+      } else setError('Failed to fetch product');
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || err.message);
+      setError(err.response?.data?.error || err.message);
     } finally {
       setIsLoading(false);
     }
@@ -88,10 +89,10 @@ const UpdateProduct = () => {
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
-        setErrorMessage('Please use only images (jpeg, jpg, png, gif, webp).');
+        setError('Please use only images (jpeg, jpg, png, gif, webp).');
         setImageFile(null);
       } else {
-        setErrorMessage('');
+        setError('');
         setImageFile(file);
       }
     }
@@ -111,7 +112,7 @@ const UpdateProduct = () => {
     if (imageFile) formData.append('image', imageFile);
 
     setIsSavingInProgress(true);
-    setErrorMessage('');
+    setError('');
     try {
       const res = await api.put(`/products/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -125,10 +126,10 @@ const UpdateProduct = () => {
         });
         setTimeout(() => navigate('/management/products'), 1000);
       } else {
-        setErrorMessage(res.data?.error || 'Failed to update product');
+        setError(res.data?.error || 'Failed to update product');
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || err.message);
+      setError(err.response?.data?.error || err.message);
     } finally {
       setIsSavingInProgress(false);
     }
@@ -144,11 +145,7 @@ const UpdateProduct = () => {
   return (
     <div className="update-product">
       <h2 className="update-product__title">Update Product</h2>
-      {errorMessage && (
-        <Notification color="red" title="Error">
-          {errorMessage}
-        </Notification>
-      )}
+      {error && <ErrorMessage message={error} />}
 
       <form className="update-product__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput

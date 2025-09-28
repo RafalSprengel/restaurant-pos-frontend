@@ -7,10 +7,11 @@ import './orderList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import { Loader, TextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
+import ErrorMessage from '../../ErrorMessage';
 
 const OrdersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [error, setError] = useState(null); 
   const [isLoading, setIsLoading] = useState(true);
   const [ordersList, setOrdersList] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,14 +28,14 @@ const OrdersList = () => {
   const getOrders = async () => {
     const queryString = location.search;
     try {
-      setErrorMessage(null);
+      setError(null);
       setIsLoading(true);
       const response = await api.get(`/orders${queryString}`);
       setOrdersList(response.data.orders || []);
       setTotalPages(response.data.totalPages || 1);
       setCurrentPage(response.data.currentPage || 1);
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || error.message);
+      setError(error.response?.data?.error || error.message);
     } finally {
       setIsLoading(false);
     }
@@ -76,10 +77,10 @@ const OrdersList = () => {
     setIsLoading(true);
     try {
       const response = await api.delete(`/orders/${orderToDelete}`);
-      setErrorMessage(response.data?.error || null);
+      setError(response.data?.error || null);
       getOrders();
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || error.message);
+      setError(error.response?.data?.error || error.message);
     } finally {
       setIsLoading(false);
       setOrderToDelete(null);
@@ -127,12 +128,7 @@ const OrdersList = () => {
         />
       </div>
 
-      {errorMessage && (
-        <div className="orders-list__notification orders-list__notification--error">
-          <span className="orders-list__notification-icon">❌</span>
-          {errorMessage}
-        </div>
-      )}
+      {error && <ErrorMessage message={error} />}
 
       {isLoading ? (
         <div className="orders-list__loading">
