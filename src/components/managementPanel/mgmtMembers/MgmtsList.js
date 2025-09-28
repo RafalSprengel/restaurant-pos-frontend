@@ -11,7 +11,9 @@ import ErrorMessage from '../../ErrorMessage';
 
 const MgmtsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [error, setError] = useState(null);
+
+  const [errorFetchStaff, setErrorFetchStaff] = useState(null);
+  const [errorDeleteStaff, setErrorDeleteStaff] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [staffList, setStaffList] = useState([]);
@@ -24,13 +26,12 @@ const MgmtsList = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth('management');
 
   const getStaff = async () => {
     setIsLoading(true);
     const queryString = location.search;
     try {
-      setError(null);
+      setErrorFetchStaff(null);
       const response = await api.get(`/staff${queryString}`);
       if (response.status === 200) {
         const { staff, totalPages, currentPage } = response.data;
@@ -38,10 +39,10 @@ const MgmtsList = () => {
         setTotalPages(totalPages);
         setCurrentPage(currentPage);
       } else {
-        setError(`Server error: ${response.data.error}`);
+        setErrorFetchStaff(`Server error: ${response.data.error}`) || 'Failed to fetch customers';
       }
     } catch (error) {
-      setError(error.response ? error.response.data.error : error.message);
+      setErrorFetchStaff(err.response?.data?.error || err.message || 'Unexpected error');
     } finally {
       setIsLoading(false);
     }
@@ -60,16 +61,16 @@ const MgmtsList = () => {
   const handleConfirmDelete = async () => {
     setShowModal(false);
     setIsDeleting(true);
-    setError(null);
+    setErrorDeleteStaff(null);
     try {
       const response = await api.delete(`/staff/${staffToDelete}`);
       if (response.status !== 200) {
-        setError('Unable to delete this staff member');
+        setErrorDeleteStaff(response.data?.error || 'Unable to delete this staff member');
       } else {
         getStaff();
       }
-    } catch (error) {
-      setError('Failed to delete staff member. Please try again.');
+    } catch (e) {
+      setErrorDeleteStaff(e.response?.data?.error || 'Failed to delete staff member. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -120,10 +121,6 @@ const MgmtsList = () => {
     getStaff();
   }, [isDeleting, location.search, searchString, sortCriteria, sortOrder]);
 
-  if (!['admin', 'moderator', 'member'].includes(user?.role)) {
-    return <div className="mgmts-list__error">You don't have enough rights to perform this action</div>;
-  }
-
   const rows = staffList.map((staff) => (
     <tr key={staff._id} onClick={() => handleRowClick(staff._id)} style={{ cursor: 'pointer' }}>
       <td>{staff.staffNumber}</td>
@@ -158,7 +155,8 @@ const MgmtsList = () => {
         </div>
       </div>
 
-      {error && <ErrorMessage message={error} />}
+      {errorFetchStaff && <ErrorMessage message={errorFetchStaff} />}
+      {errorDeleteStaff && <ErrorMessage message={errorDeleteStaff} />}
 
       {isLoading ? (
         <div className="mgmts-list__loading">
