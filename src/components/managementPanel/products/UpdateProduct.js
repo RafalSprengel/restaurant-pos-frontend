@@ -145,7 +145,7 @@ const UpdateProduct = () => {
     <div className="update-product">
       <h2 className="update-product__title">Update Product</h2>
       {errorMessage && (
-        <Notification color="red" title="Błąd">
+        <Notification color="red" title="Error">
           {errorMessage}
         </Notification>
       )}

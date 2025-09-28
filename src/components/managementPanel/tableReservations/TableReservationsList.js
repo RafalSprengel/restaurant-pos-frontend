@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
 import api from '../../../utils/axios';
 import './tableReservationsList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import { Loader } from '@mantine/core';
 
-const TableReservationsList = () => {
+export default function TableReservationsList() {
   const [reservations, setReservations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -23,7 +23,6 @@ const TableReservationsList = () => {
 
   const getReservations = async () => {
     const queryString = location.search;
-
     try {
       setIsLoading(true);
       setErrorMessage(null);
@@ -34,7 +33,6 @@ const TableReservationsList = () => {
         setCurrentPage(res.data.currentPage);
       }
     } catch (err) {
-      console.error(err);
       setErrorMessage(err.response?.data?.error || 'Error fetching reservations');
     } finally {
       setIsLoading(false);
@@ -46,12 +44,11 @@ const TableReservationsList = () => {
       setDeletingId(_id);
       await api.delete(`/tables/reservations/${_id}`);
       setShowModal(false);
+      getReservations();
     } catch (err) {
-      console.error(err);
-      setErrorMessage('Cannot delete element!');
+      setErrorMessage(err.response?.data?.error || 'You don\'t have enough rights to perform this action');
     } finally {
       setDeletingId(null);
-      getReservations();
     }
   };
 
@@ -60,6 +57,7 @@ const TableReservationsList = () => {
     setReservationToDelete(_id);
     setShowModal(true);
   };
+
   const handleSearchChange = (e) => {
     const value = e.currentTarget.value;
     setSearchString(value);
@@ -117,7 +115,11 @@ const TableReservationsList = () => {
       <td>{r.customerDetails.name}</td>
       <td>{r.customerDetails.email}</td>
       <td className="table-reservations-list-table-cell--actions">
-        <button className="table-reservations-list-delete-button" onClick={(e) => openDeleteModal(e, r._id)} disabled={deletingId === r._id}>
+        <button
+          className="table-reservations-list-delete-button"
+          onClick={(e) => openDeleteModal(e, r._id)}
+          disabled={deletingId === r._id}
+        >
           {deletingId === r._id ? 'Deleting...' : <IconTrash size={16} />}
         </button>
       </td>
@@ -197,6 +199,4 @@ const TableReservationsList = () => {
       )}
     </div>
   );
-};
-
-export default TableReservationsList;
+}

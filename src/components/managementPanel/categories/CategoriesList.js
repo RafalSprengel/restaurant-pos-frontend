@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useFetch } from '../../../hooks/useFetch.js';
 import api from '../../../utils/axios.js';
-import { useAuth } from '../../../context/authContext.js';
 import { Loader, TextInput } from '@mantine/core';
 import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconPlus } from '@tabler/icons-react';
 import './categoriesList.scss';
@@ -15,7 +14,6 @@ const CategoriesList = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -29,13 +27,6 @@ const CategoriesList = () => {
       setTotalPages(data.pagination.totalPages);
     }
   }, [data]);
-
-  const rolePermissions = {
-    admin: { addCategoryButt: true, deleteCategoryButt: true },
-    moderator: { addCategoryButt: true, deleteCategoryButt: true },
-    member: { addCategoryButt: false, deleteCategoryButt: false },
-  };
-  const isVisible = rolePermissions[user?.role] || { addCategoryButt: false, deleteCategoryButt: false };
 
   const handleRowClick = (id) => navigate(`${id}`);
 
@@ -51,9 +42,9 @@ const CategoriesList = () => {
     try {
       const response = await api.delete(`/product-categories/${categoryToDelete}`);
       if (response.status === 200) refetch();
-      else throw new Error(response.data?.message || 'Unknown error');
+      else setErrorMessage(response.data?.error || 'Failed to delete the category.');
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Failed to delete the category. Please try again.');
+      setErrorMessage(error.response?.data?.error || 'Failed to delete the category.');
     } finally {
       setCategoryToDelete(null);
     }
@@ -115,15 +106,13 @@ const CategoriesList = () => {
             onChange={handleSearchChange}
             leftSection={<IconSearch size={16} />}
           />
-          {isVisible.addCategoryButt && (
-            <button className="button-panel" onClick={() => navigate('/management/add-category')}>
-              <IconPlus size={16} /> Add New
-            </button>
-          )}
+          <button className="button-panel" onClick={() => navigate('/management/add-category')}>
+            <IconPlus size={16} /> Add New
+          </button>
         </div>
       </div>
 
-      {errorMessage && <div className="categories-list__error-message"><p>{errorMessage}</p></div>}
+      {errorMessage && <div className="categories-list__error-message">{errorMessage}</div>}
       {fetchError && <div className="categories-list__error-message"><p>{fetchError.toString()}</p></div>}
 
       {isLoading ? (
@@ -152,14 +141,12 @@ const CategoriesList = () => {
                     <td>{item.name}</td>
                     <td>{item.index}</td>
                     <td className="categories-list__table-cell--actions">
-                      {isVisible.deleteCategoryButt && (
-                        <button
-                          className="categories-list__delete-button"
-                          onClick={(e) => handleDeleteClick(e, item._id)}
-                        >
-                          <IconTrash size={16} />
-                        </button>
-                      )}
+                      <button
+                        className="categories-list__delete-button"
+                        onClick={(e) => handleDeleteClick(e, item._id)}
+                      >
+                        <IconTrash size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -172,8 +159,7 @@ const CategoriesList = () => {
               <button
                 key={i + 1}
                 onClick={() => handlePageChange(i + 1)}
-                className={`categories-list__pagination__button ${i + 1 === currentPage ? 'categories-list__pagination__button--active' : ''
-                  }`}
+                className={`categories-list__pagination__button ${i + 1 === currentPage ? 'categories-list__pagination__button--active' : ''}`}
               >
                 {i + 1}
               </button>

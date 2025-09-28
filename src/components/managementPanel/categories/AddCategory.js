@@ -5,12 +5,9 @@ import { TextInput, NumberInput } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
 import api from '../../../utils/axios.js'
-import { useAuth } from '../../../context/authContext.js'
 import './addCategory.scss'
 
 const AddCategory = () => {
-  const { user } = useAuth('staff')
-  const isEditable = ['admin', 'moderator'].includes(user?.role)
   const [isSavingInProgress, setIsSavingInProgress] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -59,8 +56,8 @@ const AddCategory = () => {
       <h2 className="add-category__title">Add Category</h2>
 
       {showErrorAlert && (
-        <div className="add-category__form-notification">
-          <p>{errorMessage}</p>
+        <div className="add-category__form-error-message">
+          {errorMessage}
         </div>
       )}
 
@@ -69,7 +66,7 @@ const AddCategory = () => {
           label="Name"
           placeholder="Category name"
           {...form.getInputProps('name')}
-          disabled={!isEditable || isSavingInProgress}
+          disabled={isSavingInProgress}
           classNames={{
             root: 'add-category__form-field',
             input: `add-category__form-input ${form.errors.name ? 'add-category__form-input--error' : ''}`,
@@ -81,7 +78,7 @@ const AddCategory = () => {
           label="Index"
           placeholder="Category index"
           {...form.getInputProps('index')}
-          disabled={!isEditable || isSavingInProgress}
+          disabled={isSavingInProgress}
           min={0}
           classNames={{
             root: 'add-category__form-field',
@@ -90,18 +87,14 @@ const AddCategory = () => {
           }}
         />
 
-        {isEditable && (
-          <div className="add-category__form-buttons-group">
-            <button
-              type="submit"
-              className="button-panel"
-              disabled={isSavingInProgress}
-            >
-              {isSavingInProgress ? 'Saving...' : 'Save Category'}
-            </button>
-            <button  className="button-panel" onClick={() => navigate('/management/categories')}>Cancel</button>
-          </div>
-        )}
+        <div className="add-category__form-buttons-group">
+          <button type="submit" className="button-panel" disabled={isSavingInProgress}>
+            {isSavingInProgress ? 'Saving...' : 'Save Category'}
+          </button>
+          <button type="button" className="button-panel" onClick={() => navigate('/management/categories')}>
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   )

@@ -42,21 +42,16 @@ const AddProduct = () => {
   const getCategories = async () => {
     try {
       const response = await api.get('/product-categories');
-      if (response.status === 200) {
-        setCategories(response.data);
-      } else {
-        setErrorMessage(`Failed to load categories (${response.data.error})`);
-      }
+      if (response.status === 200) setCategories(response.data);
+      else setErrorMessage(response.data?.error || 'Failed to load categories');
     } catch (e) {
-      setErrorMessage(`Connection error (${e.response?.data?.error || e.message})`);
+      setErrorMessage(e.response?.data?.error || 'Connection error');
     } finally {
       setLoadingCategories(false);
     }
   };
 
-  useEffect(() => {
-    getCategories();
-  }, []);
+  useEffect(() => { getCategories(); }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -86,10 +81,9 @@ const AddProduct = () => {
     if (imageFile) formData.append('image', imageFile);
 
     setIsSavingInProgress(true);
+    setErrorMessage('');
     try {
-      const response = await api.post('/products/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await api.post('/products/', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       if (response.status === 201) {
         showNotification({
           title: 'Success',
@@ -99,10 +93,10 @@ const AddProduct = () => {
         });
         setTimeout(() => navigate('/management/products'), 1000);
       } else {
-        setErrorMessage(`Failed to save product (${response.data.error})`);
+        setErrorMessage(response.data?.error || 'Failed to save product');
       }
     } catch (e) {
-      setErrorMessage(`Error while saving... (${e.response?.data?.error || e.message})`);
+      setErrorMessage(e.response?.data?.error || 'An error occurred while saving the product');
     } finally {
       setIsSavingInProgress(false);
     }
@@ -120,17 +114,12 @@ const AddProduct = () => {
     <div className="add-product">
       <div className="add-product__title">Add New Product</div>
       <form className="add-product-form" onSubmit={form.onSubmit(handleSubmit)}>
-        {errorMessage && (
-          <Notification color="red" title="Błąd">
-            {errorMessage}
-          </Notification>
-        )}
+        {errorMessage && <Notification color="red" title="Error">{errorMessage}</Notification>}
 
         <TextInput
           label="Name"
           placeholder="Product Name"
           {...form.getInputProps('name')}
-          error={form.errors.name}
           onChange={(e) => {
             form.getInputProps('name').onChange(e);
             if (errorMessage) setErrorMessage('');
@@ -139,7 +128,6 @@ const AddProduct = () => {
             root: 'add-product-form__field',
             input: `add-product-form__input ${form.errors.name ? 'add-product-form__input--error' : ''}`,
             label: 'add-product-form__label',
-            error: 'add-product-form__error',
           }}
         />
 
@@ -160,7 +148,6 @@ const AddProduct = () => {
           type="number"
           step="0.01"
           {...form.getInputProps('price')}
-          error={form.errors.price}
           classNames={{
             root: 'add-product-form__field',
             input: `add-product-form__input ${form.errors.price ? 'add-product-form__input--error' : ''}`,
@@ -170,21 +157,14 @@ const AddProduct = () => {
 
         <div className="add-product-form__field">
           <label className="add-product-form__label" htmlFor="image">Image:</label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="add-product-form__input add-product-form__input--file"
-          />
+          <input id="image" type="file" accept="image/*" onChange={handleFileChange} className="add-product-form__input add-product-form__input--file" />
         </div>
 
         <Select
           label="Category"
           placeholder="Select category"
-          data={(categories.categories || []).map((c) => ({ value: c._id, label: c.name }))}
+          data={(categories.categories || []).map(c => ({ value: c._id, label: c.name }))}
           {...form.getInputProps('category')}
-          error={form.errors.category}
           classNames={{
             root: 'add-product-form__field',
             input: `add-product-form__input ${form.errors.category ? 'add-product-form__input--error' : ''}`,
@@ -203,37 +183,16 @@ const AddProduct = () => {
           }}
         />
 
-        <Checkbox
-          label="Is Featured"
-          {...form.getInputProps('isFeatured', { type: 'checkbox' })}
-          classNames={{ root: 'add-product-form__field' }}
-        />
-
-        <Checkbox
-          label="Is Vegetarian"
-          {...form.getInputProps('isVegetarian', { type: 'checkbox' })}
-          classNames={{ root: 'add-product-form__field' }}
-        />
-
-        <Checkbox
-          label="Is Gluten-Free"
-          {...form.getInputProps('isGlutenFree', { type: 'checkbox' })}
-          classNames={{ root: 'add-product-form__field' }}
-        />
-
-        <Checkbox
-          label="Is Available"
-          {...form.getInputProps('isAvailable', { type: 'checkbox' })}
-          classNames={{ root: 'add-product-form__field' }}
-        />
+        <Checkbox label="Is Featured" {...form.getInputProps('isFeatured', { type: 'checkbox' })} classNames={{ root: 'add-product-form__field' }} />
+        <Checkbox label="Is Vegetarian" {...form.getInputProps('isVegetarian', { type: 'checkbox' })} classNames={{ root: 'add-product-form__field' }} />
+        <Checkbox label="Is Gluten-Free" {...form.getInputProps('isGlutenFree', { type: 'checkbox' })} classNames={{ root: 'add-product-form__field' }} />
+        <Checkbox label="Is Available" {...form.getInputProps('isAvailable', { type: 'checkbox' })} classNames={{ root: 'add-product-form__field' }} />
 
         <div className="buttons-group">
-          <button type="submit" className="button-panel" disabled={isSavingInProgress}>
+          <button type="submit" className="button-panel" disabled={isSavingInProgress || errorMessage.toLowerCase().includes('rights')}>
             {isSavingInProgress ? 'Saving...' : 'Save Product'}
           </button>
-          <button type="button" className="button-panel" onClick={() => navigate('/management/products')}>
-            Cancel
-          </button>
+          <button type="button" className="button-panel" onClick={() => navigate('/management/products')}>Cancel</button>
         </div>
       </form>
     </div>

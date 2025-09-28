@@ -4,14 +4,11 @@ import { useForm } from '@mantine/form'
 import { TextInput, PasswordInput, Select, Button, Loader, Center } from '@mantine/core'
 import api from '../../../utils/axios'
 import { useFetch } from '../../../hooks/useFetch'
-import { useAuth } from '../../../context/authContext'
 import './AddMgmt.scss'
 
 export default function AddUser() {
   const navigate = useNavigate()
   const { data: roles = [] } = useFetch('/staff/roles')
-  const { user } = useAuth('staff')
-  const isEditable = ['admin', 'moderator'].includes(user?.role)
 
   const [isLoading, setIsLoading] = useState(false)
   const [modalOpened, setModalOpened] = useState(false)
@@ -70,7 +67,6 @@ export default function AddUser() {
           label="First Name"
           placeholder="First name"
           {...form.getInputProps('firstName')}
-          disabled={!isEditable}
           classNames={{
             root: 'add-mgmt__field',
             input: `add-mgmt__input ${form.errors.firstName ? 'add-mgmt__input--error' : ''}`,
@@ -81,7 +77,6 @@ export default function AddUser() {
           label="Surname"
           placeholder="Surname"
           {...form.getInputProps('surname')}
-          disabled={!isEditable}
           classNames={{
             root: 'add-mgmt__field',
             input: `add-mgmt__input ${form.errors.surname ? 'add-mgmt__input--error' : ''}`,
@@ -92,7 +87,6 @@ export default function AddUser() {
           label="Email"
           placeholder="Email"
           {...form.getInputProps('email')}
-          disabled={!isEditable}
           classNames={{
             root: 'add-mgmt__field',
             input: `add-mgmt__input ${form.errors.email ? 'add-mgmt__input--error' : ''}`,
@@ -104,7 +98,6 @@ export default function AddUser() {
           placeholder="Select role"
           data={roles}
           {...form.getInputProps('role')}
-          disabled={!isEditable}
           classNames={{
             root: 'add-mgmt__field',
             input: `add-mgmt__input ${form.errors.role ? 'add-mgmt__input--error' : ''}`,
@@ -115,7 +108,6 @@ export default function AddUser() {
           label="Password"
           placeholder="Password"
           {...form.getInputProps('password')}
-          disabled={!isEditable}
           classNames={{
             root: 'add-mgmt__field',
             input: `add-mgmt__input ${form.errors.password ? 'add-mgmt__input--error' : ''}`,
@@ -123,11 +115,9 @@ export default function AddUser() {
           }}
         />
         <div className="buttons-group">
-          {isEditable && (
-            <button type="submit" className="button-panel" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add User'}
-            </button>
-          )}
+          <button type="submit" className="button-panel" disabled={isLoading}>
+            {isLoading ? 'Adding...' : 'Add User'}
+          </button>
           <button className="button-panel" onClick={() => navigate('/management/mgnts')} >Cancel</button>
         </div>
       </form>

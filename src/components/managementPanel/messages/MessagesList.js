@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react'; 
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
 import { Loader, TextInput } from '@mantine/core';
@@ -19,6 +19,7 @@ const MessagesList = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const [showModal, setShowModal] = useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
     const { unreadMessageCount, refetchUnreadCount } = useUnreadMessages();
@@ -32,6 +33,7 @@ const MessagesList = () => {
             setMessages(data.messages);
             setTotalPages(data.totalPages);
             setCurrentPage(data.currentPage);
+            setErrorMessage(null);
         } catch (err) {
             setErrorMessage(err.response?.data?.error || 'Error fetching messages');
         } finally {
@@ -74,9 +76,7 @@ const MessagesList = () => {
         }
     };
 
-    const openDeleteModal = () => {
-        setShowModal(true);
-    }
+    const openDeleteModal = () => setShowModal(true);
 
     const deleteSelected = async () => {
         try {
@@ -85,13 +85,11 @@ const MessagesList = () => {
             setShowModal(false);
             getMessages();
         } catch (err) {
-            console.error('Failed to delete messages', err);
+            setErrorMessage(err.response?.data?.error || 'Failed to delete messages');
         }
     };
 
-    const handleRowClick = (_id) => {
-        navigate(`${_id}`);
-    };
+    const handleRowClick = (_id) => navigate(`${_id}`);
 
     const SortIcon = ({ criteria }) => {
         if (criteria !== sortCriteria) return null;
@@ -141,7 +139,6 @@ const MessagesList = () => {
                     <div className="messages-list-controls__search-group">
                         <TextInput
                             placeholder="Search messages..."
-                            className=""
                             value={searchString}
                             onChange={handleSearchChange}
                             leftSection={<IconSearch size={16} />}

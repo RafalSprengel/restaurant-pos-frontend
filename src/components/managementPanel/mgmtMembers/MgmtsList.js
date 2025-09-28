@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import api from '../../../utils/axios';
 import { useAuth } from '../../../context/authContext';
@@ -23,16 +23,7 @@ const MgmtsList = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const { user } = useAuth('management');
-
-  const rolePermissions = {
-    admin: { addStaffButt: true, deleteStaffButt: true },
-    moderator: { addStaffButt: true, deleteStaffButt: true },
-    member: { addStaffButt: false, deleteStaffButt: false },
-  };
-
-  const isVisible = rolePermissions[user?.role] || { addStaffButt: false, deleteStaffButt: false };
 
   const getStaff = async () => {
     setIsLoading(true);
@@ -126,7 +117,11 @@ const MgmtsList = () => {
 
   useEffect(() => {
     getStaff();
-  }, [isDeleting, searchParams, searchString, sortCriteria, sortOrder]);
+  }, [isDeleting, location.search, searchString, sortCriteria, sortOrder]);
+
+  if (!['admin', 'moderator', 'member'].includes(user?.role)) {
+    return <div className="mgmts-list__error">You don't have enough rights to perform this action</div>;
+  }
 
   const rows = staffList.map((staff) => (
     <tr key={staff._id} onClick={() => handleRowClick(staff._id)} style={{ cursor: 'pointer' }}>
@@ -136,11 +131,9 @@ const MgmtsList = () => {
       <td>{staff.role}</td>
       <td>{dayjs(staff.createdAt).format('HH:mm DD/MM/YY')}</td>
       <td className="mgmts-list__table-cell--actions">
-        {isVisible.deleteStaffButt && (
-          <button className="mgmts-list__delete-button" onClick={(e) => handleDeleteClick(e, staff._id)}>
-            <IconTrash size={16} />
-          </button>
-        )}
+        <button className="mgmts-list__delete-button" onClick={(e) => handleDeleteClick(e, staff._id)}>
+          <IconTrash size={16} />
+        </button>
       </td>
     </tr>
   ));
@@ -150,7 +143,6 @@ const MgmtsList = () => {
       <div className="mgmts-list__header">
         <h2 className="mgmts-list__header__title">Staff</h2>
         <div className="mgmts-list__controls">
-
           <TextInput
             placeholder="Search staff..."
             className="mgmts-list__search-input"
@@ -158,14 +150,10 @@ const MgmtsList = () => {
             onChange={handleSearchChange}
             leftSection={<IconSearch size={16} />}
           />
-
-          {isVisible.addStaffButt && (
-            <button className="button-panel" onClick={() => navigate('/management/add-mgmt')}>
-              <IconPlus size={16} />
-              Add New
-            </button>
-          )}
-
+          <button className="button-panel" onClick={() => navigate('/management/add-mgmt')}>
+            <IconPlus size={16} />
+            Add New
+          </button>
         </div>
       </div>
 

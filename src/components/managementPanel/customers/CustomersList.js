@@ -5,7 +5,8 @@ import api from '../../../utils/axios.js';
 import { useAuth } from '../../../context/authContext.js';
 import './customersList.scss';
 import { Loader, TextInput } from '@mantine/core';
-import { IconSearch, IconPlus } from '@tabler/icons-react';
+import { showNotification } from '@mantine/notifications';
+import { IconSearch, IconPlus, IconX } from '@tabler/icons-react';
 import ConfirmationModal from '../../ConfirmationModal';
 
 const CustomersList = () => {
@@ -13,7 +14,6 @@ const CustomersList = () => {
   const [customerIdToDelete, setCustomerIdToDelete] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchString, setSearchString] = useState('');
@@ -24,29 +24,24 @@ const CustomersList = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
-  const rolePermissions = {
-    admin: { addNewButt: true, deleteButt: true },
-    moderator: { addNewButt: true, deleteButt: true },
-    member: { addNewButt: false, deleteButt: false },
-  };
-  const isVisible = rolePermissions[user?.role] || { deleteButt: false };
-
   const fetchCustomers = async () => {
     const queryString = location.search;
     try {
-      setError(null);
       setLoading(true);
-      const response = await api.get(`/customers/${queryString}`);
+      const response = await api.get(`/customers${queryString}`);
       if (response.status === 200) {
         const data = response.data;
         setCustomers(data.customers);
         setTotalPages(data.totalPages);
         setCurrentPage(data.currentPage);
-      } else {
-        setError(`Server error: ${response.data.error}`);
       }
     } catch (err) {
-      setError(err.response ? err.response.data.error : err.message);
+      showNotification({
+        title: 'Error',
+        message: err.response?.data?.error || err.message,
+        color: 'red',
+        icon: <IconX />,
+      });
     } finally {
       setLoading(false);
     }
@@ -60,19 +55,25 @@ const CustomersList = () => {
     try {
       const res = await api.delete(`/customers/${customerIdToDelete}`);
       if (res.status !== 200) {
-        setError(`Error: ${res.data.error || 'Unable to delete customer'}`);
+        showNotification({
+          title: 'Error',
+          message: res.data?.error || 'Unable to delete customer',
+          color: 'red',
+          icon: <IconX />,
+        });
       }
     } catch (e) {
-      if (e.response) {
-        setError(`Error: ${e.response.data.error || 'Unknown error'}`);
-      } else {
-        setError('Error: Unable to delete customer.');
-      }
+      showNotification({
+        title: 'Error',
+        message:
+          e.response?.data?.error ||
+          "You don't have enough rights to perform this action",
+        color: 'red',
+        icon: <IconX />,
+      });
     } finally {
       setShowModal(false);
-      if (!error) {
-        fetchCustomers();
-      }
+      fetchCustomers();
     }
   };
 
@@ -95,11 +96,7 @@ const CustomersList = () => {
     const { name } = e.currentTarget.dataset;
     const params = new URLSearchParams(location.search);
     const currentOrder = params.get('sortOrder');
-    if (currentOrder !== 'desc') {
-      params.set('sortOrder', 'desc');
-    } else {
-      params.set('sortOrder', 'asc');
-    }
+    params.set('sortOrder', currentOrder !== 'desc' ? 'desc' : 'asc');
     params.delete('page');
     params.set('sortBy', name);
     navigate('?' + params);
@@ -113,12 +110,9 @@ const CustomersList = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const searchFromUrl = params.get('search');
-    const sortByFromUrl = params.get('sortBy');
-    const sortOrderFromUrl = params.get('sortOrder');
-    setSortOrder(sortOrderFromUrl || '');
-    setSortCriteria(sortByFromUrl || '');
-    setSearchString(searchFromUrl || '');
+    setSortOrder(params.get('sortOrder') || '');
+    setSortCriteria(params.get('sortBy') || '');
+    setSearchString(params.get('search') || '');
   }, [location.search]);
 
   useEffect(() => {
@@ -126,11 +120,8 @@ const CustomersList = () => {
   }, [searchParams, searchString, sortCriteria, sortOrder]);
 
   const SortArrow = ({ criteria }) => {
-    const arrow = () => {
-      if (criteria === sortCriteria) return sortOrder === 'desc' ? '▼' : '▲';
-      else return '•';
-    };
-    return <>{arrow()}</>;
+    if (criteria !== sortCriteria) return <>•</>;
+    return <>{sortOrder === 'desc' ? '▼' : '▲'}</>;
   };
 
   if (loading) {
@@ -144,7 +135,6 @@ const CustomersList = () => {
 
   return (
     <div className="customers-list">
-      {/* Header */}
       <h2 className="customers-list__title">Customers</h2>
 
       <div className="customers-list__controls">
@@ -156,23 +146,14 @@ const CustomersList = () => {
           onChange={handleSearchChange}
           leftSection={<IconSearch size={16} />}
         />
-        {isVisible.addNewButt && (
-          <button
-            className="button-panel"
-            onClick={() => navigate('/management/add-customer')}
-          >
-            <IconPlus size={16} />
-            Add customer
-          </button>
-        )}
+        <button
+          className="button-panel"
+          onClick={() => navigate('/management/add-customer')}
+        >
+          <IconPlus size={16} />
+          Add customer
+        </button>
       </div>
-
-      {/* Error Notification */}
-      {error && (
-        <div className="customers-list__notification customers-list__notification--error">
-          <p>{error}</p>
-        </div>
-      )}
 
       {customers.length > 0 ? (
         <>
@@ -220,14 +201,12 @@ const CustomersList = () => {
                     <td>{formattedDate}</td>
                     <td>{customer.isRegistered ? 'Yes' : 'No'}</td>
                     <td>
-                      {isVisible.deleteButt && (
-                        <button
-                          className="customers-list__delete-btn"
-                          onClick={(e) => handleConfirmDelete(e, customer._id)}
-                        >
-                          Delete
-                        </button>
-                      )}
+                      <button
+                        className="customers-list__delete-btn"
+                        onClick={(e) => handleConfirmDelete(e, customer._id)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 );
@@ -235,13 +214,15 @@ const CustomersList = () => {
             </tbody>
           </table>
 
-          {/* Pagination */}
           <div className="customers-list__pagination">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                className={`customers-list__pagination-btn ${currentPage === page ? 'customers-list__pagination-btn--active' : ''
-                  }`}
+                className={`customers-list__pagination-btn ${
+                  currentPage === page
+                    ? 'customers-list__pagination-btn--active'
+                    : ''
+                }`}
                 onClick={() => handlePageChange(page)}
               >
                 {page}
@@ -255,7 +236,6 @@ const CustomersList = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {showModal && (
         <ConfirmationModal
           isOpen={showModal}
@@ -264,7 +244,6 @@ const CustomersList = () => {
           message="Are you sure you want to delete this customer?"
         />
       )}
-
     </div>
   );
 };

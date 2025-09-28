@@ -59,6 +59,13 @@
     padding: 4px;
   }
 
+  &__form-error-message {
+    padding: 16px;
+    background-color: #fff5f5;
+    color: #c92a2a;
+    border: 1px solid #c92a2a;
+    border-radius: 4px;
+  }
 
   &__buttons-group {
     padding-top: 25px;
@@ -76,4 +83,5 @@
     justify-content: center;
     align-items: center;
   }
+
 }

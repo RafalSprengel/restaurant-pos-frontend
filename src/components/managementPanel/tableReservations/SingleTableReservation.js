@@ -9,6 +9,7 @@ const SingleTableReservation = () => {
   const { id } = useParams();
   const { data, loading, error } = useFetch(`/tables/reservations/${id}`);
   const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -24,15 +25,18 @@ const SingleTableReservation = () => {
       await api.delete(`/tables/reservations/${id}`);
       navigate(-1);
     } catch (err) {
-      console.log(err);
+      setErrorMessage(err.response?.data?.error || "You don't have enough rights to perform this action");
+    } finally {
+      setShowModal(false);
     }
   };
 
   return (
     <div className="single-table-reservation">
       {loading && <p>Loading...</p>}
-      {error && <p>Error: {error.message}</p>}
-      {data &&
+      {(error || errorMessage) && <p className="single-table-reservation__error">{error?.message || errorMessage}</p>}
+
+      {data && !errorMessage &&
         <>
           <h2 className="single-table-reservation__title">Reservation Details</h2>
 
@@ -80,6 +84,7 @@ const SingleTableReservation = () => {
           </div>
         </>
       }
+
       {showModal && (
         <ConfirmationModal
           isOpen={showModal}

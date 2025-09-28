@@ -2,20 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from '@mantine/form'
 import api from '../../../utils/axios.js'
-import { useAuth } from '../../../context/authContext.js'
 import './updateCustomer.scss'
-import { TextInput} from '@mantine/core'
-import { showNotification } from '@mantine/notifications';
-import { IconCheck } from '@tabler/icons-react';
+import { TextInput } from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
+import { IconCheck } from '@tabler/icons-react'
 
 const UpdateCustomer = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { user } = useAuth('staff')
-  const isEditable = ['admin', 'moderator'].includes(user?.role)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isUpdatingInProgress, setIsUpdatingInProgress] = useState(false);
-  const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isUpdatingInProgress, setIsUpdatingInProgress] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const form = useForm({
@@ -46,10 +42,9 @@ const UpdateCustomer = () => {
           phone: res.data.phone || '',
           password: '',
         })
-      } else throw new Error('Failed to fetch customer')
+      } else throw new Error(res.data?.error || 'Failed to fetch customer')
     } catch (err) {
-      setShowErrorAlert(true)
-      setErrorMessage(err.response?.data?.error || err.message)
+      setErrorMessage(err.response?.data?.error || err.message || 'Unable to fetch customer. You might not have enough rights.')
     } finally {
       setIsLoading(false)
     }
@@ -57,46 +52,39 @@ const UpdateCustomer = () => {
 
   useEffect(() => {
     getCustomer()
-  }, [])
+  }, [id])
 
   const handleSubmit = async (values) => {
     setIsUpdatingInProgress(true)
-    setShowErrorAlert(false)
+    setErrorMessage('')
     try {
       const res = await api.put(`/customers/${id}`, values)
       if (res.status === 200) {
         showNotification({
           title: 'Success',
-          message: 'Product updated successfully!',
+          message: 'Customer updated successfully!',
           color: 'green',
           icon: <IconCheck />,
-        });
-        setTimeout(() => navigate('/management/customers'), 1000);
-      }
-      else {
-        setShowErrorAlert(true)
-        setErrorMessage(res.data?.error || 'Failed to update customer')
+        })
+        setTimeout(() => navigate('/management/customers'), 1000)
+      } else {
+        setErrorMessage(res.data?.error || 'Failed to update customer. You might not have enough rights.')
       }
     } catch (err) {
-      setShowErrorAlert(true)
-      setErrorMessage(err.response?.data?.error || 'An error occurred')
+      setErrorMessage(err.response?.data?.error || 'Failed to update customer. You might not have enough rights.')
     } finally {
       setIsUpdatingInProgress(false)
     }
   }
 
   if (isLoading)
-    return (
-      <div className="update-customer__loading">
-
-      </div>
-    )
+    return <div className="update-customer__loading">Loading...</div>
 
   return (
     <div className="update-customer">
       <h2 className="update-customer__title">Update Customer</h2>
 
-      {showErrorAlert && (
+      {errorMessage && (
         <div className="update-customer-form__notification update-customer-form__notification--error">
           <p>{errorMessage}</p>
         </div>
@@ -107,7 +95,7 @@ const UpdateCustomer = () => {
           label="First name"
           placeholder="Customer first name"
           {...form.getInputProps('firstName')}
-          disabled={!isEditable || isLoading || isUpdatingInProgress}
+          disabled={isLoading || isUpdatingInProgress}
           classNames={{
             root: 'update-customer-form__field',
             input: `update-customer-form__input ${form.errors.firstName ? 'update-customer-form__input--error' : ''}`,
@@ -119,7 +107,7 @@ const UpdateCustomer = () => {
           label="Surname"
           placeholder="Customer surname"
           {...form.getInputProps('surname')}
-          disabled={!isEditable || isLoading || isUpdatingInProgress}
+          disabled={isLoading || isUpdatingInProgress}
           classNames={{
             root: 'update-customer-form__field',
             input: `update-customer-form__input ${form.errors.surname ? 'update-customer-form__input--error' : ''}`,
@@ -131,7 +119,7 @@ const UpdateCustomer = () => {
           label="Email"
           placeholder="Customer email"
           {...form.getInputProps('email')}
-          disabled={!isEditable || isLoading || isUpdatingInProgress}
+          disabled={isLoading || isUpdatingInProgress}
           classNames={{
             root: 'update-customer-form__field',
             input: `update-customer-form__input ${form.errors.email ? 'update-customer-form__input--error' : ''}`,
@@ -143,7 +131,7 @@ const UpdateCustomer = () => {
           label="Phone"
           placeholder="Customer phone"
           {...form.getInputProps('phone')}
-          disabled={!isEditable || isLoading || isUpdatingInProgress}
+          disabled={isLoading || isUpdatingInProgress}
           classNames={{
             root: 'update-customer-form__field',
             input: `update-customer-form__input ${form.errors.phone ? 'update-customer-form__input--error' : ''}`,
@@ -155,28 +143,19 @@ const UpdateCustomer = () => {
           label="Password"
           placeholder="Leave empty to keep current password"
           {...form.getInputProps('password')}
-          disabled={!isEditable || isLoading || isUpdatingInProgress}
+          disabled={isLoading || isUpdatingInProgress}
           classNames={{
             root: 'update-customer-form__field',
             input: `update-customer-form__input ${form.errors.password ? 'update-customer-form__input--error' : ''}`,
             label: 'update-customer-form__label',
           }}
         />
+
         <div className="buttons-group">
-          {isEditable && (
-            <button
-              type="submit"
-             className="button-panel"
-              disabled={isUpdatingInProgress}
-            >
-              {isUpdatingInProgress ? 'Saving...' : 'Save Customer'}
-            </button>
-          )}
-          <button
-            type="button"
-            className="button-panel"
-            onClick={() => navigate('/management/customers')}
-          >
+          <button type="submit" className="button-panel" disabled={isUpdatingInProgress}>
+            {isUpdatingInProgress ? 'Saving...' : 'Save Customer'}
+          </button>
+          <button type="button" className="button-panel" onClick={() => navigate('/management/customers')}>
             Cancel
           </button>
         </div>

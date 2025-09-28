@@ -5,14 +5,11 @@ import { TextInput, NumberInput, Loader, Center } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
 import api from '../../../utils/axios.js'
-import { useAuth } from '../../../context/authContext.js'
 import './updateCategory.scss'
 
 const UpdateCategory = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { user } = useAuth('staff')
-  const isEditable = ['admin', 'moderator'].includes(user?.role)
   const [isLoading, setIsLoading] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -88,8 +85,8 @@ const UpdateCategory = () => {
       <h2 className="update-category__title">Update Category</h2>
 
       {showErrorAlert && (
-        <div className="update-category-form__notification update-category-form__notification--error">
-          <p>{errorMessage}</p>
+        <div className="update-category__form-error-message">
+          {errorMessage}
         </div>
       )}
 
@@ -98,7 +95,7 @@ const UpdateCategory = () => {
           label="Name"
           placeholder="Category name"
           {...form.getInputProps('name')}
-          disabled={!isEditable || isLoading}
+          disabled={isLoading}
           classNames={{
             root: 'update-category__form-field',
             input: `update-category__form-input ${form.errors.name ? 'update-category__form-input--error' : ''}`,
@@ -110,7 +107,7 @@ const UpdateCategory = () => {
           label="Index"
           placeholder="Category index"
           {...form.getInputProps('index')}
-          disabled={!isEditable || isLoading}
+          disabled={isLoading}
           min={0}
           classNames={{
             root: 'update-category__form-field',
@@ -119,23 +116,22 @@ const UpdateCategory = () => {
           }}
         />
 
-        {isEditable && (
-          <div className="update-category__buttons-group">
-            <button
-              type="submit"
-              className="button-panel"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Saving...' : 'Save Category'}
-            </button>
-            <button
-              className="button-panel"
-              onClick={() => navigate('/management/categories')}
-            >
-              Back
-            </button>
-          </div>
-        )}
+        <div className="update-category__buttons-group">
+          <button
+            type="submit"
+            className="button-panel"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save Category'}
+          </button>
+          <button
+            type="button"
+            className="button-panel"
+            onClick={() => navigate('/management/categories')}
+          >
+            Back
+          </button>
+        </div>
       </form>
     </div>
   )

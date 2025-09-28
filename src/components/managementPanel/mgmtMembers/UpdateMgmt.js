@@ -60,6 +60,7 @@ export default function UpdateMgmt() {
   }, [id]);
 
   const handleSubmit = async (values) => {
+    if (!isEditable) return;
     setIsLoading(true);
     setShowError(false);
     try {
@@ -88,6 +89,7 @@ export default function UpdateMgmt() {
       <h2 className="update-mgmt__title">Update User</h2>
 
       {showError && <div className="update-mgmt__error">{errorMessage}</div>}
+      {!isEditable && <div className="update-mgmt__info">You don't have enough rights to edit this user.</div>}
 
       <form className="update-mgmt__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
@@ -149,13 +151,14 @@ export default function UpdateMgmt() {
             label: 'update-mgmt__label',
           }}
         />
+
         <div className="buttons-group">
-          {isEditable && (
-            <button type="submit" className="button-panel" disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save'}
-            </button>
-          )}
-          <button className="button-panel" onClick={() => navigate('/management/mgnts')} >Cancel</button>
+          <button type="submit" className="button-panel" disabled={!isEditable || isLoading}>
+            {isLoading ? 'Saving...' : 'Save'}
+          </button>
+          <button className="button-panel" onClick={() => navigate('/management/mgnts')}>
+            Cancel
+          </button>
         </div>
       </form>
     </div>

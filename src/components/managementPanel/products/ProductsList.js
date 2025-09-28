@@ -1,6 +1,6 @@
 import config from "../../../config";
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useAuth } from '../../../context/authContext';
 import { Loader, TextInput } from '@mantine/core';
@@ -23,20 +23,10 @@ const ProductsList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const { user } = useAuth('management');
   const cardRef = useRef(null);
   const [expandedCardId, setExpandedCardId] = useState(null);
 
-  const rolePermissions = {
-    admin: { addProductButt: true, deleteProductButt: true },
-    moderator: { addProductButt: true, deleteProductButt: true },
-    member: { addProductButt: false, deleteProductButt: false },
-  };
-
-
-  const isVisible = rolePermissions[user?.role] || { addProductButt: false, deleteProductButt: false };
-
+  const { user } = useAuth('management');
 
   const getProducts = async () => {
     const queryString = location.search;
@@ -50,27 +40,24 @@ const ProductsList = () => {
         setTotalPages(data?.totalPages || 1);
         setCurrentPage(data?.currentPage || 1);
       } else {
-        setErrorMessage(`Server error: ${response.data.error}`);
+        setErrorMessage(response.data?.error || "You don't have enough rights to do this action");
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || error.message || 'Unknown error');
+      setErrorMessage(error.response?.data?.error || error.message || "You don't have enough rights to do this action");
     } finally {
       setIsLoading(false);
     }
   };
 
-
   const handleRowClick = (id) => {
     navigate(`${id}`);
   };
-
 
   const handleDeleteClick = (event, id) => {
     event.stopPropagation();
     setProductToDelete(id);
     setShowModal(true);
   };
-
 
   const handleConfirmDelete = async () => {
     setShowModal(false);
@@ -81,23 +68,21 @@ const ProductsList = () => {
       if (response.status === 200) {
         getProducts();
       } else {
-        setErrorMessage(`Unable to delete this product (${response.data?.message || 'unknown error'})`);
+        setErrorMessage(response.data?.error || "You don't have enough rights to do this action");
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Failed to delete the product. Please try again.');
+      setErrorMessage(error.response?.data?.error || "You don't have enough rights to do this action");
     } finally {
       setIsDeleting(false);
       setProductToDelete(null);
     }
   };
 
-
   const handlePageChange = (page) => {
     const params = new URLSearchParams(location.search);
     params.set('page', page);
     navigate('?' + params.toString());
   };
-
 
   const handleSearchChange = (e) => {
     const { value } = e.currentTarget;
@@ -108,21 +93,15 @@ const ProductsList = () => {
     navigate('?' + params);
   };
 
-
   const handleSort = (e) => {
     const { name } = e.currentTarget.dataset;
     const params = new URLSearchParams(location.search);
     const currentOrder = params.get('sortOrder');
-    if (currentOrder !== 'desc') {
-      params.set('sortOrder', 'desc');
-    } else {
-      params.set('sortOrder', 'asc');
-    }
+    params.set('sortOrder', currentOrder !== 'desc' ? 'desc' : 'asc');
     params.delete('page');
     params.set('sortBy', name);
     navigate('?' + params);
   };
-
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -131,11 +110,12 @@ const ProductsList = () => {
     setSortOrder(params.get('sortOrder') || '');
   }, [location.search]);
 
-
   useEffect(() => {
-    getProducts();
-  }, [isDeleting, searchParams, searchString, sortCriteria, sortOrder]);
-
+    const fetchProducts = async () => {
+      await getProducts();
+    };
+    fetchProducts();
+  }, [isDeleting, location.search, searchString, sortCriteria, sortOrder]);
 
   const SortIcon = ({ criteria }) => {
     if (criteria !== sortCriteria || !sortOrder) return null;
@@ -146,13 +126,7 @@ const ProductsList = () => {
     );
   };
 
-
-  const getBadgeClass = (value, type) => {
-    if (type === 'boolean') {
-      return value ? 'products-list__badge products-list__badge--green' : 'products-list__badge products-list__badge--red';
-    }
-    return 'products-list__badge';
-  };
+  const getBadgeClass = (value) => value ? 'products-list__badge products-list__badge--green' : 'products-list__badge products-list__badge--red';
 
   const toggleCardExpand = (id) => {
     setExpandedCardId(prev => (prev === id ? null : id));
@@ -164,38 +138,22 @@ const ProductsList = () => {
       <td>{item.name}</td>
       <td>{item.category?.name || 'N/A'}</td>
       <td>£{item.price}</td>
-      <td>
-        <span className={getBadgeClass(item.isAvailable, 'boolean')}>
-          {item.isAvailable ? 'Yes' : 'No'}
-        </span>
-      </td>
-      <td>
-        <span className={getBadgeClass(item.isVegetarian, 'boolean')}>
-          {item.isVegetarian ? 'Yes' : 'No'}
-        </span>
-      </td>
-      <td>
-        <span className={getBadgeClass(item.isGlutenFree, 'boolean')}>
-          {item.isGlutenFree ? 'Yes' : 'No'}
-        </span>
-      </td>
+      <td><span className={getBadgeClass(item.isAvailable)}>{item.isAvailable ? 'Yes' : 'No'}</span></td>
+      <td><span className={getBadgeClass(item.isVegetarian)}>{item.isVegetarian ? 'Yes' : 'No'}</span></td>
+      <td><span className={getBadgeClass(item.isGlutenFree)}>{item.isGlutenFree ? 'Yes' : 'No'}</span></td>
       <td className="products-list__table-cell--actions">
-        {isVisible.deleteProductButt && (
-          <button className="products-list__delete-button" onClick={(e) => handleDeleteClick(e, item._id)}>
-            <IconTrash size={16} />
-          </button>
-        )}
+        <button className="products-list__delete-button" onClick={(e) => handleDeleteClick(e, item._id)}>
+          <IconTrash size={16} />
+        </button>
       </td>
     </tr>
   ));
-
 
   return (
     <div className="products-list__container">
       <div className="products-list__header">
         <h2 className="products-list__header__title">Products</h2>
         <div className="products-list__controls">
-
           <TextInput
             placeholder="Search products..."
             className="products-list__search-input"
@@ -203,23 +161,14 @@ const ProductsList = () => {
             onChange={handleSearchChange}
             leftSection={<IconSearch size={16} />}
           />
-
-          {isVisible.addProductButt && (
-            <button className="button-panel" onClick={() => navigate('/management/add-product')}>
-              <IconPlus size={16} />
-              Add new
-            </button>
-          )}
+          <button className="button-panel" onClick={() => navigate('/management/add-product')}>
+            <IconPlus size={16} />
+            Add new
+          </button>
         </div>
       </div>
 
-
-      {errorMessage && (
-        <div className="products-list__error-message">
-          <p>{errorMessage}</p>
-        </div>
-      )}
-
+      {errorMessage && <div className="products-list__error-message"><p>{errorMessage}</p></div>}
 
       {isLoading ? (
         <div className="products-list__loading">
@@ -246,10 +195,6 @@ const ProductsList = () => {
             </table>
           </div>
 
-
-
-
-
           <div className="products-list__cards-group">
             {productsList.map((product) => (
               <div key={product._id}
@@ -260,75 +205,23 @@ const ProductsList = () => {
                   <span className="products-list__card-title">{product.name}</span>
                   <img src={`${config.API_URL}${product.thumbnail}`} alt="Thumbnail" className="products-list__card-thumbnail" />
                 </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">No.:</span>
-                  <span className="products-list__card-label-value">{product.productNumber}</span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Description:</span>
-                  <span className="products-list__card-label-value">{product.desc}</span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Price:</span>
-                  <span className="products-list__card-label-value">£{product.price}</span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Image:</span>
-                  <span className="products-list__card-label-value">{product.image}</span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Category:</span>
-                  <span className="products-list__card-label-value">{product.category?.name || 'N/A'}</span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Ingredients:</span>
-                  <span className="products-list__card-label-value">{product.ingredients}</span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Is Featured:</span>
-                  <span className={`products-list__card-label-value ${getBadgeClass(product.isFeatured, 'boolean')}`}>
-                    {product.isFeatured ? 'Yes' : 'No'}
-                  </span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Is Vegetarian:</span>
-                  <span className={`products-list__card-label-value ${getBadgeClass(product.isVegetarian, 'boolean')}`}>
-                    {product.isVegetarian ? 'Yes' : 'No'}
-                  </span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Is Gluten Free:</span>
-                  <span className={`products-list__card-label-value ${getBadgeClass(product.isGlutenFree, 'boolean')}`}>
-                    {product.isGlutenFree ? 'Yes' : 'No'}
-                  </span>
-                </div>
-                <div className="products-list__card-row">
-                  <span className="products-list__card-label-name">Is Available:</span>
-                  <span className={`products-list__card-label-value ${getBadgeClass(product.isAvailable, 'boolean')}`}>
-                    {product.isAvailable ? 'Yes' : 'No'}
-                  </span>
-                </div>
-
-
                 <div className="products-list__card-buttons-group">
                   <button className="products-list__card-button-edit" onClick={() => handleRowClick(product._id)}>
-                    <IconEdit size={16} />
-                    Edit
+                    <IconEdit size={16} /> Edit
                   </button>
                   <button className="products-list__card-button-delete" onClick={(e) => handleDeleteClick(e, product._id)}>
-                    <IconTrash size={16} />
-                    Delete
+                    <IconTrash size={16} /> Delete
                   </button>
                 </div>
               </div>
             ))}
           </div>
+
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </>
       ) : (
         <p className="products-list__message">No products found.</p>
       )}
-
 
       {showModal && (
         <ConfirmationModal
@@ -341,6 +234,5 @@ const ProductsList = () => {
     </div>
   );
 };
-
 
 export default ProductsList;

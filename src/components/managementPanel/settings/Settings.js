@@ -5,8 +5,9 @@ import api from "../../../utils/axios";
 import "./Settings.scss";
 
 export default function Settings() {
-
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
   const form = useForm({
     initialValues: {
       startHour: 10,
@@ -38,10 +39,14 @@ export default function Settings() {
     const fetchSettings = async () => {
       try {
         const res = await api.get("/settings");
-        if (res.data.reservationSettings) form.setValues(res.data.reservationSettings);
-        if (res.data.smtpSettings) form.setValues((v) => ({ ...v, ...res.data.smtpSettings }));
+        if (res.data.error) {
+          setErrorMessage(res.data.error);
+        } else {
+          if (res.data.reservationSettings) form.setValues(res.data.reservationSettings);
+          if (res.data.smtpSettings) form.setValues((v) => ({ ...v, ...res.data.smtpSettings }));
+        }
       } catch (err) {
-        console.error("Error fetching settings:", err);
+        setErrorMessage(err.response?.data?.error || "You don't have enough rights to perform this action");
       } finally {
         setIsLoading(false);
       }
@@ -52,7 +57,7 @@ export default function Settings() {
   const saveSettings = async (values) => {
     setIsLoading(true);
     try {
-      await api.put("/settings", {
+      const res = await api.put("/settings", {
         reservationSettings: {
           startHour: values.startHour,
           endHour: values.endHour,
@@ -68,8 +73,11 @@ export default function Settings() {
           pass: values.pass,
         },
       });
+      if (res.data.error) {
+        setErrorMessage(res.data.error);
+      }
     } catch (err) {
-      console.error("Error saving settings:", err);
+      setErrorMessage(err.response?.data?.error || "You don't have enough rights to perform this action");
     } finally {
       setIsLoading(false);
     }
@@ -79,6 +87,13 @@ export default function Settings() {
     <div className="settings__loading">
       <Loader size="sm" variant="dots" />
       <span>Loading...</span>
+    </div>
+  );
+
+  if (errorMessage) return (
+    <div className="settings__error">
+      <p>{errorMessage}</p>
+      <button className="button-panel" onClick={() => window.history.back()}>Back</button>
     </div>
   );
 
@@ -191,7 +206,7 @@ export default function Settings() {
 
       <div className="buttons-group">
         <button type="submit" className="button-panel">Save Settings</button>
-        <button type="button" className="button-panel"variant="default" onClick={() => window.history.back()}>Back</button>
+        <button type="button" className="button-panel" variant="default" onClick={() => window.history.back()}>Back</button>
       </div>
     </form>
   );

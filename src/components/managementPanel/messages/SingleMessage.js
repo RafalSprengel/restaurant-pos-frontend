@@ -3,35 +3,40 @@ import { useFetch } from "../../../hooks/useFetch.js";
 import api from "../../../utils/axios.js";
 import { useEffect, useState } from "react";
 import { useUnreadMessages } from "../../../context/UnreadMessagesProvider";
-import { TextInput, Textarea } from "@mantine/core";
+import { TextInput, Textarea, Button, Center, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import "./singleMessage.scss";
 import ConfirmationModal from '../../ConfirmationModal';
 
-const SingleMessage = () => {
+export default function SingleMessage() {
   const { id } = useParams();
   const { data, loading, error } = useFetch(`/messages/${id}`);
   const [showReply, setShowReply] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [backendError, setBackendError] = useState(null);
   const { refetchUnreadCount } = useUnreadMessages();
 
   const replyForm = useForm({
     initialValues: { subject: "", body: "" },
     validate: {
-      subject: (value) => (value.trim().length ? null : "Subject is required"),
-      body: (value) => (value.trim().length ? null : "Message body is required"),
+      subject: (value) => (value.trim() ? null : "Subject is required"),
+      body: (value) => (value.trim() ? null : "Message body is required"),
     },
     validateInputOnBlur: true,
   });
 
+  useEffect(() => {
+    refetchUnreadCount();
+  }, []);
+
   const handleBack = () => window.history.back();
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (messageId) => {
     try {
-      await api.delete(`/messages/${id}`);
+      await api.delete(`/messages/${messageId}`);
       handleBack();
     } catch (err) {
-      console.log(err);
+      setBackendError(err.response?.data?.error || err.message);
     }
   };
 
@@ -45,22 +50,25 @@ const SingleMessage = () => {
         body: values.body,
         type: "sent",
       });
-
       setShowReply(false);
       replyForm.reset();
     } catch (err) {
-      console.log(err);
+      setBackendError(err.response?.data?.error || err.message);
     }
   };
 
-  useEffect(() => {
-    refetchUnreadCount();
-  }, []);
+  if (loading) {
+    return (
+      <Center className="single-message__center">
+        <Loader size="md" />
+      </Center>
+    );
+  }
 
   return (
     <div className="single-message">
-      {loading && <p className="single-message__loading">Loading...</p>}
       {error && <p className="single-message__error">Error: {error.message}</p>}
+      {backendError && <p className="single-message__error">{backendError}</p>}
 
       {data && (
         <>
@@ -101,10 +109,13 @@ const SingleMessage = () => {
           </div>
 
           <div className="buttons-group">
-            <button className="button-panel button-panel--delete" onClick={() => setShowModal(true)}>
+            <button
+              className="button-panel button-panel--delete"
+              onClick={() => setShowModal(true)}
+            >
               Delete
             </button>
-              <button className="button-panel" variant="default" onClick={handleBack}>
+            <button className="button-panel" onClick={handleBack}>
               Back
             </button>
             {data.type === "received" && (
@@ -148,8 +159,9 @@ const SingleMessage = () => {
                 }}
               />
 
-
-              <button className="button-panel" type="submit">Send</button>
+              <button className="button-panel" type="submit">
+                Send
+              </button>
             </form>
           )}
         </>
@@ -165,6 +177,4 @@ const SingleMessage = () => {
       )}
     </div>
   );
-};
-
-export default SingleMessage;
+}
