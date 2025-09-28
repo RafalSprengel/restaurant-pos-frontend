@@ -3,14 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { TextInput, PasswordInput, Select, Loader } from '@mantine/core';
 import api from '../../../utils/axios.js';
-import { useAuth } from '../../../context/authContext.js';
 import './updateMgmt.scss';
 
 export default function UpdateMgmt() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth('staff');
-  const isEditable = ['admin', 'moderator'].includes(user?.role);
   const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -60,7 +57,6 @@ export default function UpdateMgmt() {
   }, [id]);
 
   const handleSubmit = async (values) => {
-    if (!isEditable) return;
     setIsLoading(true);
     setShowError(false);
     try {
@@ -89,14 +85,13 @@ export default function UpdateMgmt() {
       <h2 className="update-mgmt__title">Update User</h2>
 
       {showError && <div className="update-mgmt__error">{errorMessage}</div>}
-      {!isEditable && <div className="update-mgmt__info">You don't have enough rights to edit this user.</div>}
 
       <form className="update-mgmt__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
           label="Name"
           placeholder="Name"
           {...form.getInputProps('name')}
-          disabled={!isEditable}
+          disabled={isLoading}
           classNames={{
             root: 'update-mgmt__field',
             input: `update-mgmt__input ${form.errors.name ? 'update-mgmt__input--error' : ''}`,
@@ -108,7 +103,7 @@ export default function UpdateMgmt() {
           label="Surname"
           placeholder="Surname"
           {...form.getInputProps('surname')}
-          disabled={!isEditable}
+          disabled={isLoading}
           classNames={{
             root: 'update-mgmt__field',
             input: `update-mgmt__input ${form.errors.surname ? 'update-mgmt__input--error' : ''}`,
@@ -120,7 +115,7 @@ export default function UpdateMgmt() {
           label="Email"
           placeholder="Email"
           {...form.getInputProps('email')}
-          disabled={!isEditable}
+          disabled={isLoading}
           classNames={{
             root: 'update-mgmt__field',
             input: `update-mgmt__input ${form.errors.email ? 'update-mgmt__input--error' : ''}`,
@@ -132,7 +127,7 @@ export default function UpdateMgmt() {
           label="Role"
           data={roles}
           {...form.getInputProps('role')}
-          disabled={!isEditable}
+          disabled={isLoading}
           classNames={{
             root: 'update-mgmt__field',
             input: `update-mgmt__input ${form.errors.role ? 'update-mgmt__input--error' : ''}`,
@@ -144,7 +139,7 @@ export default function UpdateMgmt() {
           label="Password"
           placeholder="Password"
           {...form.getInputProps('password')}
-          disabled={!isEditable}
+          disabled={isLoading}
           classNames={{
             root: 'update-mgmt__field',
             input: `update-mgmt__input ${form.errors.password ? 'update-mgmt__input--error' : ''}`,
@@ -153,7 +148,7 @@ export default function UpdateMgmt() {
         />
 
         <div className="buttons-group">
-          <button type="submit" className="button-panel" disabled={!isEditable || isLoading}>
+          <button type="submit" className="button-panel" disabled={isLoading}>
             {isLoading ? 'Saving...' : 'Save'}
           </button>
           <button className="button-panel" onClick={() => navigate('/management/mgnts')}>
