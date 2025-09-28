@@ -7,13 +7,15 @@ import { TextInput, Textarea, Button, Center, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import "./singleMessage.scss";
 import ConfirmationModal from '../../ConfirmationModal';
+import ErrorMessage from "../../ErrorMessage";
 
 export default function SingleMessage() {
   const { id } = useParams();
-  const { data, loading, error } = useFetch(`/messages/${id}`);
+  const { data, loading, error: errorFetchMessages } = useFetch(`/messages/${id}`);
   const [showReply, setShowReply] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [backendError, setBackendError] = useState(null);
+  const [errorDeleteMessage, setErrorDeleteMessage] = useState(null);
+  const [errorReplyMessage, setErrorReplyMessage] = useState(null);
   const { refetchUnreadCount } = useUnreadMessages();
 
   const replyForm = useForm({
@@ -36,7 +38,7 @@ export default function SingleMessage() {
       await api.delete(`/messages/${messageId}`);
       handleBack();
     } catch (err) {
-      setBackendError(err.response?.data?.error || err.message);
+      setErrorDeleteMessage(err.response?.data?.error || err.message);
     }
   };
 
@@ -53,7 +55,7 @@ export default function SingleMessage() {
       setShowReply(false);
       replyForm.reset();
     } catch (err) {
-      setBackendError(err.response?.data?.error || err.message);
+      setErrorReplyMessage(err.response?.data?.error || err.message);
     }
   };
 
@@ -67,8 +69,10 @@ export default function SingleMessage() {
 
   return (
     <div className="single-message">
-      {error && <p className="single-message__error">Error: {error.message}</p>}
-      {backendError && <p className="single-message__error">{backendError}</p>}
+
+      {errorDeleteMessage && <ErrorMessage message={errorDeleteMessage} />}
+      {errorReplyMessage && <ErrorMessage message={errorReplyMessage} />}
+      {errorFetchMessages && <ErrorMessage message={errorFetchMessages} />}
 
       {data && (
         <>

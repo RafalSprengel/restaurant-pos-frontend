@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'; 
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
@@ -18,7 +18,9 @@ const MessagesList = () => {
     const [typeFilter, setTypeFilter] = useState('received');
     const [selectedMessages, setSelectedMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [errorFetchMessages, setErrorFetchMessages] = useState(null);
+    const [errorDeleteMessages, setErrorDeleteMessages] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
@@ -27,6 +29,7 @@ const MessagesList = () => {
 
     const getMessages = async () => {
         const params = new URLSearchParams(location.search);
+        setErrorFetchMessages(null);
         try {
             setIsLoading(true);
             const res = await api.get(`/messages?${params.toString()}`);
@@ -34,9 +37,8 @@ const MessagesList = () => {
             setMessages(data.messages);
             setTotalPages(data.totalPages);
             setCurrentPage(data.currentPage);
-            setError(null);
         } catch (err) {
-            setError(err.response?.data?.error || 'Error fetching messages');
+            setErrorFetchMessages(err.response?.data?.error || 'Error fetching messages');
         } finally {
             setIsLoading(false);
         }
@@ -77,16 +79,23 @@ const MessagesList = () => {
         }
     };
 
-    const openDeleteModal = () => setShowModal(true);
+    const openDeleteModal = () => {
+        setErrorDeleteMessages(null);
+        setShowModal(true);
+    };
 
     const deleteSelected = async () => {
+        setErrorDeleteMessages(null);
         try {
+            setIsDeleting(true);
             await api.post(`/messages/delete-many`, { ids: selectedMessages });
             setSelectedMessages([]);
             setShowModal(false);
-            getMessages();
+            await getMessages();
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to delete messages');
+            setErrorDeleteMessages(err.response?.data?.error || 'Failed to delete messages');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -150,20 +159,25 @@ const MessagesList = () => {
                         <option value="received">Received</option>
                         <option value="sent">Sent</option>
                     </select>
-                    <button className="messages-list-delete-button" disabled={!selectedMessages.length} onClick={openDeleteModal}>
-                        <IconTrash size={16} />
-                        Delete selected
+                    <button
+                        className="messages-list-delete-button"
+                        disabled={!selectedMessages.length || isDeleting}
+                        onClick={openDeleteModal}
+                    >
+                        {isDeleting ? <Loader size={16} color="white" /> : <IconTrash size={16} />}
+                        {isDeleting ? 'Deleting...' : 'Delete selected'}
                     </button>
                 </div>
             </div>
-
+            
+            {errorDeleteMessages && <ErrorMessage message={errorDeleteMessages} />}
+            {errorFetchMessages && <ErrorMessage message={errorFetchMessages} />}
+            
             {isLoading ? (
                 <div className="messages-list-loading">
                     <Loader size="sm" variant="dots" />
                     <span>Loading...</span>
                 </div>
-            ) : error ? (
-                <ErrorMessage message={error} />
             ) : messages.length ? (
                 <div className="messages-list-table-wrapper">
                     <table className="messages-list-table">
@@ -207,7 +221,7 @@ const MessagesList = () => {
                     isOpen={showModal}
                     onClose={() => setShowModal(false)}
                     onConfirm={deleteSelected}
-                    message="Do you really want to delete the selected messages?"
+                    message={`Do you really want to delete the selected messages? ${isDeleting ? ' (Deleting...)' : ''}`}
                 />
             )}
         </div>
