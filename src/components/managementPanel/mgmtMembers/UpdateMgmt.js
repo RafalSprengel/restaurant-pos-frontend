@@ -15,9 +15,9 @@ export default function UpdateMgmt() {
   const [error, setError] = useState('');
 
   const form = useForm({
-    initialValues: { name: '', surname: '', email: '', role: '', password: '' },
+    initialValues: { firstNamename: '', surname: '', email: '', role: '', password: '' },
     validate: {
-      name: (value) => (value.trim() === '' ? 'Name is required' : null),
+      firstName: (value) => (value.trim() === '' ? 'Name is required' : null),
       surname: (value) => (value.trim() === '' ? 'Surname is required' : null),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
       role: (value) => (value === '' ? 'Role is required' : null),
@@ -39,7 +39,7 @@ export default function UpdateMgmt() {
       try {
         const res = await api.get(`/staff/${id}`);
         form.setValues({
-          name: res.data.name || '',
+          firstName: res.data.firstName || '',
           surname: res.data.surname || '',
           email: res.data.email || '',
           role: res.data.role || '',
@@ -89,13 +89,13 @@ export default function UpdateMgmt() {
 
       <form className="update-mgmt__form" onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
-          label="Name"
-          placeholder="Name"
-          {...form.getInputProps('name')}
+          label="First Name"
+          placeholder="FirstName"
+          {...form.getInputProps('firstName')}
           disabled={isLoading}
           classNames={{
             root: 'update-mgmt__field',
-            input: `update-mgmt__input ${form.errors.name ? 'update-mgmt__input--error' : ''}`,
+            input: `update-mgmt__input ${form.errors.firstName ? 'update-mgmt__input--error' : ''}`,
             label: 'update-mgmt__label',
           }}
         />

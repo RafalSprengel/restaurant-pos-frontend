@@ -39,10 +39,10 @@ const MgmtsList = () => {
         setTotalPages(totalPages);
         setCurrentPage(currentPage);
       } else {
-        setErrorFetchStaff(`Server error: ${response.data.error}`) || 'Failed to fetch customers';
+        setErrorFetchStaff(`Server error: ${response.data?.error ?? 'Failed to fetch customers'}`);
       }
-    } catch (error) {
-      setErrorFetchStaff(err.response?.data?.error || err.message || 'Unexpected error');
+    } catch (e) {
+      setErrorFetchStaff(e.response?.data?.error || e.message || 'Unexpected error');
     } finally {
       setIsLoading(false);
     }
