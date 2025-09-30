@@ -6,6 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
 import api from '../../../utils/axios.js'
 import './updateCategory.scss'
+import ErrorMessage from '../../ErrorMessage.js'
 
 const UpdateCategory = () => {
   const { id } = useParams()
@@ -85,9 +86,7 @@ const UpdateCategory = () => {
       <h2 className="update-category__title">Update Category</h2>
 
       {showErrorAlert && (
-        <div className="update-category__form-error-message">
-          {errorMessage}
-        </div>
+        <ErrorMessage message={errorMessage} />
       )}
 
       <form className="update-category__form" onSubmit={form.onSubmit(handleSubmit)}>

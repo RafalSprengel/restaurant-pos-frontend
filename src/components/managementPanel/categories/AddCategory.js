@@ -6,6 +6,7 @@ import { showNotification } from '@mantine/notifications'
 import { IconCheck } from '@tabler/icons-react'
 import api from '../../../utils/axios.js'
 import './addCategory.scss'
+import ErrorMessage from '../../ErrorMessage.js'
 
 const AddCategory = () => {
   const [isSavingInProgress, setIsSavingInProgress] = useState(false)
@@ -56,9 +57,7 @@ const AddCategory = () => {
       <h2 className="add-category__title">Add Category</h2>
 
       {showErrorAlert && (
-        <div className="add-category__form-error-message">
-          {errorMessage}
-        </div>
+        <ErrorMessage message={errorMessage} />
       )}
 
       <form className="add-category__form" onSubmit={form.onSubmit(handleSubmit)}>

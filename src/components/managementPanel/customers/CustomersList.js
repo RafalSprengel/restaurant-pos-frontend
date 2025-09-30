@@ -208,7 +208,6 @@ const CustomersList = () => {
                                                 onClick={(e) => handleConfirmDelete(e, customer._id)}
                                                 disabled={isThisRowDeleting}
                                             >
-                                                {/* Użycie samej ikony/loadera o stałym rozmiarze (16px) */}
                                                 {isThisRowDeleting ? (
                                                     <Loader size={16} color="currentColor" />
                                                 ) : (
