@@ -126,7 +126,7 @@ export const MainPage = () => {
      // Team Members Data
      const teamData = [
           {
-               name: "Rafal Sprengel",
+               name: "John Doe",
                role: "Master Chef",
                image: '/img/homePage/team/person-1.jpg',
                xUrl: "https://example.com/johndoe",
