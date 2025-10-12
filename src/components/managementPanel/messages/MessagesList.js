@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../utils/axios';
 import { useUnreadMessages } from '../../../context/UnreadMessagesProvider';
-import { Loader, TextInput } from '@mantine/core';
-import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
+import { Loader, TextInput, Select, Button } from '@mantine/core';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconEdit } from '@tabler/icons-react';
 import './MessagesList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
 import ErrorMessage from "../../ErrorMessage";
@@ -22,6 +22,7 @@ const MessagesList = () => {
     const [errorFetchMessages, setErrorFetchMessages] = useState(null);
     const [errorDeleteMessages, setErrorDeleteMessages] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [expandedCardId, setExpandedCardId] = useState(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -53,14 +54,22 @@ const MessagesList = () => {
         navigate('?' + params.toString());
     };
 
-    const handleSort = (e) => {
-        const { name } = e.currentTarget.dataset;
+    const handleSortChange = (newSortBy, newSortOrder) => {
         const params = new URLSearchParams(location.search);
-        const currentOrder = params.get('sortOrder') === 'desc' ? 'asc' : 'desc';
-        params.set('sortBy', name);
-        params.set('sortOrder', currentOrder);
+        params.set('sortBy', newSortBy);
+        params.set('sortOrder', newSortOrder);
         params.delete('page');
         navigate('?' + params.toString());
+    };
+
+    const handleSortCriteriaChange = (value) => {
+        const currentOrder = sortOrder || 'asc';
+        handleSortChange(value, currentOrder);
+    };
+
+    const handleSortOrderChange = (value) => {
+        const currentCriteria = sortCriteria || 'createdAt';
+        handleSortChange(currentCriteria, value);
     };
 
     const handleTypeFilter = (value) => {
@@ -101,6 +110,10 @@ const MessagesList = () => {
 
     const handleRowClick = (_id) => navigate(`${_id}`);
 
+    const toggleCardExpansion = (id) => {
+        setExpandedCardId(prevId => (prevId === id ? null : id));
+    };
+
     const SortIcon = ({ criteria }) => {
         if (criteria !== sortCriteria) return null;
         return sortOrder === 'desc' ? (
@@ -122,6 +135,19 @@ const MessagesList = () => {
     useEffect(() => {
         refetchUnreadCount();
     }, [unreadMessageCount]);
+
+    const sortOptions = [
+        { value: 'name', label: 'Name' },
+        { value: 'email', label: 'Email' },
+        { value: 'subject', label: 'Subject' },
+        { value: 'type', label: 'Type' },
+        { value: 'createdAt', label: 'Date' },
+    ];
+
+    const sortOrderOptions = [
+        { value: 'asc', label: 'Ascending' },
+        { value: 'desc', label: 'Descending' },
+    ];
 
     const rows = messages.map((msg) => (
         <tr key={msg._id} onClick={() => handleRowClick(msg._id)} style={{ cursor: 'pointer', fontWeight: msg.isRead ? 'normal' : 'bold' }}>
@@ -170,6 +196,21 @@ const MessagesList = () => {
                 </div>
             </div>
             
+            <div className="messages-list__mobile-sort-controls">
+                <Select
+                    placeholder="Sort by"
+                    data={sortOptions}
+                    value={sortCriteria}
+                    onChange={handleSortCriteriaChange}
+                />
+                <Select
+                    placeholder="Order"
+                    data={sortOrderOptions}
+                    value={sortOrder}
+                    onChange={handleSortOrderChange}
+                />
+            </div>
+
             {errorDeleteMessages && <ErrorMessage message={errorDeleteMessages} />}
             {errorFetchMessages && <ErrorMessage message={errorFetchMessages} />}
             
@@ -179,21 +220,67 @@ const MessagesList = () => {
                     <span>Loading...</span>
                 </div>
             ) : messages.length ? (
-                <div className="messages-list-table-wrapper">
-                    <table className="messages-list-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th onClick={handleSort} data-name="name">Name <SortIcon criteria="name" /></th>
-                                <th onClick={handleSort} data-name="email">Email <SortIcon criteria="email" /></th>
-                                <th onClick={handleSort} data-name="subject">Subject <SortIcon criteria="subject" /></th>
-                                <th onClick={handleSort} data-name="type">Type <SortIcon criteria="type" /></th>
-                                <th onClick={handleSort} data-name="createdAt">Date <SortIcon criteria="createdAt" /></th>
-                            </tr>
-                        </thead>
-                        <tbody>{rows}</tbody>
-                    </table>
-                </div>
+                <>
+                    <div className="messages-list-table-wrapper">
+                        <table className="messages-list-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th onClick={(e) => handleSortChange('name', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="name">Name <SortIcon criteria="name" /></th>
+                                    <th onClick={(e) => handleSortChange('email', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="email">Email <SortIcon criteria="email" /></th>
+                                    <th onClick={(e) => handleSortChange('subject', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="subject">Subject <SortIcon criteria="subject" /></th>
+                                    <th onClick={(e) => handleSortChange('type', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="type">Type <SortIcon criteria="type" /></th>
+                                    <th onClick={(e) => handleSortChange('createdAt', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="createdAt">Date <SortIcon criteria="createdAt" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>{rows}</tbody>
+                        </table>
+                    </div>
+
+                    <div className="messages-list__cards-group">
+                        {messages.map((msg) => {
+                            const isExpanded = expandedCardId === msg._id;
+                            return (
+                                <div key={msg._id} className={`messages-list__card ${isExpanded ? 'messages-list__card--expanded' : ''}`} onClick={() => toggleCardExpansion(msg._id)} style={{ fontWeight: msg.isRead ? 'normal' : 'bold' }}>
+                                    <div className="messages-list__card-header">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedMessages.includes(msg._id)}
+                                            onClick={e => e.stopPropagation()}
+                                            onChange={(e) => handleCheckboxChange(msg._id, e.currentTarget.checked)}
+                                        />
+                                        <span className="messages-list__card-name">{msg.name}</span>
+                                        <span className="messages-list__card-number">{new Date(msg.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                    {isExpanded && (
+                                        <div className="messages-list__card-details">
+                                            <div className="messages-list__card-row">
+                                                <span className="messages-list__card-label">Email:</span>
+                                                <span className="messages-list__card-value">{msg.email}</span>
+                                            </div>
+                                            <div className="messages-list__card-row">
+                                                <span className="messages-list__card-label">Subject:</span>
+                                                <span className="messages-list__card-value">{msg.subject}</span>
+                                            </div>
+                                            <div className="messages-list__card-row">
+                                                <span className="messages-list__card-label">Type:</span>
+                                                <span className="messages-list__card-value">{msg.type}</span>
+                                            </div>
+                                            <div className="messages-list__card-actions">
+                                                <button
+                                                    className="messages-list__card-button-edit"
+                                                    onClick={(e) => { e.stopPropagation(); handleRowClick(msg._id); }}
+                                                >
+                                                    <IconEdit size={16} /> View
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </>
             ) : (
                 <p className="messages-list-message">No messages found.</p>
             )}

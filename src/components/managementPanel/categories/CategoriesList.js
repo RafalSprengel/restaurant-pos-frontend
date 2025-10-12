@@ -9,11 +9,11 @@ import ConfirmationModal from '../../ConfirmationModal';
 import ErrorMessage from '../../ErrorMessage';
 
 const CategoriesList = () => {
-    const [errorDeleteCategory, setErrorDeleteCategory] = useState(null); // Zmiana nazwy stanu
+    const [errorDeleteCategory, setErrorDeleteCategory] = useState(null);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [searchString, setSearchString] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false); // Dodanie stanu ładowania usuwania
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -21,7 +21,6 @@ const CategoriesList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    // Błąd pobierania jest w fetchError
     const { data, isLoading, error: fetchError, refetch } = useFetch(`/product-categories${location.search}`);
     const categoriesList = data?.categories || [];
 
@@ -39,7 +38,7 @@ const CategoriesList = () => {
 
     const handleDeleteClick = (event, id) => {
         event.stopPropagation();
-        setErrorDeleteCategory(null); // Czyścimy poprzedni błąd usuwania przed nową próbą
+        setErrorDeleteCategory(null);
         setCategoryToDelete(id);
         setShowModal(true);
     };

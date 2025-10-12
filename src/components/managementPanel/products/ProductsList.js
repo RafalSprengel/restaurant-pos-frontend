@@ -12,8 +12,8 @@ import ErrorMessage from "../../ErrorMessage";
 
 const ProductsList = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [errorFetchProducts, setErrorFetchProducts] = useState(null); // Zmieniony stan błędu dla pobierania
-    const [errorDeleteProduct, setErrorDeleteProduct] = useState(null); // Nowy stan błędu dla usuwania
+    const [errorFetchProducts, setErrorFetchProducts] = useState(null);
+    const [errorDeleteProduct, setErrorDeleteProduct] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [productToDelete, setProductToDelete] = useState(null);
@@ -34,7 +34,7 @@ const ProductsList = () => {
         const queryString = location.search;
         try {
             setIsLoading(true);
-            setErrorFetchProducts(null); // Czyścimy błąd pobierania
+            setErrorFetchProducts(null);
             const response = await api.get(`/products/${queryString}`);
             if (response.status === 200) {
                 const data = response.data;
@@ -55,7 +55,7 @@ const ProductsList = () => {
 
     const handleDeleteClick = (event, id) => {
         event.stopPropagation();
-        setErrorDeleteProduct(null); // Czyścimy błąd usuwania przed otwarciem modala
+        setErrorDeleteProduct(null);
         setProductToDelete(id);
         setShowModal(true);
     };
@@ -64,9 +64,8 @@ const ProductsList = () => {
         setShowModal(false);
         try {
             setIsDeleting(true);
-            setErrorDeleteProduct(null); // Czyścimy błąd usuwania
+            setErrorDeleteProduct(null);
             await api.delete(`/products/${productToDelete}`);
-            // Ręczne wywołanie pobierania po pomyślnym usunięciu
             await getProducts();
         } catch (error) {
             setErrorDeleteProduct(error.response?.data?.error || error.message || "Failed to delete product");
@@ -101,7 +100,6 @@ const ProductsList = () => {
         navigate('?' + params);
     };
 
-    // Używamy tego useEffect do synchronizacji stanu komponentu z URL
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         setSearchString(params.get('search') || '');
@@ -109,10 +107,9 @@ const ProductsList = () => {
         setSortOrder(params.get('sortOrder') || '');
     }, [location.search]);
 
-    // Używamy tego useEffect do faktycznego pobierania danych, gdy zmieni się URL
     useEffect(() => {
         getProducts();
-    }, [location.search]); // Zależność tylko od location.search jest wystarczająca
+    }, [location.search]);
 
     const SortIcon = ({ criteria }) => {
         if (criteria !== sortCriteria || !sortOrder) return null;
@@ -150,7 +147,6 @@ const ProductsList = () => {
         </tr>
     ));
 
-    // Wybieramy błąd do wyświetlenia (błąd pobierania ma priorytet)
     const currentError = errorFetchProducts || errorDeleteProduct;
 
     return (
@@ -172,7 +168,6 @@ const ProductsList = () => {
                 </div>
             </div>
 
-            {/* Wyświetlanie błędu (pobierania lub usuwania) */}
             {currentError && <ErrorMessage message={currentError} />}
 
             {isLoading ? (
@@ -208,7 +203,6 @@ const ProductsList = () => {
                                 onClick={() => toggleCardExpand(product._id)}>
                                 <div className="products-list__card-row">
                                     <span className="products-list__card-title">{product.name}</span>
-                                    {/* Zakładam, że config.API_URL jest poprawnie zdefiniowane */}
                                     <img src={`${config.API_URL}${product.thumbnail}`} alt="Thumbnail" className="products-list__card-thumbnail" />
                                 </div>
                                 <div className="products-list__card-buttons-group">

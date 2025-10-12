@@ -7,8 +7,8 @@ import ErrorMessage from '../../ErrorMessage';
 
 export default function Settings() {
     const [isLoading, setIsLoading] = useState(true);
-    const [errorFetchSettings, setErrorFetchSettings] = useState(null); // Zmieniono nazwę stanu
-    const [errorSaveSettings, setErrorSaveSettings] = useState(null); // Nowy stan
+    const [errorFetchSettings, setErrorFetchSettings] = useState(null);
+    const [errorSaveSettings, setErrorSaveSettings] = useState(null);
 
     const form = useForm({
         initialValues: {
@@ -39,7 +39,7 @@ export default function Settings() {
 
     useEffect(() => {
         const fetchSettings = async () => {
-            setErrorFetchSettings(null); // Resetowanie błędu przed pobieraniem
+            setErrorFetchSettings(null);
             try {
                 const res = await api.get("/settings");
                 if (res.data.error) {

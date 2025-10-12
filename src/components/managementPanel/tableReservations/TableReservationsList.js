@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { IconTrash, IconSortAscending, IconSortDescending, IconSearch } from '@tabler/icons-react';
+import { IconTrash, IconSortAscending, IconSortDescending, IconSearch, IconEdit } from '@tabler/icons-react';
 import api from '../../../utils/axios';
 import './tableReservationsList.scss';
 import ConfirmationModal from '../../ConfirmationModal';
-import { Loader } from '@mantine/core';
+import { Loader, TextInput, Select, Button } from '@mantine/core';
 import ErrorMessage from '../../ErrorMessage';
 
 
@@ -17,10 +17,11 @@ export default function TableReservationsList() {
     const [sortOrder, setSortOrder] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [deletingId, setDeletingId] = useState(null);
-    const [errorFetchReservations, setErrorFetchReservations] = useState(null); // Zmieniony stan błędu
-    const [errorDeleteReservation, setErrorDeleteReservation] = useState(null); // Nowy stan błędu
+    const [errorFetchReservations, setErrorFetchReservations] = useState(null);
+    const [errorDeleteReservation, setErrorDeleteReservation] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [reservationToDelete, setReservationToDelete] = useState(null);
+    const [expandedCardId, setExpandedCardId] = useState(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -29,7 +30,7 @@ export default function TableReservationsList() {
         const queryString = location.search;
         try {
             setIsLoading(true);
-            setErrorFetchReservations(null); // Czyścimy błąd pobierania przed startem
+            setErrorFetchReservations(null);
             const res = await api.get(`/tables/reservations${queryString}`);
             setReservations(res.data.reservations);
             setTotalPages(res.data.totalPages);
@@ -44,7 +45,7 @@ export default function TableReservationsList() {
     const handleDelete = async (_id) => {
         try {
             setDeletingId(_id);
-            setErrorDeleteReservation(null); // Czyścimy błąd usuwania przed startem
+            setErrorDeleteReservation(null);
             await api.delete(`/tables/reservations/${_id}`);
             setShowModal(false);
             getReservations();
@@ -59,8 +60,7 @@ export default function TableReservationsList() {
 
     const openDeleteModal = (e, _id) => {
         e.stopPropagation();
-        // Czyścimy błąd usuwania przed otwarciem modala
-        setErrorDeleteReservation(null); 
+        setErrorDeleteReservation(null);
         setReservationToDelete(_id);
         setShowModal(true);
     };
@@ -74,15 +74,22 @@ export default function TableReservationsList() {
         navigate(`?${params.toString()}`);
     };
 
-    const handleSort = (e) => {
-        const name = e.currentTarget.dataset.name;
+    const handleSortChange = (newSortBy, newSortOrder) => {
         const params = new URLSearchParams(location.search);
-        const current = params.get('sortOrder');
-        const newOrder = current !== 'desc' ? 'desc' : 'asc';
-        params.set('sortBy', name);
-        params.set('sortOrder', newOrder);
+        params.set('sortBy', newSortBy);
+        params.set('sortOrder', newSortOrder);
         params.delete('page');
         navigate(`?${params.toString()}`);
+    };
+
+    const handleSortCriteriaChange = (value) => {
+        const currentOrder = sortOrder || 'asc';
+        handleSortChange(value, currentOrder);
+    };
+
+    const handleSortOrderChange = (value) => {
+        const currentCriteria = sortCriteria || 'tableNumber';
+        handleSortChange(currentCriteria, value);
     };
 
     const handlePageChange = (page) => {
@@ -93,6 +100,10 @@ export default function TableReservationsList() {
 
     const handleRowClick = (_id) => {
         navigate(`${_id}`);
+    };
+
+    const toggleCardExpansion = (id) => {
+        setExpandedCardId(prevId => (prevId === id ? null : id));
     };
 
     const SortIcon = ({ criteria }) => {
@@ -115,6 +126,18 @@ export default function TableReservationsList() {
         getReservations();
     }, [location.search]);
 
+    const sortOptions = [
+        { value: 'tableNumber', label: 'Table No.' },
+        { value: 'timeSlot.start', label: 'Date' },
+        { value: 'customerDetails.name', label: 'Name' },
+        { value: 'customerDetails.email', label: 'Email' },
+    ];
+
+    const sortOrderOptions = [
+        { value: 'asc', label: 'Ascending' },
+        { value: 'desc', label: 'Descending' },
+    ];
+
     const rows = reservations.map((r) => (
         <tr key={r._id} onClick={() => handleRowClick(r._id)} style={{ cursor: 'pointer' }}>
             <td>{r.tableNumber}</td>
@@ -133,7 +156,6 @@ export default function TableReservationsList() {
         </tr>
     ));
 
-    // Decydujemy, który błąd wyświetlić. Błąd pobierania ma priorytet
     const currentError = errorFetchReservations || errorDeleteReservation;
 
     return (
@@ -154,7 +176,21 @@ export default function TableReservationsList() {
                 </div>
             </div>
 
-            {/* Wyświetlanie błędu (pobierania lub usuwania) */}
+            <div className="table-reservations-list__mobile-sort-controls">
+                <Select
+                    placeholder="Sort by"
+                    data={sortOptions}
+                    value={sortCriteria}
+                    onChange={handleSortCriteriaChange}
+                />
+                <Select
+                    placeholder="Order"
+                    data={sortOrderOptions}
+                    value={sortOrder}
+                    onChange={handleSortOrderChange}
+                />
+            </div>
+
             {currentError && (
                 <ErrorMessage message={currentError}/>
             )}
@@ -165,20 +201,68 @@ export default function TableReservationsList() {
                     <span>Loading...</span>
                 </div>
             ) : reservations?.length > 0 ? (
-                <div className="table-reservations-list-table-wrapper">
-                    <table className="table-reservations-list-table">
-                        <thead>
-                            <tr>
-                                <th onClick={handleSort} data-name="tableNumber">Table No. <SortIcon criteria="tableNumber" /></th>
-                                <th onClick={handleSort} data-name="timeSlot.start">Date <SortIcon criteria="timeSlot.start" /></th>
-                                <th onClick={handleSort} data-name="customerDetails.name">Name <SortIcon criteria="customerDetails.name" /></th>
-                                <th onClick={handleSort} data-name="customerDetails.email">Email <SortIcon criteria="customerDetails.email" /></th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>{rows}</tbody>
-                    </table>
-                </div>
+                <>
+                    <div className="table-reservations-list-table-wrapper">
+                        <table className="table-reservations-list-table">
+                            <thead>
+                                <tr>
+                                    <th onClick={(e) => handleSortChange('tableNumber', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="tableNumber">Table No. <SortIcon criteria="tableNumber" /></th>
+                                    <th onClick={(e) => handleSortChange('timeSlot.start', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="timeSlot.start">Date <SortIcon criteria="timeSlot.start" /></th>
+                                    <th onClick={(e) => handleSortChange('customerDetails.name', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="customerDetails.name">Name <SortIcon criteria="customerDetails.name" /></th>
+                                    <th onClick={(e) => handleSortChange('customerDetails.email', sortOrder === 'desc' ? 'asc' : 'desc')} data-name="customerDetails.email">Email <SortIcon criteria="customerDetails.email" /></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>{rows}</tbody>
+                        </table>
+                    </div>
+
+                    <div className="table-reservations-list__cards-group">
+                        {reservations.map((r) => {
+                            const isThisCardDeleting = deletingId === r._id;
+                            const isExpanded = expandedCardId === r._id;
+                            return (
+                                <div key={r._id} className={`table-reservations-list__card ${isExpanded ? 'table-reservations-list__card--expanded' : ''}`} onClick={() => toggleCardExpansion(r._id)}>
+                                    <div className="table-reservations-list__card-header">
+                                        <span className="table-reservations-list__card-name">Table No: {r.tableNumber}</span>
+                                        <span className="table-reservations-list__card-number">{r.timeSlot.start}</span>
+                                    </div>
+                                    {isExpanded && (
+                                        <div className="table-reservations-list__card-details">
+                                            <div className="table-reservations-list__card-row">
+                                                <span className="table-reservations-list__card-label">Time:</span>
+                                                <span className="table-reservations-list__card-value">{r.timeSlot.start} - {r.timeSlot.end}</span>
+                                            </div>
+                                            <div className="table-reservations-list__card-row">
+                                                <span className="table-reservations-list__card-label">Customer:</span>
+                                                <span className="table-reservations-list__card-value">{r.customerDetails.name}</span>
+                                            </div>
+                                            <div className="table-reservations-list__card-row">
+                                                <span className="table-reservations-list__card-label">Email:</span>
+                                                <span className="table-reservations-list__card-value">{r.customerDetails.email}</span>
+                                            </div>
+                                            <div className="table-reservations-list__card-actions">
+                                                <button
+                                                    className="table-reservations-list__card-button-edit"
+                                                    onClick={(e) => { e.stopPropagation(); handleRowClick(r._id); }}
+                                                >
+                                                    <IconEdit size={16} /> Edit
+                                                </button>
+                                                <button
+                                                    className="table-reservations-list-delete-button"
+                                                    onClick={(e) => openDeleteModal(e, r._id)}
+                                                    disabled={isThisCardDeleting}
+                                                >
+                                                    {isThisCardDeleting ? <Loader size={16} color="currentColor" /> : <IconTrash size={16} />}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </>
             ) : (
                 <p className="table-reservations-list-message">No reservations found.</p>
             )}

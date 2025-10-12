@@ -18,6 +18,7 @@ const UpdateOrder = () => {
   const [message, setMessage] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState('');
+  const [expandedProductCardIndex, setExpandedProductCardIndex] = useState(null);
   const navigate = useNavigate();
 
   const { data: orderTypes, isLoading: loadingOrderTypes } = useFetch('/orders/order-types');
@@ -83,6 +84,10 @@ const UpdateOrder = () => {
     }
   };
 
+  const toggleProductCardExpansion = (productIndex) => {
+    setExpandedProductCardIndex(prevIndex => (prevIndex === productIndex ? null : productIndex));
+  };
+
   return (
     <div className="update-order__wrapper">
       <form className="update-order__form" onSubmit={handleSubmit}>
@@ -113,32 +118,78 @@ const UpdateOrder = () => {
 
         <div className="update-order__section">
           <h4 className="update-order__heading--card">Products</h4>
-          <table className="update-order__table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Total</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order?.products?.map((product, index) => (
-                <tr key={index}>
-                  <td>{product.name}</td>
-                  <td>{product.quantity}</td>
-                  <td>£{product.price}</td>
-                  <td>£{product.totalPrice}</td>
-                  <td style={{ width: '150px', display: 'flex', flexDirection:'column' }}>
-                    {product.ingredients?.join(', ')}<br />
-                    {product.isVegetarian && <span className="update-order__badge update-order__badge--green" style={{ marginRight: '8px' }}>Vegetarian</span>}
-                    {product.isGlutenFree && <span className="update-order__badge update-order__badge--blue">Gluten-Free</span>}
-                  </td>
+          <div className="update-order__table-responsive-wrapper">
+            <table className="update-order__table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                  <th>Details</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {order?.products?.map((product, index) => (
+                  <tr key={index}>
+                    <td>{product.name}</td>
+                    <td>{product.quantity}</td>
+                    <td>£{product.price}</td>
+                    <td>£{product.totalPrice}</td>
+                    <td style={{ width: '150px', display: 'flex', flexDirection:'column' }}>
+                      {product.ingredients?.join(', ')}<br />
+                      {product.isVegetarian && <span className="update-order__badge update-order__badge--green" style={{ marginRight: '8px' }}>Vegetarian</span>}
+                      {product.isGlutenFree && <span className="update-order__badge update-order__badge--blue">Gluten-Free</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="update-order__product-cards-group">
+            {order?.products?.map((product, index) => {
+              const isExpanded = expandedProductCardIndex === index;
+              return (
+                <div 
+                  key={index}
+                  className={`update-order__product-card ${isExpanded ? 'update-order__product-card--expanded' : ''}`} 
+                  onClick={() => toggleProductCardExpansion(index)}
+                >
+                  <div className="update-order__product-card-header">
+                    <span className="update-order__product-card-name">{product.name}</span>
+                    <span className="update-order__product-card-qty">Qty: {product.quantity}</span>
+                  </div>
+                  {isExpanded && (
+                    <div className="update-order__product-card-details">
+                      <div className="update-order__product-card-row">
+                        <span className="update-order__product-card-label">Price:</span>
+                        <span className="update-order__product-card-value">£{product.price}</span>
+                      </div>
+                      <div className="update-order__product-card-row">
+                        <span className="update-order__product-card-label">Total:</span>
+                        <span className="update-order__product-card-value">£{product.totalPrice}</span>
+                      </div>
+                      {product.ingredients && product.ingredients.length > 0 && (
+                        <div className="update-order__product-card-row">
+                          <span className="update-order__product-card-label">Ingredients:</span>
+                          <span className="update-order__product-card-value">{product.ingredients.join(', ')}</span>
+                        </div>
+                      )}
+                      <div className="update-order__product-card-row">
+                        <span className="update-order__product-card-label">Vegetarian:</span>
+                        <span className="update-order__product-card-value">{product.isVegetarian ? 'Yes' : 'No'}</span>
+                      </div>
+                      <div className="update-order__product-card-row">
+                        <span className="update-order__product-card-label">Gluten-Free:</span>
+                        <span className="update-order__product-card-value">{product.isGlutenFree ? 'Yes' : 'No'}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         <hr style={{ margin: '16px 0', border: 0, borderTop: '1px solid #e0e0e0' }} />
