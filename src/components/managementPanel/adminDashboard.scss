@@ -1,4 +1,4 @@
-.dashboard {
+ .dashboard {
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -7,10 +7,10 @@
   min-width: 80%;
 
   @media (max-width: 768px) {
-    padding: 16px; /* Zmniejszenie paddingu na mniejszych ekranach */
-    min-width: unset; /* Usunięcie minimalnej szerokości */
-    width: 100%; /* Zajęcie pełnej dostępnej szerokości */
-    margin: 0 auto; /* Wyśrodkowanie poziome */
+    padding: 16px;
+    min-width: unset; 
+    width: 100%;
+    margin: 0 auto; 
   }
 
   &__center {
@@ -143,5 +143,9 @@
       color: #333;
       margin-bottom: 8px;
     }
+    @media(max-width: 768px) {
+      padding-right:0;
+      padding-left:0;
+    };
   }
 }
