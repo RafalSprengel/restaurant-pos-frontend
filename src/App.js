@@ -45,6 +45,8 @@ import Settings from './components/managementPanel/settings/Settings.js';
 import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
 import NoConnection from './pages/NoConnection.js';
+import GTMPageviewTracker from './components/GTMPageviewTracker';
+
 
 
 function App() {
@@ -54,6 +56,7 @@ function App() {
                <ModalsProvider>
                     <AuthProvider>
                          <ShoppingCartProvider>
+                              <GTMPageviewTracker />
                               <Routes>
                                    <Route
                                         element={<MainLayout />}>
