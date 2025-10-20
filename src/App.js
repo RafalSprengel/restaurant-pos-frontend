@@ -56,7 +56,7 @@ function App() {
                <ModalsProvider>
                     <AuthProvider>
                          <ShoppingCartProvider>
-                              <GTMPageviewTracker />
+                              <GTMPageviewTracker /> {/* Tracks virtual page views in SPA for Google Tag Manager */}
                               <Routes>
                                    <Route
                                         element={<MainLayout />}>

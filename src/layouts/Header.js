@@ -12,16 +12,23 @@ import { useAuth } from '../context/authContext.js';
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
-    const [showMobNav, setShowMobNav] = useState(false);
+    const [isMobNavOpen, setIsMobNavOpen] = useState(false);
     const infoBarRef = useRef(null);
 
     const { isAuthenticated, user } = useAuth();
 
+    const handleOpenNaviMenuClick = () => {
+         console.log('klik na overflow hidden');
+        document.querySelector('body').style.overflow =  'hidden';
+        setIsMobNavOpen(true);
+    }
 
-    const handleToggleMobileMenu = () => {
-        document.querySelector('body').style.overflow = showMobNav ? 'visible' : 'hidden';
-        setShowMobNav(!showMobNav);
-    };
+     const handleCloseNaviMenuClick = () => {
+        console.log('klik na overflow visible');
+        document.querySelector('body').style.overflow =  'visible';
+        setIsMobNavOpen(false);
+    }
+
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 3);
@@ -54,7 +61,7 @@ export default function Header() {
                                 Restoran
                             </NavLink>
                         </div>
-                        <Navi showMobNav={showMobNav} toggleMobNav={handleToggleMobileMenu} />
+                        <Navi close={handleCloseNaviMenuClick} isOpen={isMobNavOpen} />
                         <div className='header__icons'>
                             <NavLink to="/customer/login" className='header__link'>
                                 <span className="header__user-status">
@@ -65,7 +72,7 @@ export default function Header() {
                                 </span>
 
                             </NavLink>
-                            <div className={'header__hamburger-icon ' + (showMobNav ? 'header__hamburger-icon--hidden' : '')} onClick={handleToggleMobileMenu}>
+                            <div className={'header__hamburger-icon ' + (isMobNavOpen ? 'header__hamburger-icon--hidden' : '')} onClick={handleOpenNaviMenuClick}>
                                 ☰
                             </div>
                         </div>

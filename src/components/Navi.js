@@ -1,31 +1,31 @@
 import '../styles/navi.scss';
 
-export default function Navi({ showMobNav, toggleMobNav }) {
+export default function Navi({ close, isOpen }) {
      return (
-          <nav className={`navi ${showMobNav ? '' : 'navi--hidden'}`}>
+          <nav className={`navi ${isOpen ? '' : 'navi--hidden'}`}>
                <ul className="navi__list">
                     <li className="navi__item">
-                         <a href='/' className="navi__link" onClick={() => toggleMobNav(false)}>Home</a>
+                         <a href='/' className="navi__link" onClick={() => close()}>Home</a>
                     </li>
                     <li className="navi__item">
-                          <a href='#about' className="navi__link" onClick={() => toggleMobNav(false)}>About Us</a>
+                          <a href='#about' className="navi__link" onClick={() => close()}>About Us</a>
                     </li>
                     <li className="navi__item">
-                        <a href='#our-menu' className="navi__link" onClick={() => toggleMobNav(false)}>Our Menu</a>
+                        <a href='#our-menu' className="navi__link" onClick={() => close()}>Our Menu</a>
                     </li>
                     <li className="navi__item">
-                           <a href='#specials' className="navi__link" onClick={() => toggleMobNav(false)}>Specials</a>
+                           <a href='#specials' className="navi__link" onClick={() => close()}>Specials</a>
                     </li>
                     <li className="navi__item">
-                        <a href='#events' className="navi__link" onClick={() => toggleMobNav(false)}>Events</a>
+                        <a href='#events' className="navi__link" onClick={() => close()}>Events</a>
                     </li>
                      <li className="navi__item">
-                        <a href='#gallery' className="navi__link" onClick={() => toggleMobNav(false)}>Gallery</a>
+                        <a href='#gallery' className="navi__link" onClick={() => close()}>Gallery</a>
                     </li>
                      <li className="navi__item">
-                        <a href='#contact' className="navi__link" onClick={() => toggleMobNav(false)}>Contact</a>
+                        <a href='#contact' className="navi__link" onClick={() => close()}>Contact</a>
                     </li>
-                    <li className="navi__close-button" onClick={() => toggleMobNav(false)}>
+                    <li className="navi__close-button" onClick={() => close()}>
                          X
                     </li>
                </ul>
