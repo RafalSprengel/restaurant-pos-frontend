@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShoppingCart } from '../context/ShoppingCartContext.js';
 import { useAuth } from '../context/authContext.js';
@@ -6,7 +6,7 @@ import { useForm } from '@mantine/form';
 import { useFetch } from '../hooks/useFetch.js';
 import api from '../utils/axios';
 import { TextInput, Textarea, Button, Radio, Group } from '@mantine/core';
-import { IconAt, IconPhone, IconArrowBack  } from '@tabler/icons-react';
+import { IconAt, IconPhone, IconArrowBack } from '@tabler/icons-react';
 import '../styles/checkout.scss';
 
 export default function Checkout() {
@@ -14,6 +14,8 @@ export default function Checkout() {
   const { cartItems, cartSummaryPrice } = useShoppingCart();
   const { isAuthenticated } = useAuth();
   const { data: customer } = useFetch('/customers/customer');
+  const [isSubmittingOnProgress, setIsSubmittingOnProgress] = useState(false);
+
 
   const form = useForm({
     initialValues: {
@@ -45,6 +47,7 @@ export default function Checkout() {
     const itemsToSend = cartItems.map((item) => ({ id: item._id, quantity: item.quantity }));
 
     try {
+      setIsSubmittingOnProgress(true);
       const response = await api.post('/stripe/create-checkout-session', {
         items: itemsToSend,
         purchaser: {
@@ -82,6 +85,8 @@ export default function Checkout() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsSubmittingOnProgress(false);
     }
   };
 
@@ -181,7 +186,13 @@ export default function Checkout() {
         </div>
 
         <div className="checkout__actions">
-          <Button type="submit" fullWidth>Place Order</Button>
+          <Button
+            type="submit"
+            disabled={isSubmittingOnProgress}
+            fullWidth
+          >
+            {isSubmittingOnProgress ? 'Processing...' : 'Place Order'}
+          </Button>
           <Button type="button" onClick={() => navigate(-1)} fullWidth variant="outline">Cancel</Button>
         </div>
       </div>
