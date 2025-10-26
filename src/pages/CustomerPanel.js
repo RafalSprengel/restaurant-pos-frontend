@@ -70,7 +70,7 @@ const CustomerPanel = () => {
                               <div>Your account</div>
                          </div>
 
-                         <div className="customer-panel__header-right">Hi, {user.firstName}</div>
+                         <div className="customer-panel__header-right">Hi {user.firstName}</div>
                     </div>
                     <div className="customer-panel__breadcrumbs-container">
                          <Breadcrumbs />
