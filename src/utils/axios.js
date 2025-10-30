@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiURL = 'https://demo1.rafalsprengel.com/api/v1';
+const apiURL = 'https://restaurant.rafalsprengel.com/api/v1';
 
 const api = axios.create({
   baseURL: apiURL,

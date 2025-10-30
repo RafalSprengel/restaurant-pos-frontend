@@ -37,11 +37,11 @@ const LoginCustomer = () => {
      };
 
      const handleGoogleLogin = () => {
-          window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/google`;
+          window.location.href = `https://restaurant.rafalsprengel.com/api/v1/auth/google`;
      };
 
      const handleFacebookLogin = () => {
-          window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/facebook`;
+          window.location.href = `https://restaurant.rafalsprengel.com/api/v1/auth/facebook`;
      };
 
      useEffect(() => {

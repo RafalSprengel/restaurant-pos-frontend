@@ -25,4 +25,4 @@ jobs:
 
       - name: Sync build to VPS
         run: |
-          rsync -avz --delete -e "ssh -p 2222 -i ~/.ssh/id_rsa" ./build/ rafal@188.68.242.226:/var/www/demo1.rafalsprengel.com/react/build/
+          rsync -avz --delete -e "ssh -p 2222 -i ~/.ssh/id_rsa" ./build/ rafal@188.68.242.226:/var/www/restaurant.rafalsprengel.com/react/build/

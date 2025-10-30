@@ -57,7 +57,7 @@ const RegisterCustomer = () => {
 
 
   const handleGoogleRegister = () => {
-    window.location.href = `https://demo1.rafalsprengel.com/api/v1/auth/google`;
+    window.location.href = `https://restaurant.rafalsprengel.com/api/v1/auth/google`;
   };
 
   const onCloseSuccessMOdal = () => {
