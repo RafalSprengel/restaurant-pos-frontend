@@ -22,5 +22,5 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
           source: "build/"
-          target: "/var/www/demo1.rafalsprengel.com/react/build/"
+          target: "/var/www/restaurant.rafalsprengel.com/react/build/"
           args: "-avz --delete"
