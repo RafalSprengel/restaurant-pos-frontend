@@ -23,6 +23,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 2222 87.102.119.70 >> ~/.ssh/known_hosts
 
+      - name: Prepare remote directories
+        run: |
+          ssh -p 2222 -i ~/.ssh/id_rsa rafal@87.102.119.70 "mkdir -p /var/www/restaurant.rafalsprengel.com/react/build/"
+
       - name: Sync build to VPS
         run: |
-          rsync -avz --delete -e "ssh -p 2222 -i ~/.ssh/id_rsa" ./build/ rafal@188.68.242.226:/var/www/restaurant.rafalsprengel.com/react/build/
+          rsync -avz --delete -e "ssh -p 2222 -i ~/.ssh/id_rsa" ./build/ rafal@87.102.119.70:/var/www/restaurant.rafalsprengel.com/react/build/
+
