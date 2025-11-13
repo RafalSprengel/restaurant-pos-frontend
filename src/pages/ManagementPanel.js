@@ -72,7 +72,7 @@ export const ManagementPanel = () => {
     { to: '/management/categories', label: 'Categories', icon: <IconCategory size={20} /> },
     { to: '/management/customers', label: 'Customers', icon: <IconUsers size={20} /> },
     { to: '/management/orders', label: 'Orders', icon: <IconShoppingCart size={20} /> },
-    { to: '/management/mgnts', label: 'Users', icon: <IconUsers size={20} /> },
+    { to: '/management/mgnts', label: 'Staff', icon: <IconUsers size={20} /> },
     { to: '/management/messages', label: 'Messages', icon: <IconMessage size={20} />, badge: unreadMessageCount },
     { to: '/management/reservations', label: 'Table Reservations', icon: <IconTable size={20} /> },
     { to: '/management/settings', label: 'Settings', icon: <IconSettings size={20} /> },

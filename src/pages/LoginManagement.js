@@ -15,7 +15,7 @@ export default function StaffLogin() {
 
      const form = useForm({
           initialValues: {
-               email: 'guest@example.com',
+               email: 'guest@admin.com',
                password: '123456',
           },
           validate: {
