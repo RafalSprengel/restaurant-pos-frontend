@@ -151,7 +151,8 @@ const MgmtsList = () => {
   const rows = staffList.map((staff) => (
     <tr key={staff._id} onClick={() => handleRowClick(staff._id)} style={{ cursor: 'pointer' }}>
       <td>{staff.staffNumber}</td>
-      <td>{`${staff.firstName} ${staff.surname || ''}`}</td>
+      <td>{staff.firstName}</td>
+      <td>{staff.surname}</td>
       <td>{staff.email}</td>
       <td>{staff.role}</td>
       <td>{dayjs(staff.createdAt).format('HH:mm DD/MM/YY')}</td>
