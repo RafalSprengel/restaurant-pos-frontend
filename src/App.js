@@ -46,6 +46,7 @@ import RecentOrdersList from './components/customerPanel/RecentOrdersList.js';
 import PersonalDetails from './components/customerPanel/PersonalDetails.js';
 import NoConnection from './pages/NoConnection.js';
 import GTMPageviewTracker from './components/GTMPageviewTracker';
+import CookieConsent from './components/CookieConsent';
 
 
 
@@ -56,6 +57,7 @@ function App() {
                <ModalsProvider>
                     <AuthProvider>
                          <ShoppingCartProvider>
+                              <CookieConsent />
                               <GTMPageviewTracker /> {/* Tracks virtual page views in SPA for Google Tag Manager */}
                               <Routes>
                                    <Route
