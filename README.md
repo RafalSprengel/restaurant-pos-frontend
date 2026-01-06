@@ -37,3 +37,4 @@ The frontend is architected to communicate with a dedicated REST API (Node.js/Ex
 1. Clone the repository: `git clone https://github.com/RafalSprengel/restaurant-pos-frontend`
 2. Install dependencies: `npm install`
 3. Start development server: `npm start`
+   
