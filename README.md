@@ -1,5 +1,6 @@
-#<img width="1877" height="1493" alt="Zrzut ekranu 2026-01-06 123957" src="https://github.com/user-attachments/assets/1ae4a94f-20c7-48fb-82bf-ae1c52b0285f" />
- Restaurant POS - Frontend
+<img width="1877" height="1493" alt="Zrzut ekranu 2026-01-06 123957" src="https://github.com/user-attachments/assets/1ae4a94f-20c7-48fb-82bf-ae1c52b0285f" />
+ 
+## Restaurant POS - Frontend
 
 The frontend layer of a Full-stack Restaurant Point of Sale system, focusing on the customer ordering interface and cart management.
 ## 🚀 Live Demo
