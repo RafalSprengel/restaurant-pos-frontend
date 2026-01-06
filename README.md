@@ -2,6 +2,8 @@
  Restaurant POS - Frontend
 
 The frontend layer of a Full-stack Restaurant Point of Sale system, focusing on the customer ordering interface and cart management.
+## 🚀 Live Demo
+- **URL:** [https://restaurant.rafalsprengel.com/](https://restaurant.rafalsprengel.com/)
 
 ## 🔑 Key Features
 - **Menu Browser**: Dynamic rendering of products from data structures.
