@@ -1,47 +1,36 @@
-# Restaurant POS System
+#<img width="1877" height="1493" alt="Zrzut ekranu 2026-01-06 123957" src="https://github.com/user-attachments/assets/1ae4a94f-20c7-48fb-82bf-ae1c52b0285f" />
+ Restaurant POS - Frontend
 
-A modern, React-based Point of Sale (POS) system designed for restaurants, with a focus on a seamless online ordering experience. The system utilizes a Node.js and Express.js backend with MongoDB to create a robust REST API.
+The frontend layer of a Full-stack Restaurant Point of Sale system, focusing on the customer ordering interface and cart management.
 
-## Features
+## 🔑 Key Features
+- **Menu Browser**: Dynamic rendering of products from data structures.
+- **Cart Logic**: Persistent shopping cart managed via React Context.
+- **Order Flow**: Multi-step process from item selection to checkout summary.
+- **Responsive UI**: Layout optimized for mobile and desktop devices.
 
-- User-friendly interface for customers to browse menu and place orders
-- Home page with quick access to online ordering and menu viewing
-- Shopping cart functionality for easy order management
-- Responsive design for optimal viewing on various devices
-- Integration with restaurant menu data (stored in JSON format)
-- Backend REST API for handling data operations and business logic
+## 🛠 Tech Stack
+- **React.js**: Functional components and Hooks.
+- **State Management**: React Context API (Cart & UI state).
+- **Styling**: CSS / SCSS.
+- **Routing**: React Router.
 
-## Tech Stack
+## 🌐 Backend & Integration Capabilities
+The frontend is architected to communicate with a dedicated REST API (Node.js/Express) supporting:
+- **Database**: MongoDB for product and order persistence.
+- **Security**: JWT-based authorization and protected routes.
+- **Payments**: Stripe API integration for secure transactions.
+- **User Accounts**: Registration and authentication system.
+- **Monitoring**: Server-side error logging to file.
 
-Frontend:
+## 📁 Project Structure
+- `src/pages`: Page-level components.
+- `src/components`: Reusable UI elements.
+- `src/context`: ShoppingCartContext for global state handling.
+- `src/data`: Local JSON data providers for the interface.
+- `src/styles`: SCSS stylesheets.
 
-- React.js
-- CSS
-
-Backend:
-
-- Node.js
-- Express.js
-- MongoDB
-- Stripe
-- User Registration (for creating customer and system user accounts)
-- JWT authorization
-- Error logs to file
-
-## Getting Started
-
-1. Clone the repository
-2. Run `npm install` in both the root and server directories to install dependencies
-3. Set up your MongoDB connection
-4. Use `npm start` in the root directory to run the frontend app in development mode
-5. Use `npm start` in the server directory to run the backend server
-6. Open [http://localhost:3000](http://localhost:3000) to view the frontend in your browser
-
-## Project Structure
-
-- `src/pages`: Contains main page components (HomePage, Kontakt)
-- `src/context`: Includes ShoppingCartContext for state management
-- `src/data`: Stores menu items in JSON format
-- `server/`: Contains the Node.js/Express.js backend code and API routes
-
-This project aims to provide a robust, user-friendly POS system for restaurants, enhancing the online ordering experience for customers and streamlining operations for restaurant owners. The combination of a React frontend with a Node.js/Express.js backend and MongoDB database ensures a scalable and efficient solution for restaurant management.
+## 🚀 Setup
+1. Clone the repository: `git clone https://github.com/RafalSprengel/restaurant-pos-frontend`
+2. Install dependencies: `npm install`
+3. Start development server: `npm start`
