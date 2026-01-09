@@ -6,35 +6,60 @@ The frontend layer of a Full-stack Restaurant Point of Sale system, focusing on 
 ## 🚀 Live Demo
 - **URL:** [https://restaurant.rafalsprengel.com/](https://restaurant.rafalsprengel.com/)
 
+---
+
 ## 🔑 Key Features
-- **Menu Browser**: Dynamic rendering of products from data structures.
-- **Cart Logic**: Persistent shopping cart managed via React Context.
-- **Order Flow**: Multi-step process from item selection to checkout summary.
-- **Responsive UI**: Layout optimized for mobile and desktop devices.
+
+- **Menu Browser** – Dynamically renders products and categories fetched from the backend API.  
+- **Cart Management** – Persistent shopping cart stored via React Context, with multi-step order flow from selection to checkout.  
+- **Order Flow** – Users can review, edit, and submit orders; view order history after login.  
+- **User Accounts** – Registration, login, and profile management with JWT authentication.  
+- **Table Reservations** – View table availability, create and manage reservations directly from the frontend.  
+- **Messaging / Contact Form** – Submit messages to the restaurant and receive notifications; users can track messages.  
+- **Payments Integration** – Stripe API for secure online transactions.  
+- **Responsive UI** – Fully optimized for desktop, tablet, and mobile devices.  
+- **Status & Feedback** – Shows order status updates and validation feedback during checkout.  
+
+---
 
 ## 🛠 Tech Stack
-- **React.js**: Functional components and Hooks.
-- **State Management**: React Context API (Cart & UI state).
-- **Styling**: CSS / SCSS.
-- **Routing**: React Router.
 
-## 🌐 Backend & Integration Capabilities
-The frontend is architected to communicate with a dedicated REST API (Node.js/Express) supporting:
-- **Database**: MongoDB for product and order persistence.
-- **Security**: JWT-based authorization and protected routes.
-- **Payments**: Stripe API integration for secure transactions.
-- **User Accounts**: Registration and authentication system.
-- **Monitoring**: Server-side error logging to file.
+- **React.js** – Functional components with Hooks.  
+- **State Management** – React Context API (for cart, user, and UI state).  
+- **Routing** – React Router for page navigation.  
+- **Styling** – CSS / SCSS for modular, responsive design.  
+- **HTTP Requests** – Axios / Fetch for API communication.  
+
+---
+
+## 🌐 Backend & Integration
+
+The frontend communicates with the dedicated Restaurant POS REST API (Node.js / Express), supporting:
+
+- **Database** – MongoDB for products, orders, reservations, and messages.  
+- **Security** – JWT-based authentication and protected routes.  
+- **Payments** – Stripe integration for secure transactions.  
+- **User Management** – Full registration, login, and order history.  
+- **Reservations** – Table booking system integrated with backend availability checks.  
+- **Messaging** – Contact form submissions, replies, and unread message tracking.  
+
+---
 
 ## 📁 Project Structure
-- `src/pages`: Page-level components.
-- `src/components`: Reusable UI elements.
-- `src/context`: ShoppingCartContext for global state handling.
-- `src/data`: Local JSON data providers for the interface.
-- `src/styles`: SCSS stylesheets.
 
-## 🚀 Setup
-1. Clone the repository: `git clone https://github.com/RafalSprengel/restaurant-pos-frontend`
-2. Install dependencies: `npm install`
-3. Start development server: `npm start`
-   
+- `src/pages/` – Page-level components (Menu, Cart, Checkout, Profile, Reservations).  
+- `src/components/` – Reusable UI elements (Buttons, Modals, Cards, Forms).  
+- `src/context/` – React Context for global state management (Cart, User, UI).  
+- `src/data/` – Local JSON or constants for interface placeholders.  
+- `src/styles/` – SCSS stylesheets for modular and responsive design.  
+- `src/utils/` – Helper functions and API service calls.  
+
+---
+
+## 🚀 Setup & Development
+
+```bash
+git clone https://github.com/RafalSprengel/restaurant-pos-frontend
+cd restaurant-pos-frontend
+npm install
+npm start
