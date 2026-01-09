@@ -13,7 +13,8 @@ The frontend layer of a Full-stack Restaurant Point of Sale system, focusing on 
 - **Menu Browser** – Dynamically renders products and categories fetched from the backend API.  
 - **Cart Management** – Persistent shopping cart stored via React Context, with multi-step order flow from selection to checkout.  
 - **Order Flow** – Users can review, edit, and submit orders; view order history after login.  
-- **User Accounts** – Registration, login, and profile management with JWT authentication.  
+- **User Accounts** – Registration, login, and profile management with JWT authentication.
+- **Admin / Staff Panel** – Role-based access for staff and administrators to manage products, categories, orders, reservations, messages, and system settings.
 - **Table Reservations** – View table availability, create and manage reservations directly from the frontend.  
 - **Messaging / Contact Form** – Submit messages to the restaurant and receive notifications; users can track messages.  
 - **Payments Integration** – Stripe API for secure online transactions.  
